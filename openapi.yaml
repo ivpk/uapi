@@ -1,0 +1,700 @@
+openapi: 3.1.0
+
+info:
+  title: Universal application programming interface
+  version: 0.0.1
+
+paths:
+
+  /{group}/{form}/{org}/{dataset}/{model}:
+
+    parameters:
+      - $ref: "#/components/parameters/group"
+      - $ref: "#/components/parameters/form"
+      - $ref: "#/components/parameters/org"
+      - $ref: "#/components/parameters/dataset"
+      - $ref: "#/components/parameters/model"
+
+    head:
+      summary: Return only headers for all objects.
+      responses:
+        "200":
+          description: "OK"
+
+    get:
+      summary: Get all objects.
+      operationId: getall
+      parameters:
+        - $ref: "#/components/parameters/query"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/objects"
+        "default":
+          $ref: "#/components/responses/error"
+      description: |
+        Return list of objects for a given model.
+
+    post:
+      summary: |
+        Create a single new object or create, update or delete multiple objects
+        in a single request.
+      operationId: insert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/insert"
+                    - $ref: "#/components/schemas/object"
+                - $ref: "#/components/schemas/push"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - allOf:
+                      - $ref: "#/components/schemas/insert"
+                      - $ref: "#/components/schemas/object"
+                  - $ref: "#/components/schemas/push"
+        "default":
+          $ref: "#/components/responses/error"
+
+  /{gruop}/{form}/{org}/{dataset}/{model}/{id}:
+
+    parameters:
+      - $ref: "#/components/parameters/form"
+      - $ref: "#/components/parameters/org"
+      - $ref: "#/components/parameters/dataset"
+      - $ref: "#/components/parameters/model"
+      - $ref: "#/components/parameters/id"
+
+    get:
+      summary: Get a single object by given `{id}`.
+      operationId: getone
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  $ref: "#/components/schemas/getone"
+                  $ref: "#/components/schemas/object"
+        "default":
+          $ref: "#/components/responses/error"
+
+    post:
+      summary: Update or create a single object.
+      operationId: upsert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - allOf:
+                  - $ref: "#/components/schemas/insert"
+                  - $ref: "#/components/schemas/object"
+                - $ref: "#/components/schemas/push"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                - allOf:
+                    - $ref: "#/components/schemas/insert"
+                    - $ref: "#/components/schemas/object"
+        "default":
+          $ref: "#/components/responses/error"
+
+    put:
+      summary: Update a single object.
+      operationId: update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/update"
+                - $ref: "#/components/schemas/object"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                - allOf:
+                    - $ref: "#/components/schemas/update"
+                    - $ref: "#/components/schemas/object"
+        "default":
+          $ref: "#/components/responses/error"
+      description: |
+        Overwrite whole object. Property values, that are not given in request
+        body, will be reset to defaul values.
+
+        This triggers `_rev` to be updated. And before update, existing `_rev`
+        will be compared with given in request body, to prevent concurent
+        overwrites.
+
+    patch:
+      summary: Patch a single object.
+      operationId: patch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/update"
+                - $ref: "#/components/schemas/object"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                - allOf:
+                    - $ref: "#/components/schemas/update"
+                    - $ref: "#/components/schemas/object"
+        "default":
+          $ref: "#/components/responses/error"
+      description: |
+        Partial object update, only property values given in request body will
+        be update, other properties will not be touched.
+
+        This triggers `_rev` to be updated. And before update, existing `_rev`
+        will be compared with given in request body, to prevent concurent
+        overwrites.
+
+    delete:
+      summary: Delte a single object.
+      operationId: delete
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/update"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                - allOf:
+                    - $ref: "#/components/schemas/update"
+                    - $ref: "#/components/schemas/object"
+        "default":
+          $ref: "#/components/responses/error"
+      description: |
+        Delete object. This is a soft delete operation, object should not be
+        deleted, but marked for deletion. Soft delete is needed for changes API
+        to know, when something was deleted.
+
+        After some agreed time period, objects marked as deleted can be deleted
+        permanently.
+
+        Before delete, existing `_rev` will be compared with given in request
+        body, to prevent concurent overwrites.
+
+  /{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}:
+
+    parameters:
+      - $ref: "#/components/parameters/form"
+      - $ref: "#/components/parameters/org"
+      - $ref: "#/components/parameters/dataset"
+      - $ref: "#/components/parameters/model"
+      - $ref: "#/components/parameters/cid"
+
+    get:
+      summary: Get all object changes since given `{cid}` (change id).
+      operationId: changes
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  $ref: "#/components/schemas/changes"
+                  $ref: "#/components/schemas/object"
+        "default":
+          $ref: "#/components/responses/error"
+      description: |
+        Get latest changes to a table.
+
+        If {cid} is not given, return changes, since very first available
+        change.
+        
+        If {cid} is gven, return only changes, since given change id, including
+        change id itself.
+
+        This API can return changes, that were returned previously, client
+        should be responsible for checking if a change was received previously
+        or not.
+
+        Last change id is included in the reques, in order for clients to check
+        if last change id matches change received by client. If last change
+        does not match, then client should do a full synce, because if last
+        change id does not match, that means, that a data migration or some
+        other alterations to data were made, which requires to do a full sync.
+
+  /services/{form}/{org}/{dataset}/{service}:
+
+    description: |
+      Service functions are not as restricted as data API endpoints. Services
+      are not required to return an object with a public id, there are no
+      changes API, nor revisions.
+
+    parameters:
+      - $ref: "#/components/parameters/form"
+      - $ref: "#/components/parameters/org"
+      - $ref: "#/components/parameters/dataset"
+      - $ref: "#/components/parameters/service"
+
+
+components:
+
+  parameters:
+
+    group:
+      name: group
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+          - standards
+          - datasets
+      description: |
+        Group of data, currently two groups are available:
+
+        - `standards` - for data compatible with a standard.
+        - `datasets` - for a non-standard data.
+
+        There is another group called `services`, which is not considered as
+        data API. Service API is different from data API, more flexible.
+
+    form:
+      name: form
+      in: path
+      required: false
+      schema:
+        type: string
+        enum:
+          - gov
+          - com
+      description: |
+        Organization, type, can be:
+
+        - `gov` - government organization,
+        - `com` - private organization.
+
+    org:
+      name: org
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: "^[a-z][a-z0-9]+$"
+      description: |
+        Abbreviation or a short code name of an organization.
+
+        Should be a single work all lower case string, must start with a non
+        number symbol.
+ 
+    dataset:
+      name: dataset
+      in: path
+      required: true
+      schema:
+        - $ref: "#/components/schemas/dataset"
+      description: |
+        A dataset or a standard abbreviation or short code name.
+
+        All lower case, words separated with `_` symbol.
+
+    model:
+      name: model
+      in: path
+      required: true
+      schema:
+        - $ref: "#/components/schemas/model"
+      description: |
+        A short model code name.
+
+        Each word startds with upper case letter, first letter can't be a
+        number.
+
+    service:
+      name: service
+      in: path
+      required: true
+      schema:
+        - $ref: "#/components/schemas/model"
+      description: |
+        A short service code name.
+
+        Each word startds with upper case letter, first letter can't be a
+        number.
+
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/id"
+      description: |
+        Public global object identifier.
+
+        Identifiers should be UUID v4.
+
+        Once object is assigned a global identifier, it should never change.
+        Internally local identifiers, should be associated with public
+        identifiers.
+
+    cid:
+      name: cid
+      in: path
+      required: false
+      schema:
+        type: string
+      description: |
+        Change id.
+
+        Used for incremental changes API, to get next changes after given
+        change id.
+
+        Minimum requiremed is to at least add a separate column with a
+        timestamp of last change mede to a table. And this timestamp, can be
+        used as change id.
+
+    query:
+      name: query
+      in: query
+      required: false
+      desciption: |
+        Object filter.
+
+      examples:
+        - "code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name"
+        - "_select=_id,_rev"
+        - "code._gt=42"
+        - "country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd"
+        - "_or=1&code=1&code=2"
+        - "_count=1"
+
+      schema:
+        type: object
+
+        examples:
+          - code: 42
+            country.name: Lithuania
+            country.continent.name: Europe
+            _sort: "-code,country.name"
+            _limit: 10
+            _select: name,country.name,country.continent.name
+
+        additionalProperties: false
+
+        patternProperties:
+
+          "^_?[a-z](_?[a-z0-9]+)*(\\._?[a-z](_?[a-z0-9]+)*)*$":
+            description: |
+              Filter objects where given property is equal to given value.
+
+              Given property names, must be defined in data model.
+
+              Some reserved property names can be used for filtering:
+
+              - `_type`
+              - `_id`
+
+              Filters can by done by joining multiple tables if `.` operator is
+              used, which means, that two tables if needed must be joined in
+              order to perform a filter.
+
+              Last name after `.` can be one of following filter operators:
+
+              - `_gt` - greather than
+              - `_ge` - greather than or equal
+              - `_lt` - less than
+              - `_le` - less than than or equal
+              - `_sw` - starts with
+              - `_ew` - ends with
+              - `_co` - contains
+
+        properties:
+
+          _select:
+            type: string
+            description: |
+              Comma separated list of properties to include in the result.
+
+              Spetial value `*` can be used, to include all properties. This
+              can also be used on nested objects, for example `country.*` will
+              include all properties from `country` object.
+
+              `-` can be used to exclude a property from result, this will
+              exclude properties that were included previously.
+
+              `+` can be used to include additional properties to the result,
+              if a property in select list is not prefixed with `+`, then only
+              given property will be shown in result, but with `+` a property
+              will be added to the result leaving what would by added by
+              default.
+
+              By default, all properties of a model will be included.
+
+              When properties are specified in `a.b` form, `.` should join two
+              tables and return properties from two tables if needed. This
+              requirement only applies if data are stored on the same data
+              source. An attempt to join data from multiple data sources,
+              should return an error.
+
+          _limit:
+            type: integer
+            description: |
+              Limit result to given number of objects.
+
+              If `_sort` is not given, then sorty by `_id`.
+
+          _sort:
+            type: string
+            description: |
+              Comma separated list of properties, optionally prefixed with `+` or `-` operators to control sort direction:
+
+              - `+` - ascending sort (1, 2, 3), this is used by default if sort direction is not given.
+              - `-` - descending sort (3, 2, 1).
+
+          _count:
+            type: boolean
+            description: |
+              Return number of objects matching a given filter. If filter is
+              not given, return number of all objects.
+
+              Result should be given in following form:
+
+              ```json
+              {
+                "_data": [
+                  {"_count": 42}
+                ]
+              }
+              ```
+
+          _or:
+            type: boolean
+            description: |
+              If true, following filters will be interpreted as OR conditions,
+              until `_or` is set to false.
+
+              By default, filters are interpeted as AND conditions.
+
+              If `_or` is not turned off, then all conditions are interpreted
+              as OR.
+
+          _and:
+            type: boolean
+            description: |
+              If true, following filters will be interpreted as AND conditions,
+              until `_and` is set to false.
+
+              By default, filters are interpeted as AND conditions, so usage of
+              `_and` makes sense only in an open `_or`.
+
+
+  schemas:
+
+    dataset:
+      type: string
+      pattern: "^[a-z](_?[a-z0-9]+)*$"
+
+    model:
+      type: string
+      pattern: "^[A-Z]([A-Z]?[a-z0-9]+)*$"
+
+    property:
+      type: string
+      pattern: "^[a-z](_?[a-z0-9]+)*$"
+
+    id:
+      type: string
+      pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+
+    object:
+      type: object
+      patternProperties:
+        "^[a-z](_?[a-z0-9]+)*$":
+            oneOf:
+              - {}
+              - allOf:
+                  - $ref: "#/components/schemas/ref"
+                  - $ref: "#/components/schemas/object"
+      additionalProperties: false
+      description: |
+        Object represents a single row in a table.
+
+        Some properties can reference other objects, using composition as
+        specified in `components/schemas/ref`, optionally dublicating
+        properties from a referenced model or extending referenced model with
+        new properties.
+
+    ref:
+      type: object
+      properties:
+        _type:
+          type: string
+        _id:
+          type: string
+          format: uuidv4
+
+    getall:
+      type: object
+      properties:
+        _data:
+          type: array
+          items:
+            $ref: "#/components/schemas/getone"
+      additionalProperties: false
+
+    getone:
+      type: object
+      properties:
+        _type:
+          type: string
+        _id:
+          type: string
+          format: uuidv4
+        _rev:
+          type: string
+        _txn:
+          type: string
+      additionalProperties: false
+
+    changes:
+      type: object
+      properties:
+        _data:
+          type: array
+          items:
+            $ref: "#/components/schemas/change"
+
+    change:
+      type: object
+      properties:
+        _op:
+          type: string
+        _type:
+          type: string
+        _id:
+          type: string
+          format: uuidv4
+        _rev:
+          type: string
+        _txn:
+          type: string
+        _cid:
+          type: integer
+        _created:
+          type: string
+          format: datetime
+      additionalProperties: false
+
+    insert:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuidv4
+          required: false
+      additionalProperties: false
+
+    upsert:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuidv4
+          required: false
+      additionalProperties: false
+
+    update:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuidv4
+          required: false
+        _rev:
+          type: string
+          format: uuidv4
+          required: false
+      additionalProperties: false
+
+    delete:
+      type: object
+      properties:
+        _rev:
+          type: string
+          format: uuidv4
+          required: false
+      additionalProperties: false
+
+    errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/error"
+
+    error:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - system
+            - dataset
+            - model
+            - property
+        code:
+          type: string
+          pattern: "^[A-Z]([A-Z]?[a-z0-9]+)*$"
+        template:
+          type: string
+        message:
+          type: string
+        context:
+          type: object
+          properties:
+            dataset:
+              $ref: "#/components/schemas/dataset"
+            model:
+              $ref: "#/components/schemas/model"
+            property:
+              $ref: "#/components/schemas/property"
+            id:
+              $ref: "#/components/schemas/id"
+          additionalProperties: true
+
+  responses:
+    error:
+      description: An error has accured.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errors"
+
