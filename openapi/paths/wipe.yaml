@@ -6,7 +6,7 @@ parameters:
   - $ref: ../components/parameters/id.yaml
 delete:
   tags:
-    - oneObject
+    - object
   security:
     - UAPI_test_auth:
         - write:spinta_datasets_gov_myorg_wipe

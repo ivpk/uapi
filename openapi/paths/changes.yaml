@@ -6,7 +6,7 @@ parameters:
   - $ref: ../components/parameters/cid.yaml
 get:
   tags:
-    - change
+    - changes
   summary: Get all object changes since given {cid} (change id).
   description: |
     Get latest changes to a table.

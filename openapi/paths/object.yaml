@@ -6,7 +6,7 @@ parameters:
   - $ref: ../components/parameters/id.yaml
 get:
   tags:
-    - oneObject
+    - object
   summary: Get a single object by given {id}.
   description: >
     Retrieve a single specific object based on it's unique object identifier
@@ -29,7 +29,7 @@ get:
       $ref: ../components/responses/error500.yaml
 post:
   tags:
-    - oneObject
+    - object
   security:
     - UAPI_test_auth:
         - write:spinta_datasets_gov_myorg_upsert
@@ -64,7 +64,7 @@ post:
       $ref: ../components/responses/error500.yaml
 put:
   tags:
-    - oneObject
+    - object
   security:
     - UAPI_test_auth:
         - write:spinta_datasets_gov_myorg_update
@@ -103,7 +103,7 @@ put:
       $ref: ../components/responses/error500.yaml
 patch:
   tags:
-    - oneObject
+    - object
   security:
     - UAPI_test_auth:
         - write:spinta_datasets_gov_myorg_patch
@@ -141,7 +141,7 @@ patch:
       $ref: ../components/responses/error500.yaml
 delete:
   tags:
-    - oneObject
+    - object
   security:
     - UAPI_test_auth:
         - write:spinta_datasets_gov_myorg_delete

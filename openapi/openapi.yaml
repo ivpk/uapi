@@ -17,43 +17,35 @@ info:
     The API is generated dynamically from the model code names located in the
     [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model
     column. Model names can have namespaces, and namespaces are separated by the
-    ```/``` symbol, for example:
+    `/` symbol, for example:
 
+    `/datasets/gov/dc/geo/Continent`
 
-    ```/datasets/gov/dc/geo/Continent```
+    This address is made up of the `datasets/gov/dc/geo` namespace and the
+    `Continent` model name.
 
-
-    This address is made up of the ```datasets/gov/dc/geo``` namespace and the
-    ```Continent``` model name.
-
-
-    The ```datasets``` namespace indicates that the data is raw, i.e., as
+    The `datasets` namespace indicates that the data is raw, i.e., as
     provided by a certain institution. Over time, all institutional data will be
     transformed into a uniform national dictionary, and for example
-    ```datasets/gov/dc/geo/Continent``` may be merged into a common
-    ```Continent``` model in the root namespace. However, to ensure a stable and
+    `datasets/gov/dc/geo/Continent` may be merged into a common
+    `Continent` model in the root namespace. However, to ensure a stable and
     constant API, the initial raw data API points will be preserved.
 
-
-    Specifically, all models in the ```datasets``` namespace have a clearly
+    Specifically, all models in the `datasets` namespace have a clearly
     defined structure. For example, while examining the
-    ```datasets/gov/dc/geo/Continent``` example, the meanings of the separate
+    `datasets/gov/dc/geo/Continent` example, the meanings of the separate
     path components are as follows:
 
+    - `datasets/` - namespace for raw primary institutional data.
 
-    * ```datasets/``` - namespace for raw primary institutional data.
+    - `gov/` - namespace for government institution data.
 
+    - `dc/` - acronym for a specific government institution.
 
-    * ```gov/``` - namespace for government institution data.
+    - `geo/` - abbreviation for the institution's open data set.
 
+    - `Continent` - data model (or table).
 
-    * ```dc/``` - acronym for a specific government institution.
-
-
-    * ```geo/``` - abbreviation for the institution's open data set.
-
-
-    * ```Continent``` - data model (or table).
   version: 0.0.2
 externalDocs:
   url: https://atviriduomenys.readthedocs.io/api/index.html
@@ -67,25 +59,25 @@ servers:
   - url: put-test.data.gov.lt
     description: Test data update server
 tags:
-  - name: allObjects
+  - name: objects
     description: Operations with multiple Objects
-  - name: oneObject
+  - name: object
     description: Operations with single Object
-  - name: change
+  - name: changes
     description: Change tracking operations
   - name: services
     description: Service operations
 paths:
   /{group}/{form}/{org}/{dataset}/{model}:
-    $ref: paths/{group}_{form}_{org}_{dataset}_{model}.yaml
+    $ref: paths/model.yaml
   /{gruop}/{form}/{org}/{dataset}/{model}/{id}:
-    $ref: paths/{gruop}_{form}_{org}_{dataset}_{model}_{id}.yaml
+    $ref: paths/object.yaml
   /{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe:
-    $ref: paths/{gruop}_{form}_{org}_{dataset}_{model}_{id}_:wipe.yaml
+    $ref: paths/wipe.yaml
   /{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}:
-    $ref: paths/{group}_{form}_{org}_{dataset}_{model}_:changes_{cid}.yaml
+    $ref: paths/changes.yaml
   /services/{form}/{org}/{dataset}/{service}:
-    $ref: paths/services_{form}_{org}_{dataset}_{service}.yaml
+    $ref: paths/service.yaml
 components:
   securitySchemes:
     UAPI_test_auth:

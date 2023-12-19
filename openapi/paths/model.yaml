@@ -6,14 +6,14 @@ parameters:
   - $ref: ../components/parameters/model.yaml
 head:
   tags:
-    - allObjects
+    - objects
   summary: Return only headers for all objects.
   responses:
     '200':
       description: OK
 get:
   tags:
-    - allObjects
+    - objects
   summary: Get multiple objects.
   description: |
     Return list of objects for a given model.
@@ -33,7 +33,7 @@ get:
       $ref: ../components/responses/error500.yaml
 post:
   tags:
-    - allObjects
+    - objects
   security:
     - UAPI_test_auth:
         - write:spinta_datasets_gov_myorg_insert

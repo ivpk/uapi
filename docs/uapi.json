@@ -3,7 +3,7 @@
   "info": {
     "title": "Universal application programming interface",
     "summary": "Open Data Repository API for data access and upload",
-    "description": "The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.\n\nAll data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.\n\nThe API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the ```/``` symbol, for example:\n\n```/datasets/gov/dc/geo/Continent```\n\nThis address is made up of the ```datasets/gov/dc/geo``` namespace and the ```Continent``` model name.\n\nThe ```datasets``` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example ```datasets/gov/dc/geo/Continent``` may be merged into a common ```Continent``` model in the root namespace. However, to ensure a stable and constant API, the initial raw data API points will be preserved.\n\nSpecifically, all models in the ```datasets``` namespace have a clearly defined structure. For example, while examining the ```datasets/gov/dc/geo/Continent``` example, the meanings of the separate path components are as follows:\n\n* ```datasets/``` - namespace for raw primary institutional data.\n\n* ```gov/``` - namespace for government institution data.\n\n* ```dc/``` - acronym for a specific government institution.\n\n* ```geo/``` - abbreviation for the institution's open data set.\n\n* ```Continent``` - data model (or table).\n",
+    "description": "The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.\n\nAll data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.\n\nThe API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the `/` symbol, for example:\n`/datasets/gov/dc/geo/Continent`\nThis address is made up of the `datasets/gov/dc/geo` namespace and the `Continent` model name.\nThe `datasets` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example `datasets/gov/dc/geo/Continent` may be merged into a common `Continent` model in the root namespace. However, to ensure a stable and constant API, the initial raw data API points will be preserved.\nSpecifically, all models in the `datasets` namespace have a clearly defined structure. For example, while examining the `datasets/gov/dc/geo/Continent` example, the meanings of the separate path components are as follows:\n- `datasets/` - namespace for raw primary institutional data.\n- `gov/` - namespace for government institution data.\n- `dc/` - acronym for a specific government institution.\n- `geo/` - abbreviation for the institution's open data set.\n- `Continent` - data model (or table).\n",
     "version": "0.0.2"
   },
   "servers": [
@@ -26,15 +26,15 @@
   ],
   "tags": [
     {
-      "name": "allObjects",
+      "name": "objects",
       "description": "Operations with multiple Objects"
     },
     {
-      "name": "oneObject",
+      "name": "object",
       "description": "Operations with single Object"
     },
     {
-      "name": "change",
+      "name": "changes",
       "description": "Change tracking operations"
     },
     {
@@ -66,7 +66,7 @@
       ],
       "head": {
         "tags": [
-          "allObjects"
+          "objects"
         ],
         "summary": "Return only headers for all objects.",
         "responses": {
@@ -77,7 +77,7 @@
       },
       "get": {
         "tags": [
-          "allObjects"
+          "objects"
         ],
         "summary": "Get multiple objects.",
         "description": "Return list of objects for a given model.\n",
@@ -108,7 +108,7 @@
       },
       "post": {
         "tags": [
-          "allObjects"
+          "objects"
         ],
         "security": [
           {
@@ -192,7 +192,7 @@
       ],
       "get": {
         "tags": [
-          "oneObject"
+          "object"
         ],
         "summary": "Get a single object by given {id}.",
         "description": "Retrieve a single specific object based on it's unique object identifier {id}\n",
@@ -228,7 +228,7 @@
       },
       "post": {
         "tags": [
-          "oneObject"
+          "object"
         ],
         "security": [
           {
@@ -282,7 +282,7 @@
       },
       "put": {
         "tags": [
-          "oneObject"
+          "object"
         ],
         "security": [
           {
@@ -340,7 +340,7 @@
       },
       "patch": {
         "tags": [
-          "oneObject"
+          "object"
         ],
         "security": [
           {
@@ -394,7 +394,7 @@
       },
       "delete": {
         "tags": [
-          "oneObject"
+          "object"
         ],
         "security": [
           {
@@ -450,7 +450,7 @@
       ],
       "delete": {
         "tags": [
-          "oneObject"
+          "object"
         ],
         "security": [
           {
@@ -519,7 +519,7 @@
       ],
       "get": {
         "tags": [
-          "change"
+          "changes"
         ],
         "summary": "Get all object changes since given {cid} (change id).",
         "description": "Get latest changes to a table.\n\nIf {cid} is not given, return changes, since very first available\nchange.\n\nIf {cid} is gven, return only changes, since given change id, including\nchange id itself.\n\nThis API can return changes, that were returned previously, client\nshould be responsible for checking if a change was received previously\nor not.\n\nLast change id is included in the request, in order for clients to check\nif last change id matches change received by client. If last change\ndoes not match, then client should do a full synce, because if last\nchange id does not match, that means, that a data migration or some\nother alterations to data were made, which requires to do a full sync.\n",
