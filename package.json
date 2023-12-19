@@ -6,8 +6,7 @@
   },
   "scripts": {
     "start": "redocly preview-docs",
-    "split": "redocly split dist/bundle.yaml --outDir openapi",
-    "build": "redocly bundle -o dist/bundle.yaml",
+    "build": "redocly bundle -o docs/uapi.json",
     "test": "redocly lint"
   }
 }

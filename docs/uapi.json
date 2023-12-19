@@ -1,0 +1,1193 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Universal application programming interface",
+    "summary": "Open Data Repository API for data access and upload",
+    "description": "The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.\n\nAll data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.\n\nThe API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the ```/``` symbol, for example:\n\n```/datasets/gov/dc/geo/Continent```\n\nThis address is made up of the ```datasets/gov/dc/geo``` namespace and the ```Continent``` model name.\n\nThe ```datasets``` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example ```datasets/gov/dc/geo/Continent``` may be merged into a common ```Continent``` model in the root namespace. However, to ensure a stable and constant API, the initial raw data API points will be preserved.\n\nSpecifically, all models in the ```datasets``` namespace have a clearly defined structure. For example, while examining the ```datasets/gov/dc/geo/Continent``` example, the meanings of the separate path components are as follows:\n\n* ```datasets/``` - namespace for raw primary institutional data.\n\n* ```gov/``` - namespace for government institution data.\n\n* ```dc/``` - acronym for a specific government institution.\n\n* ```geo/``` - abbreviation for the institution's open data set.\n\n* ```Continent``` - data model (or table).\n",
+    "version": "0.0.2"
+  },
+  "servers": [
+    {
+      "url": "get.data.gov.lt",
+      "description": "Production data access server"
+    },
+    {
+      "url": "put.data.gov.lt",
+      "description": "Production data update server"
+    },
+    {
+      "url": "get-test.data.gov.lt",
+      "description": "Test data access server"
+    },
+    {
+      "url": "put-test.data.gov.lt",
+      "description": "Test data update server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "allObjects",
+      "description": "Operations with multiple Objects"
+    },
+    {
+      "name": "oneObject",
+      "description": "Operations with single Object"
+    },
+    {
+      "name": "change",
+      "description": "Change tracking operations"
+    },
+    {
+      "name": "services",
+      "description": "Service operations"
+    }
+  ],
+  "externalDocs": {
+    "url": "https://atviriduomenys.readthedocs.io/api/index.html"
+  },
+  "paths": {
+    "/{group}/{form}/{org}/{dataset}/{model}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/group"
+        },
+        {
+          "$ref": "#/components/parameters/form"
+        },
+        {
+          "$ref": "#/components/parameters/org"
+        },
+        {
+          "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/model"
+        }
+      ],
+      "head": {
+        "tags": [
+          "allObjects"
+        ],
+        "summary": "Return only headers for all objects.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "allObjects"
+        ],
+        "summary": "Get multiple objects.",
+        "description": "Return list of objects for a given model.\n",
+        "operationId": "getall",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/objects"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "allObjects"
+        ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "write:spinta_datasets_gov_myorg_insert"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "write:spinta_datasets_gov_myorg_insert"
+            ]
+          }
+        ],
+        "summary": "Create a single new object or create, update or delete multiple objects in a single request.",
+        "description": "## Operation where one or multiple new objects are created.\n\n When multiple object are created _data is an array of new objects each listing \n * _op as operation to be performed\n * _type as a namespace of modelname where it is to be performed\n * the new object itself in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n\n Or\n\n A single object is created. New object details should be provided in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n",
+        "operationId": "insert",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/multiInsert"
+                  },
+                  {
+                    "$ref": "#/components/schemas/insert"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/objects"
+                    },
+                    {
+                      "$ref": "#/components/schemas/object"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      }
+    },
+    "/{gruop}/{form}/{org}/{dataset}/{model}/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/form"
+        },
+        {
+          "$ref": "#/components/parameters/org"
+        },
+        {
+          "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/model"
+        },
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "oneObject"
+        ],
+        "summary": "Get a single object by given {id}.",
+        "description": "Retrieve a single specific object based on it's unique object identifier {id}\n",
+        "operationId": "getone",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/getone"
+                    },
+                    {
+                      "$ref": "#/components/schemas/object"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "oneObject"
+        ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "write:spinta_datasets_gov_myorg_upsert"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "write:spinta_datasets_gov_myorg_upsert"
+            ]
+          }
+        ],
+        "summary": "Upsert an object by {id}.",
+        "description": "This performs an ```Upsert``` action. First it checks if there is an existing object based on ```_where```, if there is, it performs ```Patch``` action, if there isn't it performs ```Update```\n",
+        "operationId": "upsert",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/upsert"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/object"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "oneObject"
+        ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "write:spinta_datasets_gov_myorg_update"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "write:spinta_datasets_gov_myorg_update"
+            ]
+          }
+        ],
+        "summary": "Update a single object by {id}.",
+        "description": "Overwrite whole object. Property values, that are not given in request\nbody, will be reset to defaul values.\n\nThis triggers `_rev` to be updated. And before update, existing `_rev`\nwill be compared with given in request body, to prevent concurent\noverwrites.\n",
+        "operationId": "update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/update"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/object"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "oneObject"
+        ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "write:spinta_datasets_gov_myorg_patch"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "write:spinta_datasets_gov_myorg_patch"
+            ]
+          }
+        ],
+        "summary": "Patch a single object.",
+        "description": "Partial object update, only property values given in request body will\nbe update, other properties will not be touched.\n\nThis triggers `_rev` to be updated. And before update, existing `_rev`\nwill be compared with given in request body, to prevent concurent\noverwrites.\n",
+        "operationId": "patch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/object"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "oneObject"
+        ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "write:spinta_datasets_gov_myorg_delete"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "write:spinta_datasets_gov_myorg_delete"
+            ]
+          }
+        ],
+        "summary": "Delete a single object by {id}",
+        "description": "Delete object. This is a soft delete operation, object should not be\ndeleted, but marked for deletion. Soft delete is needed for changes API\nto know, when something was deleted.\n\nAfter some agreed time period, objects marked as deleted can be deleted\npermanently.\n\nBefore delete, existing `_rev` will be compared with given in request\nbody, to prevent concurent overwrites.\n",
+        "operationId": "delete",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      }
+    },
+    "/{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/form"
+        },
+        {
+          "$ref": "#/components/parameters/org"
+        },
+        {
+          "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/model"
+        },
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "delete": {
+        "tags": [
+          "oneObject"
+        ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "write:spinta_datasets_gov_myorg_wipe"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "write:spinta_datasets_gov_myorg_wipe"
+            ]
+          }
+        ],
+        "summary": "Hard delete a single object by {id}",
+        "description": "## To be used by exception only\n```wipe``` operation is used by exception only, if there were errors in data upload scripts, data was currupted due to errors etc. It is best to test data upload in test environment.\n\nData upload practice of deleting all published data and reuploading it is not recommended, since that destroys all if the data change history and it may change data IDs. Data should be uploaded once and then updated whith what has changed.\n",
+        "operationId": "wipe",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "wiped": {
+                      "type": "boolean",
+                      "value": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        }
+      }
+    },
+    "/{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/form"
+        },
+        {
+          "$ref": "#/components/parameters/org"
+        },
+        {
+          "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/model"
+        },
+        {
+          "$ref": "#/components/parameters/cid"
+        }
+      ],
+      "get": {
+        "tags": [
+          "change"
+        ],
+        "summary": "Get all object changes since given {cid} (change id).",
+        "description": "Get latest changes to a table.\n\nIf {cid} is not given, return changes, since very first available\nchange.\n\nIf {cid} is gven, return only changes, since given change id, including\nchange id itself.\n\nThis API can return changes, that were returned previously, client\nshould be responsible for checking if a change was received previously\nor not.\n\nLast change id is included in the request, in order for clients to check\nif last change id matches change received by client. If last change\ndoes not match, then client should do a full synce, because if last\nchange id does not match, that means, that a data migration or some\nother alterations to data were made, which requires to do a full sync.\n",
+        "operationId": "changes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/changes"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          }
+        },
+        "externalDocs": {
+          "url": "https://atviriduomenys.readthedocs.io/api/index.html#changes"
+        }
+      }
+    },
+    "/services/{form}/{org}/{dataset}/{service}": {
+      "description": "Service functions are not as restricted as data API endpoints. Services\nare not required to return an object with a public id, there are no\nchanges API, nor revisions.\n",
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/form"
+        },
+        {
+          "$ref": "#/components/parameters/org"
+        },
+        {
+          "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/service"
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "UAPI_test_auth": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "authorizationUrl": "https://put-test.data.gov.lt",
+            "tokenUrl": "https://put-test.data.gov.lt/auth/token",
+            "scopes": {
+              "write:spinta_datasets_gov_myorg_insert": "Insert",
+              "write:spinta_datasets_gov_myorg_upsert": "Upsert",
+              "write:spinta_datasets_gov_myorg_update": "Update",
+              "write:spinta_datasets_gov_myorg_patch": "Patch",
+              "write:spinta_datasets_gov_myorg_delete": "Delete",
+              "write:spinta_datasets_gov_myorg_wipe": "Wipe"
+            }
+          }
+        }
+      },
+      "UAPI_prod_auth": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "authorizationUrl": "https://put.data.gov.lt",
+            "tokenUrl": "https://put.data.gov.lt/auth/token",
+            "scopes": {
+              "write:spinta_datasets_gov_myorg_insert": "Insert",
+              "write:spinta_datasets_gov_myorg_upsert": "Upsert",
+              "write:spinta_datasets_gov_myorg_update": "Update",
+              "write:spinta_datasets_gov_myorg_patch": "Patch",
+              "write:spinta_datasets_gov_myorg_delete": "Delete",
+              "write:spinta_datasets_gov_myorg_wipe": "Wipe"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "group": {
+        "name": "group",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "standards",
+            "datasets"
+          ]
+        },
+        "description": "Group of data, currently two groups are available:\n\n- `standards` - for data compatible with a standard.\n- `datasets` - for a non-standard data.\n\nThere is another group called `services`, which is not considered as\ndata API. Service API is different from data API, more flexible.\n"
+      },
+      "form": {
+        "name": "form",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "gov",
+            "com"
+          ]
+        },
+        "description": "Organization, type, can be:\n\n- `gov` - government organization,\n- `com` - private organization.\n"
+      },
+      "org": {
+        "name": "org",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]+$",
+          "examples": [
+            "RC"
+          ]
+        },
+        "description": "Abbreviation or a short code name of an organization.\n\nShould be a single work all lower case string, must start with a non\nnumber symbol.\n"
+      },
+      "dataset": {
+        "name": "dataset",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/dataset"
+        },
+        "description": "A dataset or a standard abbreviation or short code name.\n\nAll lower case, words separated with `_` symbol.\n"
+      },
+      "model": {
+        "name": "model",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/model"
+        },
+        "description": "A short model code name.\n\nEach word startds with upper case letter, first letter can't be a\nnumber.\n"
+      },
+      "query": {
+        "name": "query",
+        "in": "query",
+        "required": false,
+        "description": "Object filter.\nQuery example: \n  \n  ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```\n  \n  ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=1```\n",
+        "schema": {
+          "type": "object",
+          "patternProperties": {
+            "^_?[a-z](_?[a-z0-9]+)*(\\._?[a-z](_?[a-z0-9]+)*)*$": {
+              "description": "Filter objects where given property is equal to given value.\n\nGiven property names, must be defined in data model.\n\nSome reserved property names can be used for filtering:\n\n- `_type`\n- `_id`\n\nFilters can by done by joining multiple tables if `.` operator is\nused, which means, that two tables if needed must be joined in\norder to perform a filter.\n\nLast name after `.` can be one of following filter operators:\n\n- `_gt` - greather than\n- `_ge` - greather than or equal\n- `_lt` - less than\n- `_le` - less than than or equal\n- `_sw` - starts with\n- `_ew` - ends with\n- `_co` - contains\n"
+            }
+          },
+          "properties": {
+            "_select": {
+              "type": "string",
+              "examples": [
+                "name,country.name,country.continent.name"
+              ],
+              "description": "Comma separated list of properties to include in the result.\n\nSpecial value `*` can be used, to include all properties. This\ncan also be used on nested objects, for example `country.*` will\ninclude all properties from `country` object.\n\n`-` can be used to exclude a property from result, this will\nexclude properties that were included previously.\n\n`+` can be used to include additional properties to the result,\nif a property in select list is not prefixed with `+`, then only\ngiven property will be shown in result, but with `+` a property\nwill be added to the result leaving what would by added by\ndefault.\n\nBy default, all properties of a model will be included.\n\nWhen properties are specified in `a.b` form, `.` should join two\ntables and return properties from two tables if needed. This\nrequirement only applies if data are stored on the same data\nsource. An attempt to join data from multiple data sources,\nshould return an error.\n"
+            },
+            "_limit": {
+              "type": "integer",
+              "examples": [
+                10
+              ],
+              "description": "Limit result to given number of objects.\n\nIf `_sort` is not given, then sorty by `_id`.\n"
+            },
+            "_sort": {
+              "type": "string",
+              "examples": [
+                "-code,country.name"
+              ],
+              "description": "Comma separated list of properties, optionally prefixed with `+` or `-` operators to control sort direction:\n\n- `+` - ascending sort (1, 2, 3), this is used by default if sort direction is not given.\n- `-` - descending sort (3, 2, 1).\n"
+            },
+            "_count": {
+              "type": "integer",
+              "description": "Return number of objects matching a given filter. If filter is\nnot given, return number of all objects.\n\nResult should be given in following form:\n\n```json\n{\n  \"_data\": [\n    {\"_count\": 42}\n  ]\n}\n```\n"
+            },
+            "_or": {
+              "type": "boolean",
+              "description": "If true, following filters will be interpreted as OR conditions,\nuntil `_or` is set to false.\n\nBy default, filters are interpeted as AND conditions.\n\nIf `_or` is not turned off, then all conditions are interpreted\nas OR.\n"
+            },
+            "_and": {
+              "type": "boolean",
+              "description": "If true, following filters will be interpreted as AND conditions,\nuntil `_and` is set to false.\n\nBy default, filters are interpeted as AND conditions, so usage of\n`_and` makes sense only in an open `_or`.\n"
+            }
+          }
+        }
+      },
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/id"
+        },
+        "description": "Public global object identifier.\n\nIdentifiers should be UUID v4.\n\nOnce object is assigned a global identifier, it should never change.\nInternally local identifiers, should be associated with public\nidentifiers.\n"
+      },
+      "cid": {
+        "name": "cid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Change id.\n\nUsed for incremental changes API, to get next changes after given\nchange id.\n\nMinimum requiremed is to at least add a separate column with a\ntimestamp of last change mede to a table. And this timestamp, can be\nused as change id.\n"
+      },
+      "service": {
+        "name": "service",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/model"
+        },
+        "description": "A short service code name.\n\nEach word starts with upper case letter, first letter can't be a\nnumber.\n"
+      }
+    },
+    "schemas": {
+      "dataset": {
+        "type": "string",
+        "pattern": "^[a-z](_?[a-z0-9]+)*$",
+        "examples": [
+          "gov"
+        ]
+      },
+      "model": {
+        "type": "string",
+        "pattern": "^[A-Z]([A-Z]?[a-z0-9]+)*$",
+        "examples": [
+          "City"
+        ]
+      },
+      "object": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string",
+            "examples": [
+              "datasets/gov/dc/geo/Continent"
+            ]
+          },
+          "_id": {
+            "type": "string",
+            "examples": [
+              "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+            ]
+          },
+          "_revision": {
+            "type": "string",
+            "examples": [
+              "16dabe62-61e9-4549-a6bd-07cecfbc3508"
+            ]
+          },
+          "_txn": {
+            "type": "string",
+            "examples": [
+              "792a5029-63c9-4c07-995c-cbc063aaac2c"
+            ]
+          },
+          "_objectType": {
+            "type": "string",
+            "examples": [
+              "Continent"
+            ]
+          },
+          "_value": {
+            "type": "string",
+            "examples": [
+              "Europe"
+            ]
+          }
+        },
+        "patternProperties": {
+          "^[a-z](_?[a-z0-9]+)*$": {
+            "oneOf": [
+              {},
+              {
+                "allOf": [
+                  {
+                    "$ref": "./ref.yaml"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "description": "Object represents a single row in a table.\n\nSome properties can reference other objects, using composition as\nspecified in `components/schemas/ref`, optionally dublicating\nproperties from a referenced model or extending referenced model with\nnew properties.\n"
+      },
+      "objects": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string",
+            "examples": [
+              "datasets/gov/dc/geo/Continent"
+            ]
+          },
+          "_data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/object"
+            }
+          }
+        }
+      },
+      "property": {
+        "type": "string",
+        "pattern": "^[a-z](_?[a-z0-9]+)*$",
+        "examples": [
+          "name"
+        ]
+      },
+      "id": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        "examples": [
+          "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+        ]
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "system",
+              "dataset",
+              "model",
+              "property"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z]([A-Z]?[a-z0-9]+)*$",
+            "examples": [
+              "NotImplementedError",
+              "TypeError"
+            ]
+          },
+          "template": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "examples": [
+              "Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>",
+              "Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead."
+            ]
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "dataset": {
+                "$ref": "#/components/schemas/dataset"
+              },
+              "model": {
+                "$ref": "#/components/schemas/model"
+              },
+              "property": {
+                "$ref": "#/components/schemas/property"
+              },
+              "id": {
+                "$ref": "#/components/schemas/id"
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "errors": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "insert": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string",
+            "examples": [
+              "Continet"
+            ]
+          },
+          "_value": {
+            "type": "string",
+            "examples": [
+              "Europe"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "multiInsert": {
+        "type": "object",
+        "properties": {
+          "_data": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "_op": null,
+                  "type": "string",
+                  "enum": [
+                    "insert",
+                    "patch"
+                  ]
+                },
+                {
+                  "_type": null,
+                  "type": "string",
+                  "examples": [
+                    "datasets/gov/dc/geo/Continent"
+                  ]
+                },
+                {
+                  "$ref": "#/components/schemas/insert"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "getone": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string"
+          },
+          "_id": {
+            "type": "string",
+            "format": "uuidv4",
+            "examples": [
+              "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+            ]
+          },
+          "_rev": {
+            "type": "string",
+            "format": "uuidv4",
+            "examples": [
+              "16dabe62-61e9-4549-a6bd-07cecfbc3508"
+            ]
+          },
+          "_txn": {
+            "type": "string",
+            "examples": [
+              "792a5029-63c9-4c07-995c-cbc063aaac2c"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "update": {
+        "type": "object",
+        "properties": {
+          "_rev": {
+            "type": "string",
+            "format": "uuidv4",
+            "examples": [
+              "792a5029-63c9-4c07-995c-cbc063aaac2c"
+            ]
+          },
+          "_type": {
+            "type": "string",
+            "examples": [
+              "Continet"
+            ]
+          },
+          "_value": {
+            "type": "string",
+            "examples": [
+              "Europe"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "upsert": {
+        "type": "object",
+        "properties": {
+          "_op": {
+            "type": "string",
+            "enum": [
+              "upsert"
+            ]
+          },
+          "_where": {
+            "type": "string",
+            "pattern": "^[a-z]*$='[a-zA-Z]*$'",
+            "examples": [
+              "name='Europe'"
+            ]
+          },
+          "_type": {
+            "type": "string",
+            "examples": [
+              "Continet"
+            ]
+          },
+          "_value": {
+            "type": "string",
+            "examples": [
+              "Europe"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "change": {
+        "type": "object",
+        "properties": {
+          "_cid": {
+            "type": "integer",
+            "examples": [
+              11
+            ]
+          },
+          "_id": {
+            "type": "string",
+            "format": "uuidv4",
+            "examples": [
+              "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+            ]
+          },
+          "_rev": {
+            "type": "string",
+            "format": "uuidv4",
+            "examples": [
+              "16dabe62-61e9-4549-a6bd-07cecfbc3508"
+            ]
+          },
+          "_txn": {
+            "type": "string",
+            "examples": [
+              "792a5029-63c9-4c07-995c-cbc063aaac2c"
+            ]
+          },
+          "_created": {
+            "type": "string",
+            "format": "datetime",
+            "examples": [
+              "2021-07-30T14:03:14.645198"
+            ]
+          },
+          "_op": {
+            "type": "string",
+            "enum": [
+              "insert",
+              "patch",
+              "delete"
+            ]
+          },
+          "_objectType": {
+            "type": "string",
+            "examples": [
+              "Continent"
+            ]
+          },
+          "_value": {
+            "type": "string",
+            "examples": [
+              "Europe"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "changes": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string",
+            "examples": [
+              "datasets/gov/dc/geo/Continent"
+            ]
+          },
+          "_data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/change"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "error400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/errors",
+              "examples": [
+                {
+                  "errors": {
+                    "error": "Invalid_client",
+                    "error_description": "Invalid client name"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "error500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/errors"
+            }
+          }
+        }
+      },
+      "error403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/errors",
+              "examples": [
+                {
+                  "errors": [
+                    {
+                      "items": {
+                        "code": "InsufficientPermission",
+                        "context": {
+                          "scope": "auth_clients"
+                        },
+                        "message": "You need to have 'auth_clients' in order to access this API endpoint.",
+                        "template": "You need to have {scope!r} in order to access this API endpoint.",
+                        "type": "system"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "error404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/errors",
+              "examples": [
+                {
+                  "errors": {
+                    "error": "ItemDoesNotExist",
+                    "error_description": "Resource 'c9b40700-ddbf-48d9-b747-d1f90a37e32c' not found."
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
