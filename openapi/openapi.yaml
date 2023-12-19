@@ -1,0 +1,116 @@
+openapi: 3.1.0
+info:
+  title: Universal application programming interface
+  summary: Open Data Repository API for data access and upload
+  description: >
+    The Open Data Repository is an integral part of the Open Data Portal. The
+    purpose of the repository is to publish data at the highest level of
+    maturity, in various formats, via a convenient machine-readable interface
+    (API), adhering to the highest data publishing standards.
+
+
+    All data sets published in the repository are combined into a large
+    database, where data can be interconnected, presented in bulk or in desired
+    slices. Tools are provided for downloading data incrementally.
+
+
+    The API is generated dynamically from the model code names located in the
+    [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model
+    column. Model names can have namespaces, and namespaces are separated by the
+    ```/``` symbol, for example:
+
+
+    ```/datasets/gov/dc/geo/Continent```
+
+
+    This address is made up of the ```datasets/gov/dc/geo``` namespace and the
+    ```Continent``` model name.
+
+
+    The ```datasets``` namespace indicates that the data is raw, i.e., as
+    provided by a certain institution. Over time, all institutional data will be
+    transformed into a uniform national dictionary, and for example
+    ```datasets/gov/dc/geo/Continent``` may be merged into a common
+    ```Continent``` model in the root namespace. However, to ensure a stable and
+    constant API, the initial raw data API points will be preserved.
+
+
+    Specifically, all models in the ```datasets``` namespace have a clearly
+    defined structure. For example, while examining the
+    ```datasets/gov/dc/geo/Continent``` example, the meanings of the separate
+    path components are as follows:
+
+
+    * ```datasets/``` - namespace for raw primary institutional data.
+
+
+    * ```gov/``` - namespace for government institution data.
+
+
+    * ```dc/``` - acronym for a specific government institution.
+
+
+    * ```geo/``` - abbreviation for the institution's open data set.
+
+
+    * ```Continent``` - data model (or table).
+  version: 0.0.2
+externalDocs:
+  url: https://atviriduomenys.readthedocs.io/api/index.html
+servers:
+  - url: get.data.gov.lt
+    description: Production data access server
+  - url: put.data.gov.lt
+    description: Production data update server
+  - url: get-test.data.gov.lt
+    description: Test data access server
+  - url: put-test.data.gov.lt
+    description: Test data update server
+tags:
+  - name: allObjects
+    description: Operations with multiple Objects
+  - name: oneObject
+    description: Operations with single Object
+  - name: change
+    description: Change tracking operations
+  - name: services
+    description: Service operations
+paths:
+  /{group}/{form}/{org}/{dataset}/{model}:
+    $ref: paths/{group}_{form}_{org}_{dataset}_{model}.yaml
+  /{gruop}/{form}/{org}/{dataset}/{model}/{id}:
+    $ref: paths/{gruop}_{form}_{org}_{dataset}_{model}_{id}.yaml
+  /{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe:
+    $ref: paths/{gruop}_{form}_{org}_{dataset}_{model}_{id}_:wipe.yaml
+  /{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}:
+    $ref: paths/{group}_{form}_{org}_{dataset}_{model}_:changes_{cid}.yaml
+  /services/{form}/{org}/{dataset}/{service}:
+    $ref: paths/services_{form}_{org}_{dataset}_{service}.yaml
+components:
+  securitySchemes:
+    UAPI_test_auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          authorizationUrl: https://put-test.data.gov.lt
+          tokenUrl: https://put-test.data.gov.lt/auth/token
+          scopes:
+            write:spinta_datasets_gov_myorg_insert: Insert
+            write:spinta_datasets_gov_myorg_upsert: Upsert
+            write:spinta_datasets_gov_myorg_update: Update
+            write:spinta_datasets_gov_myorg_patch: Patch
+            write:spinta_datasets_gov_myorg_delete: Delete
+            write:spinta_datasets_gov_myorg_wipe: Wipe
+    UAPI_prod_auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          authorizationUrl: https://put.data.gov.lt
+          tokenUrl: https://put.data.gov.lt/auth/token
+          scopes:
+            write:spinta_datasets_gov_myorg_insert: Insert
+            write:spinta_datasets_gov_myorg_upsert: Upsert
+            write:spinta_datasets_gov_myorg_update: Update
+            write:spinta_datasets_gov_myorg_patch: Patch
+            write:spinta_datasets_gov_myorg_delete: Delete
+            write:spinta_datasets_gov_myorg_wipe: Wipe

@@ -1,0 +1,47 @@
+parameters:
+  - $ref: ../components/parameters/form.yaml
+  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/model.yaml
+  - $ref: ../components/parameters/id.yaml
+delete:
+  tags:
+    - oneObject
+  security:
+    - UAPI_test_auth:
+        - write:spinta_datasets_gov_myorg_wipe
+    - UAPI_prod_auth:
+        - write:spinta_datasets_gov_myorg_wipe
+  summary: Hard delete a single object by {id}
+  description: >
+    ## To be used by exception only
+
+    ```wipe``` operation is used by exception only, if there were errors in data
+    upload scripts, data was currupted due to errors etc. It is best to test
+    data upload in test environment.
+
+
+    Data upload practice of deleting all published data and reuploading it is
+    not recommended, since that destroys all if the data change history and it
+    may change data IDs. Data should be uploaded once and then updated whith
+    what has changed.
+  operationId: wipe
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              wiped:
+                type: boolean
+                value: true
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml

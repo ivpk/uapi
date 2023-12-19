@@ -1,0 +1,9 @@
+description: Not Found
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/errors.yaml
+      examples:
+        - errors:
+            error: ItemDoesNotExist
+            error_description: Resource 'c9b40700-ddbf-48d9-b747-d1f90a37e32c' not found.

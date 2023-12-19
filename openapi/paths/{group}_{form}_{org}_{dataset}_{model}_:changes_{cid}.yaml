@@ -1,0 +1,44 @@
+parameters:
+  - $ref: ../components/parameters/form.yaml
+  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/model.yaml
+  - $ref: ../components/parameters/cid.yaml
+get:
+  tags:
+    - change
+  summary: Get all object changes since given {cid} (change id).
+  description: |
+    Get latest changes to a table.
+
+    If {cid} is not given, return changes, since very first available
+    change.
+
+    If {cid} is gven, return only changes, since given change id, including
+    change id itself.
+
+    This API can return changes, that were returned previously, client
+    should be responsible for checking if a change was received previously
+    or not.
+
+    Last change id is included in the request, in order for clients to check
+    if last change id matches change received by client. If last change
+    does not match, then client should do a full synce, because if last
+    change id does not match, that means, that a data migration or some
+    other alterations to data were made, which requires to do a full sync.
+  operationId: changes
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/changes.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+  externalDocs:
+    url: https://atviriduomenys.readthedocs.io/api/index.html#changes

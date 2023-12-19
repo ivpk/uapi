@@ -1,0 +1,9 @@
+description: |
+  Service functions are not as restricted as data API endpoints. Services
+  are not required to return an object with a public id, there are no
+  changes API, nor revisions.
+parameters:
+  - $ref: ../components/parameters/form.yaml
+  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/service.yaml

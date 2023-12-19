@@ -1,0 +1,119 @@
+name: query
+in: query
+required: false
+description: |
+  Object filter.
+  Query example: 
+    
+    ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```
+    
+    ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=1```
+schema:
+  type: object
+  patternProperties:
+    ^_?[a-z](_?[a-z0-9]+)*(\._?[a-z](_?[a-z0-9]+)*)*$:
+      description: |
+        Filter objects where given property is equal to given value.
+
+        Given property names, must be defined in data model.
+
+        Some reserved property names can be used for filtering:
+
+        - `_type`
+        - `_id`
+
+        Filters can by done by joining multiple tables if `.` operator is
+        used, which means, that two tables if needed must be joined in
+        order to perform a filter.
+
+        Last name after `.` can be one of following filter operators:
+
+        - `_gt` - greather than
+        - `_ge` - greather than or equal
+        - `_lt` - less than
+        - `_le` - less than than or equal
+        - `_sw` - starts with
+        - `_ew` - ends with
+        - `_co` - contains
+  properties:
+    _select:
+      type: string
+      examples:
+        - name,country.name,country.continent.name
+      description: |
+        Comma separated list of properties to include in the result.
+
+        Special value `*` can be used, to include all properties. This
+        can also be used on nested objects, for example `country.*` will
+        include all properties from `country` object.
+
+        `-` can be used to exclude a property from result, this will
+        exclude properties that were included previously.
+
+        `+` can be used to include additional properties to the result,
+        if a property in select list is not prefixed with `+`, then only
+        given property will be shown in result, but with `+` a property
+        will be added to the result leaving what would by added by
+        default.
+
+        By default, all properties of a model will be included.
+
+        When properties are specified in `a.b` form, `.` should join two
+        tables and return properties from two tables if needed. This
+        requirement only applies if data are stored on the same data
+        source. An attempt to join data from multiple data sources,
+        should return an error.
+    _limit:
+      type: integer
+      examples:
+        - 10
+      description: |
+        Limit result to given number of objects.
+
+        If `_sort` is not given, then sorty by `_id`.
+    _sort:
+      type: string
+      examples:
+        - '-code,country.name'
+      description: >
+        Comma separated list of properties, optionally prefixed with `+` or `-`
+        operators to control sort direction:
+
+
+        - `+` - ascending sort (1, 2, 3), this is used by default if sort
+        direction is not given.
+
+        - `-` - descending sort (3, 2, 1).
+    _count:
+      type: integer
+      description: |
+        Return number of objects matching a given filter. If filter is
+        not given, return number of all objects.
+
+        Result should be given in following form:
+
+        ```json
+        {
+          "_data": [
+            {"_count": 42}
+          ]
+        }
+        ```
+    _or:
+      type: boolean
+      description: |
+        If true, following filters will be interpreted as OR conditions,
+        until `_or` is set to false.
+
+        By default, filters are interpeted as AND conditions.
+
+        If `_or` is not turned off, then all conditions are interpreted
+        as OR.
+    _and:
+      type: boolean
+      description: |
+        If true, following filters will be interpreted as AND conditions,
+        until `_and` is set to false.
+
+        By default, filters are interpeted as AND conditions, so usage of
+        `_and` makes sense only in an open `_or`.

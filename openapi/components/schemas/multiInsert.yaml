@@ -1,0 +1,16 @@
+type: object
+properties:
+  _data:
+    type: array
+    items:
+      anyOf:
+        - _op: null
+          type: string
+          enum:
+            - insert
+            - patch
+        - _type: null
+          type: string
+          examples:
+            - datasets/gov/dc/geo/Continent
+        - $ref: insert.yaml

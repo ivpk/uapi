@@ -1,0 +1,172 @@
+parameters:
+  - $ref: ../components/parameters/form.yaml
+  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/model.yaml
+  - $ref: ../components/parameters/id.yaml
+get:
+  tags:
+    - oneObject
+  summary: Get a single object by given {id}.
+  description: >
+    Retrieve a single specific object based on it's unique object identifier
+    {id}
+  operationId: getone
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../components/schemas/getone.yaml
+              - $ref: ../components/schemas/object.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+post:
+  tags:
+    - oneObject
+  security:
+    - UAPI_test_auth:
+        - write:spinta_datasets_gov_myorg_upsert
+    - UAPI_prod_auth:
+        - write:spinta_datasets_gov_myorg_upsert
+  summary: Upsert an object by {id}.
+  description: >
+    This performs an ```Upsert``` action. First it checks if there is an
+    existing object based on ```_where```, if there is, it performs ```Patch```
+    action, if there isn't it performs ```Update```
+  operationId: upsert
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/upsert.yaml
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/object.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+put:
+  tags:
+    - oneObject
+  security:
+    - UAPI_test_auth:
+        - write:spinta_datasets_gov_myorg_update
+    - UAPI_prod_auth:
+        - write:spinta_datasets_gov_myorg_update
+  summary: Update a single object by {id}.
+  description: |
+    Overwrite whole object. Property values, that are not given in request
+    body, will be reset to defaul values.
+
+    This triggers `_rev` to be updated. And before update, existing `_rev`
+    will be compared with given in request body, to prevent concurent
+    overwrites.
+  operationId: update
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          anyOf:
+            - $ref: ../components/schemas/update.yaml
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/object.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+patch:
+  tags:
+    - oneObject
+  security:
+    - UAPI_test_auth:
+        - write:spinta_datasets_gov_myorg_patch
+    - UAPI_prod_auth:
+        - write:spinta_datasets_gov_myorg_patch
+  summary: Patch a single object.
+  description: |
+    Partial object update, only property values given in request body will
+    be update, other properties will not be touched.
+
+    This triggers `_rev` to be updated. And before update, existing `_rev`
+    will be compared with given in request body, to prevent concurent
+    overwrites.
+  operationId: patch
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/update.yaml
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/object.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+delete:
+  tags:
+    - oneObject
+  security:
+    - UAPI_test_auth:
+        - write:spinta_datasets_gov_myorg_delete
+    - UAPI_prod_auth:
+        - write:spinta_datasets_gov_myorg_delete
+  summary: Delete a single object by {id}
+  description: |
+    Delete object. This is a soft delete operation, object should not be
+    deleted, but marked for deletion. Soft delete is needed for changes API
+    to know, when something was deleted.
+
+    After some agreed time period, objects marked as deleted can be deleted
+    permanently.
+
+    Before delete, existing `_rev` will be compared with given in request
+    body, to prevent concurent overwrites.
+  operationId: delete
+  responses:
+    '204':
+      description: No Content
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml

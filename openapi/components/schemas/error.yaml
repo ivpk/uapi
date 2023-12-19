@@ -1,0 +1,37 @@
+type: object
+properties:
+  type:
+    type: string
+    enum:
+      - system
+      - dataset
+      - model
+      - property
+  code:
+    type: string
+    pattern: ^[A-Z]([A-Z]?[a-z0-9]+)*$
+    examples:
+      - NotImplementedError
+      - TypeError
+  template:
+    type: string
+  message:
+    type: string
+    examples:
+      - 'Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>'
+      - >-
+        Cannot use .astype to convert from timezone-aware dtype to
+        timezone-naive dtype. Use obj.tz_localize(None) or
+        obj.tz_convert('UTC').tz_localize(None) instead.
+  context:
+    type: object
+    properties:
+      dataset:
+        $ref: ./dataset.yaml
+      model:
+        $ref: ./model.yaml
+      property:
+        $ref: ./property.yaml
+      id:
+        $ref: ./id.yaml
+    additionalProperties: true

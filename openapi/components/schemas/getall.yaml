@@ -1,0 +1,7 @@
+type: object
+properties:
+  _data:
+    type: array
+    items:
+      $ref: ./getone.yaml
+additionalProperties: false
