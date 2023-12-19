@@ -1,11 +1,5 @@
 name: Test openapi spec
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
 jobs:
   test:
     steps:
