@@ -2,10 +2,58 @@ openapi: 3.1.0
 
 info:
   title: Universal application programming interface
-  version: 0.0.1
+  summary: "Open Data Repository API for data access and upload"
+  description: |
+    The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.
+
+    All data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.
+
+    The API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the ```/``` symbol, for example:
+
+    ```/datasets/gov/dc/geo/Continent```
+
+    This address is made up of the ```datasets/gov/dc/geo``` namespace and the ```Continent``` model name.
+
+    The ```datasets``` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example ```datasets/gov/dc/geo/Continent``` may be merged into a common ```Continent``` model in the root namespace. However, to ensure a stable and constant API, the initial raw data API points will be preserved.
+
+    Specifically, all models in the ```datasets``` namespace have a clearly defined structure. For example, while examining the ```datasets/gov/dc/geo/Continent``` example, the meanings of the separate path components are as follows:
+
+    * ```datasets/``` - namespace for raw primary institutional data.
+
+    * ```gov/``` - namespace for government institution data.
+
+    * ```dc/``` - acronym for a specific government institution.
+
+    * ```geo/``` - abbreviation for the institution's open data set.
+
+    * ```Continent``` - data model (or table).
+
+  version: 0.0.2
+
+externalDocs: 
+  url: "https://atviriduomenys.readthedocs.io/api/index.html"
+
+servers:
+  - url: get.data.gov.lt
+    description: Production data access server
+  - url: put.data.gov.lt
+    description: Production data update server
+  - url: get-test.data.gov.lt
+    description: Test data access server
+  - url: put-test.data.gov.lt
+    description: Test data update server
+
+tags:
+  - name: allObjects
+    description: Operations with multiple Objects 
+  - name: oneObject
+    description: Operations with single Object
+  - name: change
+    description: Change tracking operations
+  - name: services
+    description: Service operations
 
 paths:
-
   /{group}/{form}/{org}/{dataset}/{model}:
 
     parameters:
@@ -16,13 +64,19 @@ paths:
       - $ref: "#/components/parameters/model"
 
     head:
+      tags: 
+        - allObjects
       summary: Return only headers for all objects.
       responses:
         "200":
           description: "OK"
 
     get:
-      summary: Get all objects.
+      tags: 
+        - allObjects
+      summary: Get multiple objects.
+      description: |
+        Return list of objects for a given model.
       operationId: getall
       parameters:
         - $ref: "#/components/parameters/query"
@@ -33,39 +87,55 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/objects"
-        "default":
-          $ref: "#/components/responses/error"
-      description: |
-        Return list of objects for a given model.
+        "400":
+          $ref: "#/components/responses/error400"
+        "500":
+          $ref: "#/components/responses/error500"
 
     post:
-      summary: |
-        Create a single new object or create, update or delete multiple objects
-        in a single request.
+      tags: 
+        - allObjects
+      security:
+        - UAPI_test_auth:
+          - write:spinta_datasets_gov_myorg_insert
+        - UAPI_prod_auth:
+          - write:spinta_datasets_gov_myorg_insert
+      summary: Create a single new object or create, update or delete multiple objects in a single request.
+      description: |
+           ## Operation where one or multiple new objects are created.
+
+            When multiple object are created _data is an array of new objects each listing 
+            * _op as operation to be performed
+            * _type as a namespace of modelname where it is to be performed
+            * the new object itself in a form of {"_type" : "_value"} format. Example {"Continent" : "Europe"}
+
+            Or
+
+            A single object is created. New object details should be provided in a form of {"_type" : "_value"} format. Example {"Continent" : "Europe"}
       operationId: insert
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              oneOf:
-                - allOf:
-                    - $ref: "#/components/schemas/insert"
-                    - $ref: "#/components/schemas/object"
-                - $ref: "#/components/schemas/push"
+               oneOf:
+                  - $ref: "#/components/schemas/multiInsert"
+                  - $ref: "#/components/schemas/insert"
       responses:
-        "200":
-          description: "OK"
+        "201":
+          description: "Created"
           content:
             application/json:
               schema:
                 oneOf:
-                  - allOf:
-                      - $ref: "#/components/schemas/insert"
-                      - $ref: "#/components/schemas/object"
-                  - $ref: "#/components/schemas/push"
-        "default":
-          $ref: "#/components/responses/error"
+                  - $ref: "#/components/schemas/objects"
+                  - $ref: "#/components/schemas/object"
+        "400":
+          $ref: "#/components/responses/error400"
+        "403":
+          $ref: "#/components/responses/error403"
+        "500":
+          $ref: "#/components/responses/error500"
 
   /{gruop}/{form}/{org}/{dataset}/{model}/{id}:
 
@@ -77,7 +147,11 @@ paths:
       - $ref: "#/components/parameters/id"
 
     get:
-      summary: Get a single object by given `{id}`.
+      tags: 
+        - oneObject
+      summary: Get a single object by given {id}.
+      description: |
+        Retrieve a single specific object based on it's unique object identifier {id}
       operationId: getone
       responses:
         "200":
@@ -86,58 +160,58 @@ paths:
             application/json:
               schema:
                 allOf:
-                  $ref: "#/components/schemas/getone"
-                  $ref: "#/components/schemas/object"
-        "default":
-          $ref: "#/components/responses/error"
+                  - $ref: "#/components/schemas/getone"
+                  - $ref: "#/components/schemas/object"
+        "400":
+          $ref: "#/components/responses/error400"
+        "404":
+          $ref: "#/components/responses/error404"
+        "500":
+          $ref: "#/components/responses/error500"
 
     post:
-      summary: Update or create a single object.
+      tags: 
+        - oneObject
+      security:
+        - UAPI_test_auth:
+          - write:spinta_datasets_gov_myorg_upsert
+        - UAPI_prod_auth:
+          - write:spinta_datasets_gov_myorg_upsert
+      summary: Upsert an object by {id}.
+      description: |
+        This performs an ```Upsert``` action. First it checks if there is an existing object based on ```_where```, if there is, it performs ```Patch``` action, if there isn't it performs ```Update```
       operationId: upsert
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              oneOf:
-                - allOf:
-                  - $ref: "#/components/schemas/insert"
-                  - $ref: "#/components/schemas/object"
-                - $ref: "#/components/schemas/push"
+              $ref: "#/components/schemas/upsert"
       responses:
         "200":
           description: "OK"
           content:
             application/json:
               schema:
-                - allOf:
-                    - $ref: "#/components/schemas/insert"
-                    - $ref: "#/components/schemas/object"
-        "default":
-          $ref: "#/components/responses/error"
+                $ref: "#/components/schemas/object"
+        "400":
+          $ref: "#/components/responses/error400"
+        "403":
+          $ref: "#/components/responses/error403"
+        "404":
+          $ref: "#/components/responses/error404"
+        "500":
+          $ref: "#/components/responses/error500"
 
     put:
-      summary: Update a single object.
-      operationId: update
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: "#/components/schemas/update"
-                - $ref: "#/components/schemas/object"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                - allOf:
-                    - $ref: "#/components/schemas/update"
-                    - $ref: "#/components/schemas/object"
-        "default":
-          $ref: "#/components/responses/error"
+      tags: 
+        - oneObject
+      security:
+        - UAPI_test_auth:
+          - write:spinta_datasets_gov_myorg_update
+        - UAPI_prod_auth:
+          - write:spinta_datasets_gov_myorg_update
+      summary: Update a single object by {id}.
       description: |
         Overwrite whole object. Property values, that are not given in request
         body, will be reset to defaul values.
@@ -145,29 +219,39 @@ paths:
         This triggers `_rev` to be updated. And before update, existing `_rev`
         will be compared with given in request body, to prevent concurent
         overwrites.
-
-    patch:
-      summary: Patch a single object.
-      operationId: patch
+      operationId: update
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              allOf:
+              anyOf:
                 - $ref: "#/components/schemas/update"
-                - $ref: "#/components/schemas/object"
       responses:
         "200":
           description: "OK"
           content:
             application/json:
               schema:
-                - allOf:
-                    - $ref: "#/components/schemas/update"
-                    - $ref: "#/components/schemas/object"
-        "default":
-          $ref: "#/components/responses/error"
+                $ref: "#/components/schemas/object"
+        "400":
+          $ref: "#/components/responses/error400"
+        "403":
+          $ref: "#/components/responses/error403"
+        "404":
+          $ref: "#/components/responses/error404"
+        "500":
+          $ref: "#/components/responses/error500"
+
+    patch:
+      tags: 
+        - oneObject
+      security:
+        - UAPI_test_auth:
+          - write:spinta_datasets_gov_myorg_patch
+        - UAPI_prod_auth:
+          - write:spinta_datasets_gov_myorg_patch
+      summary: Patch a single object.
       description: |
         Partial object update, only property values given in request body will
         be update, other properties will not be touched.
@@ -175,28 +259,38 @@ paths:
         This triggers `_rev` to be updated. And before update, existing `_rev`
         will be compared with given in request body, to prevent concurent
         overwrites.
-
-    delete:
-      summary: Delte a single object.
-      operationId: delete
+      operationId: patch
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/update"
+              $ref: "#/components/schemas/update"
       responses:
         "200":
           description: "OK"
           content:
             application/json:
               schema:
-                - allOf:
-                    - $ref: "#/components/schemas/update"
-                    - $ref: "#/components/schemas/object"
-        "default":
-          $ref: "#/components/responses/error"
+                $ref: "#/components/schemas/object"
+        "400":
+          $ref: "#/components/responses/error400"
+        "403":
+          $ref: "#/components/responses/error403"
+        "404":
+          $ref: "#/components/responses/error404"
+        "500":
+          $ref: "#/components/responses/error500"
+
+    delete:
+      tags: 
+        - oneObject
+      security:
+        - UAPI_test_auth:
+          - write:spinta_datasets_gov_myorg_delete
+        - UAPI_prod_auth:
+          - write:spinta_datasets_gov_myorg_delete
+      summary: Delete a single object by {id}
       description: |
         Delete object. This is a soft delete operation, object should not be
         deleted, but marked for deletion. Soft delete is needed for changes API
@@ -207,6 +301,62 @@ paths:
 
         Before delete, existing `_rev` will be compared with given in request
         body, to prevent concurent overwrites.
+      operationId: delete
+      responses:
+        "204":
+          description: "No Content"
+        "400":
+          $ref: "#/components/responses/error400"
+        "403":
+          $ref: "#/components/responses/error403"
+        "404":
+          $ref: "#/components/responses/error404"
+        "500":
+          $ref: "#/components/responses/error500"
+
+  /{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe:
+
+    parameters:
+      - $ref: "#/components/parameters/form"
+      - $ref: "#/components/parameters/org"
+      - $ref: "#/components/parameters/dataset"
+      - $ref: "#/components/parameters/model"
+      - $ref: "#/components/parameters/id"
+
+    delete:
+      tags: 
+        - oneObject
+      security:
+        - UAPI_test_auth:
+          - write:spinta_datasets_gov_myorg_wipe
+        - UAPI_prod_auth:
+          - write:spinta_datasets_gov_myorg_wipe
+      summary: Hard delete a single object by {id}
+      description: |
+        ## To be used by exception only
+        ```wipe``` operation is used by exception only, if there were errors in data upload scripts, data was currupted due to errors etc. It is best to test data upload in test environment.
+
+        Data upload practice of deleting all published data and reuploading it is not recommended, since that destroys all if the data change history and it may change data IDs. Data should be uploaded once and then updated whith what has changed.
+      operationId: wipe
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    wiped :
+                      type: boolean
+                      value: true
+        "400":
+          $ref: "#/components/responses/error400"
+        "403":
+          $ref: "#/components/responses/error403"
+        "404":
+          $ref: "#/components/responses/error404"
+        "500":
+          $ref: "#/components/responses/error500"
 
   /{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}:
 
@@ -218,19 +368,9 @@ paths:
       - $ref: "#/components/parameters/cid"
 
     get:
-      summary: Get all object changes since given `{cid}` (change id).
-      operationId: changes
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                allOf:
-                  $ref: "#/components/schemas/changes"
-                  $ref: "#/components/schemas/object"
-        "default":
-          $ref: "#/components/responses/error"
+      tags:
+        - change
+      summary: Get all object changes since given {cid} (change id).
       description: |
         Get latest changes to a table.
 
@@ -244,11 +384,28 @@ paths:
         should be responsible for checking if a change was received previously
         or not.
 
-        Last change id is included in the reques, in order for clients to check
+        Last change id is included in the request, in order for clients to check
         if last change id matches change received by client. If last change
         does not match, then client should do a full synce, because if last
         change id does not match, that means, that a data migration or some
         other alterations to data were made, which requires to do a full sync.
+      operationId: changes
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/changes"
+        "400":
+          $ref: "#/components/responses/error400"
+        "404":
+          $ref: "#/components/responses/error404"
+        "500":
+          $ref: "#/components/responses/error500"
+      externalDocs: 
+        url: "https://atviriduomenys.readthedocs.io/api/index.html#changes"
+      
 
   /services/{form}/{org}/{dataset}/{service}:
 
@@ -262,7 +419,6 @@ paths:
       - $ref: "#/components/parameters/org"
       - $ref: "#/components/parameters/dataset"
       - $ref: "#/components/parameters/service"
-
 
 components:
 
@@ -289,7 +445,7 @@ components:
     form:
       name: form
       in: path
-      required: false
+      required: true #false
       schema:
         type: string
         enum:
@@ -308,6 +464,8 @@ components:
       schema:
         type: string
         pattern: "^[a-z][a-z0-9]+$"
+        examples:
+          - "RC"
       description: |
         Abbreviation or a short code name of an organization.
 
@@ -319,7 +477,7 @@ components:
       in: path
       required: true
       schema:
-        - $ref: "#/components/schemas/dataset"
+         $ref: "#/components/schemas/dataset"
       description: |
         A dataset or a standard abbreviation or short code name.
 
@@ -330,7 +488,7 @@ components:
       in: path
       required: true
       schema:
-        - $ref: "#/components/schemas/model"
+         $ref: "#/components/schemas/model"
       description: |
         A short model code name.
 
@@ -342,11 +500,11 @@ components:
       in: path
       required: true
       schema:
-        - $ref: "#/components/schemas/model"
+         $ref: "#/components/schemas/model"
       description: |
         A short service code name.
 
-        Each word startds with upper case letter, first letter can't be a
+        Each word starts with upper case letter, first letter can't be a
         number.
 
     id:
@@ -367,7 +525,7 @@ components:
     cid:
       name: cid
       in: path
-      required: false
+      required: true #false
       schema:
         type: string
       description: |
@@ -384,30 +542,15 @@ components:
       name: query
       in: query
       required: false
-      desciption: |
+      description: |
         Object filter.
-
-      examples:
-        - "code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name"
-        - "_select=_id,_rev"
-        - "code._gt=42"
-        - "country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd"
-        - "_or=1&code=1&code=2"
-        - "_count=1"
-
+        Query example: 
+          
+          ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```
+          
+          ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=1```
       schema:
         type: object
-
-        examples:
-          - code: 42
-            country.name: Lithuania
-            country.continent.name: Europe
-            _sort: "-code,country.name"
-            _limit: 10
-            _select: name,country.name,country.continent.name
-
-        additionalProperties: false
-
         patternProperties:
 
           "^_?[a-z](_?[a-z0-9]+)*(\\._?[a-z](_?[a-z0-9]+)*)*$":
@@ -436,13 +579,14 @@ components:
               - `_co` - contains
 
         properties:
-
           _select:
             type: string
+            examples:
+              - "name,country.name,country.continent.name"
             description: |
               Comma separated list of properties to include in the result.
 
-              Spetial value `*` can be used, to include all properties. This
+              Special value `*` can be used, to include all properties. This
               can also be used on nested objects, for example `country.*` will
               include all properties from `country` object.
 
@@ -465,6 +609,8 @@ components:
 
           _limit:
             type: integer
+            examples:
+              - 10
             description: |
               Limit result to given number of objects.
 
@@ -472,6 +618,8 @@ components:
 
           _sort:
             type: string
+            examples:
+              - "-code,country.name"
             description: |
               Comma separated list of properties, optionally prefixed with `+` or `-` operators to control sort direction:
 
@@ -479,7 +627,7 @@ components:
               - `-` - descending sort (3, 2, 1).
 
           _count:
-            type: boolean
+            type: integer
             description: |
               Return number of objects matching a given filter. If filter is
               not given, return number of all objects.
@@ -514,34 +662,66 @@ components:
               By default, filters are interpeted as AND conditions, so usage of
               `_and` makes sense only in an open `_or`.
 
-
   schemas:
 
     dataset:
       type: string
       pattern: "^[a-z](_?[a-z0-9]+)*$"
+      examples:
+        - "gov"
 
     model:
       type: string
       pattern: "^[A-Z]([A-Z]?[a-z0-9]+)*$"
+      examples:
+        - "City"
 
     property:
       type: string
       pattern: "^[a-z](_?[a-z0-9]+)*$"
+      examples:
+        - "name"
 
     id:
       type: string
       pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      examples:
+        - "abdd1245-bbf9-4085-9366-f11c0f737c1d"
 
     object:
       type: object
+      properties:
+        _type:
+          type: string
+          examples:
+            - "datasets/gov/dc/geo/Continent"
+        _id:
+          type: string
+          examples:
+            - "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+        _revision:
+          type: string
+          examples:
+            - "16dabe62-61e9-4549-a6bd-07cecfbc3508"
+        _txn:
+          type: string
+          examples:
+            - "792a5029-63c9-4c07-995c-cbc063aaac2c"
+        _objectType:
+          type: string
+          examples:
+            - "Continent"
+        _value:
+          type: string
+          examples:
+            - "Europe"
       patternProperties:
         "^[a-z](_?[a-z0-9]+)*$":
             oneOf:
               - {}
               - allOf:
                   - $ref: "#/components/schemas/ref"
-                  - $ref: "#/components/schemas/object"
+                  #- $ref: "#/components/schemas/object"
       additionalProperties: false
       description: |
         Object represents a single row in a table.
@@ -550,6 +730,18 @@ components:
         specified in `components/schemas/ref`, optionally dublicating
         properties from a referenced model or extending referenced model with
         new properties.
+
+    objects:
+      type: object
+      properties:
+        _type:
+          type: string
+          examples:
+            - "datasets/gov/dc/geo/Continent"
+        _data:
+          type: array
+          items: 
+            $ref: "#/components/schemas/object"
 
     ref:
       type: object
@@ -577,15 +769,26 @@ components:
         _id:
           type: string
           format: uuidv4
+          examples:
+            - "abdd1245-bbf9-4085-9366-f11c0f737c1d"
         _rev:
           type: string
+          format: uuidv4
+          examples:
+            - "16dabe62-61e9-4549-a6bd-07cecfbc3508"
         _txn:
           type: string
+          examples:
+            - "792a5029-63c9-4c07-995c-cbc063aaac2c"
       additionalProperties: false
 
     changes:
       type: object
       properties:
+        _type:
+          type: string
+          examples:
+            - "datasets/gov/dc/geo/Continent"
         _data:
           type: array
           items:
@@ -594,53 +797,116 @@ components:
     change:
       type: object
       properties:
-        _op:
-          type: string
-        _type:
-          type: string
+        _cid:
+          type: integer
+          examples:
+            - 11
         _id:
           type: string
           format: uuidv4
+          examples:
+            - "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+        
         _rev:
           type: string
+          format: uuidv4
+          examples:
+            - "16dabe62-61e9-4549-a6bd-07cecfbc3508"
         _txn:
           type: string
-        _cid:
-          type: integer
+          examples:
+            - "792a5029-63c9-4c07-995c-cbc063aaac2c"
         _created:
           type: string
           format: datetime
+          examples:
+            - "2021-07-30T14:03:14.645198"
+        _op:
+          type: string
+          enum:
+            - "insert"
+            - "patch"
+            - "delete"
+        _objectType:
+          type: string
+          examples:
+            - "Continent"
+        _value:
+          type: string
+          examples:
+            - "Europe"
+
       additionalProperties: false
+
+    multiInsert:
+      type: object
+      properties:
+        _data:
+          type: array
+          items:
+            anyOf:
+              - _op:
+                type: string
+                enum:
+                    - "insert"
+                    - "patch"
+              - _type:
+                type: string
+                examples:
+                    - "datasets/gov/dc/geo/Continent"
+              - $ref: "##/components/schemas/insert"
 
     insert:
       type: object
       properties:
-        _id:
+        _type:
           type: string
-          format: uuidv4
-          required: false
+          examples:
+            - "Continet"
+        _value:
+          type: string
+          examples:
+            - "Europe"
       additionalProperties: false
 
     upsert:
       type: object
       properties:
-        _id:
+        _op:
           type: string
-          format: uuidv4
-          required: false
+          enum:
+            - "upsert"
+        _where:
+          type: string
+          pattern: "^[a-z]*$='[a-zA-Z]*$'"
+          examples:
+            - "name='Europe'"
+        _type:
+          type: string
+          examples:
+            - "Continet"
+        _value:
+          type: string
+          examples:
+            - "Europe"
       additionalProperties: false
 
     update:
       type: object
       properties:
-        _id:
-          type: string
-          format: uuidv4
-          required: false
         _rev:
           type: string
           format: uuidv4
-          required: false
+          examples:
+            - "792a5029-63c9-4c07-995c-cbc063aaac2c"
+        _type:
+          type: string
+          examples:
+            - "Continet"
+        _value:
+          type: string
+          examples:
+            - "Europe"
       additionalProperties: false
 
     delete:
@@ -649,7 +915,7 @@ components:
         _rev:
           type: string
           format: uuidv4
-          required: false
+          #required: false
       additionalProperties: false
 
     errors:
@@ -673,10 +939,16 @@ components:
         code:
           type: string
           pattern: "^[A-Z]([A-Z]?[a-z0-9]+)*$"
+          examples:
+            - "NotImplementedError"
+            - "TypeError"
         template:
           type: string
         message:
           type: string
+          examples:
+            - "Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>"
+            - "Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead."
         context:
           type: object
           properties:
@@ -690,11 +962,79 @@ components:
               $ref: "#/components/schemas/id"
           additionalProperties: true
 
+  securitySchemes: 
+
+    UAPI_test_auth:
+        type: oauth2
+        flows:
+            clientCredentials: 
+              authorizationUrl: "https://put-test.data.gov.lt"
+              tokenUrl: "https://put-test.data.gov.lt/auth/token"
+              scopes:
+                write:spinta_datasets_gov_myorg_insert: Insert
+                write:spinta_datasets_gov_myorg_upsert: Upsert
+                write:spinta_datasets_gov_myorg_update: Update
+                write:spinta_datasets_gov_myorg_patch: Patch
+                write:spinta_datasets_gov_myorg_delete: Delete
+                write:spinta_datasets_gov_myorg_wipe: Wipe
+
+    UAPI_prod_auth:
+        type: oauth2
+        flows:
+            clientCredentials: 
+              authorizationUrl: "https://put.data.gov.lt"
+              tokenUrl: "https://put.data.gov.lt/auth/token"
+              scopes:
+                write:spinta_datasets_gov_myorg_insert: Insert
+                write:spinta_datasets_gov_myorg_upsert: Upsert
+                write:spinta_datasets_gov_myorg_update: Update
+                write:spinta_datasets_gov_myorg_patch: Patch
+                write:spinta_datasets_gov_myorg_delete: Delete
+                write:spinta_datasets_gov_myorg_wipe: Wipe
+
   responses:
-    error:
-      description: An error has accured.
+
+    error500:
+      description: Internal Server Error
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/errors"
 
+    error400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errors"
+            examples:
+              - errors:
+                  error: "Invalid_client"
+                  error_description: "Invalid client name"
+
+    error404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errors"
+            examples:
+              - errors:
+                  error: "ItemDoesNotExist"
+                  error_description: "Resource 'c9b40700-ddbf-48d9-b747-d1f90a37e32c' not found."
+
+    error403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/errors"
+            examples:
+              - errors:
+                - items:
+                    code: "InsufficientPermission"
+                    context:
+                        scope: "auth_clients"
+                    message: "You need to have 'auth_clients' in order to access this API endpoint."
+                    template: "You need to have {scope!r} in order to access this API endpoint."
+                    type: "system"
