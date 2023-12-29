@@ -1,0 +1,24 @@
+parameters:
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
+get:
+  tags:
+    - utility
+  summary: Perform the API health check
+  description: |
+    Performs API helth check with a check of the underlying system health
+  operationId: health
+  responses:
+    '200':
+      description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.aml
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/health.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml

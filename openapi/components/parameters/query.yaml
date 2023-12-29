@@ -17,6 +17,10 @@ schema:
 
         Given property names, must be defined in data model.
 
+        More detailed definitions of these properties is available in [**DSA**](https://atviriduomenys.readthedocs.io/dsa/dimensijos.html#savybe)
+
+        The main operations are flexible, but have to conform to a strict syntax.
+
         Some reserved property names can be used for filtering:
 
         - `_type`
@@ -26,7 +30,7 @@ schema:
         used, which means, that two tables if needed must be joined in
         order to perform a filter.
 
-        Last name after `.` can be one of following filter operators:
+        Also after `.` there can be one of following filter operators:
 
         - `_gt` - greather than
         - `_ge` - greather than or equal
@@ -35,6 +39,9 @@ schema:
         - `_sw` - starts with
         - `_ew` - ends with
         - `_co` - contains
+        
+        For example to filter code to have agreater value than 42 a query containing `&code._gt=42` can be used.
+
   properties:
     _select:
       type: string
@@ -63,6 +70,7 @@ schema:
         requirement only applies if data are stored on the same data
         source. An attempt to join data from multiple data sources,
         should return an error.
+
     _limit:
       type: integer
       examples:
@@ -71,21 +79,19 @@ schema:
         Limit result to given number of objects.
 
         If `_sort` is not given, then sorty by `_id`.
+
     _sort:
       type: string
       examples:
         - '-code,country.name'
       description: >
-        Comma separated list of properties, optionally prefixed with `+` or `-`
-        operators to control sort direction:
+        Comma separated list of properties, optionally prefixed with `+` or `-` operators to control sort direction:
 
-
-        - `+` - ascending sort (1, 2, 3), this is used by default if sort
-        direction is not given.
-
+        - `+` - ascending sort (1, 2, 3), this is used by default if sort direction is not given.
         - `-` - descending sort (3, 2, 1).
+
     _count:
-      type: integer
+      type: boolean
       description: |
         Return number of objects matching a given filter. If filter is
         not given, return number of all objects.
@@ -99,21 +105,8 @@ schema:
           ]
         }
         ```
-    _or:
-      type: boolean
+    _page:
+      type: string
+      format: uuidv4
       description: |
-        If true, following filters will be interpreted as OR conditions,
-        until `_or` is set to false.
-
-        By default, filters are interpeted as AND conditions.
-
-        If `_or` is not turned off, then all conditions are interpreted
-        as OR.
-    _and:
-      type: boolean
-      description: |
-        If true, following filters will be interpreted as AND conditions,
-        until `_and` is set to false.
-
-        By default, filters are interpeted as AND conditions, so usage of
-        `_and` makes sense only in an open `_or`.
+        If _limit is set and results in multiple pages of results to be available, _page value is returned as part of the response, linking to the next page after the current set. This value can be used directly for example `&page="WyIxOTAzNmM0ZS1mZmIyLTQyMTAtYjIyMi01YTJkZDQ2MWU5MzQiXQ=="`. Or through a nex page request `&page.next`.

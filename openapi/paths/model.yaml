@@ -4,6 +4,8 @@ parameters:
   - $ref: ../components/parameters/org.yaml
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/model.yaml
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
 head:
   tags:
     - objects
@@ -23,6 +25,13 @@ get:
   responses:
     '200':
       description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+        Cache-Control:
+          $ref: ../components/headers/Cache-Control.yaml
+        Last-Modified:
+          $ref: ../components/headers/Last-Modified.yaml
       content:
         application/json:
           schema:
@@ -31,6 +40,8 @@ get:
       $ref: ../components/responses/error400.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
 post:
   tags:
     - objects
@@ -65,6 +76,9 @@ post:
   responses:
     '201':
       description: Created
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
       content:
         application/json:
           schema:
@@ -77,3 +91,5 @@ post:
       $ref: ../components/responses/error403.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml

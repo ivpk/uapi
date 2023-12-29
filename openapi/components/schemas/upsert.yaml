@@ -4,11 +4,6 @@ properties:
     type: string
     enum:
       - upsert
-  _where:
-    type: string
-    pattern: ^[a-z]*$='[a-zA-Z]*$'
-    examples:
-      - name='Europe'
   _type:
     type: string
     examples:

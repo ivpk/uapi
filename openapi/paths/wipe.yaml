@@ -4,6 +4,8 @@ parameters:
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/model.yaml
   - $ref: ../components/parameters/id.yaml
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
 delete:
   tags:
     - object
@@ -29,6 +31,9 @@ delete:
   responses:
     '200':
       description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
       content:
         application/json:
           schema:
@@ -45,3 +50,5 @@ delete:
       $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml

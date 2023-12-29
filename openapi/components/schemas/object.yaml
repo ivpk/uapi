@@ -1,26 +1,39 @@
 type: object
 properties:
   _type:
+    description: |
+      Name of the namespace or model
     type: string
     examples:
       - datasets/gov/dc/geo/Continent
   _id:
+    description: |
+      Unique object ID in UUID format
     type: string
+    format: uuidv4
     examples:
       - abdd1245-bbf9-4085-9366-f11c0f737c1d
   _revision:
+    description: |
+      Revision number of the object. This number helps with ensuring data consistency during changes. Every time object is changed, it's revision number has to change.
     type: string
     examples:
       - 16dabe62-61e9-4549-a6bd-07cecfbc3508
   _txn:
+    description: | 
+      `_txn` is transaction number. Multiple objects can be changed during a single transaction. All objects changed during a single transaction receive same `txn`.
     type: string
     examples:
       - 792a5029-63c9-4c07-995c-cbc063aaac2c
   _objectType:
+    description: |
+      Name of the object that is being added
     type: string
     examples:
       - Continent
   _value:
+    description: |
+      Value of the object that is being added
     type: string
     examples:
       - Europe

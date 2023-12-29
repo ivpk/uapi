@@ -4,6 +4,8 @@ parameters:
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/model.yaml
   - $ref: ../components/parameters/id.yaml
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
 get:
   tags:
     - object
@@ -15,6 +17,13 @@ get:
   responses:
     '200':
       description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+        Cache-Control:
+          $ref: ../components/headers/Cache-Control.yaml
+        Last-Modified:
+          $ref: ../components/headers/Last-Modified.yaml
       content:
         application/json:
           schema:
@@ -27,6 +36,8 @@ get:
       $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
 post:
   tags:
     - object
@@ -62,6 +73,8 @@ post:
       $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
 put:
   tags:
     - object
@@ -101,6 +114,8 @@ put:
       $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
 patch:
   tags:
     - object
@@ -139,6 +154,8 @@ patch:
       $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
 delete:
   tags:
     - object
@@ -170,3 +187,5 @@ delete:
       $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml

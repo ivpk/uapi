@@ -4,6 +4,8 @@ parameters:
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/model.yaml
   - $ref: ../components/parameters/cid.yaml
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
 get:
   tags:
     - changes
@@ -40,5 +42,7 @@ get:
       $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
   externalDocs:
     url: https://atviriduomenys.readthedocs.io/api/index.html#changes

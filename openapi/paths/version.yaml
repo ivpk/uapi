@@ -1,0 +1,24 @@
+parameters:
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
+get:
+  tags:
+    - utility
+  summary: Get API version
+  description: |
+    Get the version of the API that is being called
+  operationId: version
+  responses:
+    '200':
+      description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/version.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
