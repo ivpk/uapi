@@ -1,0 +1,9 @@
+description: |
+  `Cache-Control` header that returns the caching information of the service. Caching is optional functionality.
+
+  If implemented should return values that depend on the type of the cache. For example if the cache is private it should return `private`. If there are set parameters on data age it should return for example `max-age`.
+required: false
+schema:
+  type: string
+  examples:
+    - no-store

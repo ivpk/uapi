@@ -1,0 +1,16 @@
+description: |
+  The `traceresponse` HTTP response header field identifies a completed request in a tracing system. It has four fields - `version` `trace-id` `child-id` `trace-flags` separated by `-`.
+
+  Version `version` is an 8-bit unsigned integer value, serialized as an ASCII string with two characters. Version 255 `"ff"` is invalid.
+
+  `trace-id` is the ID of the whole trace forest and is used to uniquely identify a distributed trace through a system. It is represented as a 16-byte array. All bytes as zero `00000000000000000000000000000000` is considered an invalid value. If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the entire header.
+
+  `child-id` is the ID of the operation of the callee (in some tracing systems, this is known as the `span-id`, where a `span` is the execution of a client request) and is used to uniquely identify an operation within a trace. It is represented as an 8-byte array. All bytes as zero `0000000000000000` is considered an invalid value.
+
+  Vendors MUST ignore the `traceresponse` header when the `child-id` is invalid (for example, if it contains non-lowercase hex characters).
+required: true
+schema:
+  type: string
+  pattern: [0-9]{2}-[A-Fa-f0-9]{32}-[A-Fa-f0-9]{16}-[0-9]{2}
+  examples:
+    - 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01

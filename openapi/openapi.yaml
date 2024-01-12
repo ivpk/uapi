@@ -67,7 +67,13 @@ tags:
     description: Change tracking operations
   - name: services
     description: Service operations
+  - name: utility
+    description: Utility operations performed on the API itself
 paths:
+  /version
+    $ref: paths/version.yaml
+  /health
+    $ref: paths/health.yaml
   /{group}/{form}/{org}/{dataset}/{model}:
     $ref: paths/model.yaml
   /{gruop}/{form}/{org}/{dataset}/{model}/{id}:
@@ -80,6 +86,8 @@ paths:
     $ref: paths/service.yaml
 components:
   securitySchemes:
+    # Can be implemented based on the available security settings. Are not limmited to OAuth clientCredentials implementations
+
     UAPI_test_auth:
       type: oauth2
       flows:
@@ -87,12 +95,12 @@ components:
           authorizationUrl: https://put-test.data.gov.lt
           tokenUrl: https://put-test.data.gov.lt/auth/token
           scopes:
-            write:spinta_datasets_gov_myorg_insert: Insert
-            write:spinta_datasets_gov_myorg_upsert: Upsert
-            write:spinta_datasets_gov_myorg_update: Update
-            write:spinta_datasets_gov_myorg_patch: Patch
-            write:spinta_datasets_gov_myorg_delete: Delete
-            write:spinta_datasets_gov_myorg_wipe: Wipe
+            write:datasets/gov/myorg/insert: Insert
+            write:datasets/gov/myorg/upsert: Upsert
+            write:datasets/gov/myorg/update: Update
+            write:datasets/gov/myorg/patch: Patch
+            write:datasets/gov/myorg/delete: Delete
+            write:datasets/gov/myorg/wipe: Wipe
     UAPI_prod_auth:
       type: oauth2
       flows:
@@ -100,9 +108,9 @@ components:
           authorizationUrl: https://put.data.gov.lt
           tokenUrl: https://put.data.gov.lt/auth/token
           scopes:
-            write:spinta_datasets_gov_myorg_insert: Insert
-            write:spinta_datasets_gov_myorg_upsert: Upsert
-            write:spinta_datasets_gov_myorg_update: Update
-            write:spinta_datasets_gov_myorg_patch: Patch
-            write:spinta_datasets_gov_myorg_delete: Delete
-            write:spinta_datasets_gov_myorg_wipe: Wipe
+            write:datasets/gov/myorg/insert: Insert
+            write:datasets/gov/myorg/upsert: Upsert
+            write:datasets/gov/myorg/update: Update
+            write:datasets/gov/myorg/patch: Patch
+            write:datasets/gov/myorg/delete: Delete
+            write:datasets/gov/myorg/wipe: Wipe
