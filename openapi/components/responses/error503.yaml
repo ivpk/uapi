@@ -1,7 +1,7 @@
 description: Service Uavailable
 headers:
-      traceresponse:
-        $ref: ../components/headers/traceresponse.yaml
+  traceresponse:
+    $ref: ../headers/traceresponse.yaml
 content:
   application/json:
     schema:

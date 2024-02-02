@@ -1,4 +1,7 @@
 description: Internal Server Error
+headers:
+      traceresponse:
+        $ref: ../headers/traceresponse.yaml
 content:
   application/json:
     schema:

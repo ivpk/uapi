@@ -3,16 +3,24 @@ parameters:
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
   - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/model.yaml
   - $ref: ../components/parameters/traceparent.yaml
   - $ref: ../components/parameters/tracestate.yaml
+  - $ref: ../components/parameters/Cache-Control.yaml
+  - $ref: ../components/parameters/If-None-Match.yaml
+  - $ref: ../components/parameters/Accept-Language.yaml
+
 head:
   tags:
     - objects
-  summary: Return only headers for all objects.
+  summary: Return only headers for the API.
+  description: |
+    `HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.
   responses:
     '200':
       description: OK
+
 get:
   tags:
     - objects
@@ -22,6 +30,7 @@ get:
   operationId: getall
   parameters:
     - $ref: ../components/parameters/query.yaml
+
   responses:
     '200':
       description: OK
@@ -32,38 +41,55 @@ get:
           $ref: ../components/headers/Cache-Control.yaml
         Last-Modified:
           $ref: ../components/headers/Last-Modified.yaml
+        ETag:
+          $ref: ../components/headers/ETag.yaml
+        Vary:
+          $ref: ../components/headers/Vary.yaml
       content:
         application/json:
           schema:
             $ref: ../components/schemas/objects.yaml
+    '304':
+      description: Not Modified
+      headers:
+       traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+        Cache-Control:
+          $ref: ../components/headers/Cache-Control.yaml
+        Last-Modified:
+          $ref: ../components/headers/Last-Modified.yaml
+        ETag:
+          $ref: ../components/headers/ETag.yaml
+        Vary:
+          $ref: ../components/headers/Vary.yaml
+
     '400':
       $ref: ../components/responses/error400.yaml
     '500':
       $ref: ../components/responses/error500.yaml
     '503':
       $ref: ../components/responses/error503.yaml
+
 post:
   tags:
     - objects
   security:
     - UAPI_test_auth:
-        - write:spinta_datasets_gov_myorg_insert
+      - write:datasets/gov/myorg/insert
     - UAPI_prod_auth:
-        - write:spinta_datasets_gov_myorg_insert
-  summary: >-
-    Create a single new object or create, update or delete multiple objects in a
-    single request.
+      - write:datasets/gov/myorg/insert
+  summary: Create a single new object or create, update or delete multiple objects in a single request.
   description: |
     ## Operation where one or multiple new objects are created.
 
-     When multiple object are created _data is an array of new objects each listing 
-     * _op as operation to be performed
-     * _type as a namespace of modelname where it is to be performed
-     * the new object itself in a form of {"_type" : "_value"} format. Example {"Continent" : "Europe"}
+    When multiple object are created _data is an array of new objects each listing 
+    * _op as operation to be performed
+    * _type as a namespace of modelname where it is to be performed
+    * the new object itself in a form of {"_type" : "_value"} format. Example {"Continent" : "Europe"}
 
-     Or
+    Or
 
-     A single object is created. New object details should be provided in a form of {"_type" : "_value"} format. Example {"Continent" : "Europe"}
+    A single object is created. New object details should be provided in a form of {"_type" : "_value"} format. Example {"Continent" : "Europe"}
   operationId: insert
   requestBody:
     required: true

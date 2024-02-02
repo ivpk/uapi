@@ -2,22 +2,26 @@ name: query
 in: query
 required: false
 description: |
-  Object filter.
+  Object filter. This filter and the pattern used to form a querie conforms to [***URI syntax standard***](https://datatracker.ietf.org/doc/html/rfc3986).
+
+  Other implementations of this specification can use more complex queries depending on filtering rules. They should comply to [***AST***](https://en.wikipedia.org/wiki/Abstract_syntax_tree) formatting and logic.
+
   Query example: 
-    
+
     ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```
-    
+
     ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=1```
 schema:
   type: object
   patternProperties:
-    ^_?[a-z](_?[a-z0-9]+)*(\._?[a-z](_?[a-z0-9]+)*)*$:
+
+    ^_?[a-z](_?[a-z0-9]+)*(\\._?[a-z](_?[a-z0-9]+)*)*$:
       description: |
         Filter objects where given property is equal to given value.
 
         Given property names, must be defined in data model.
 
-        More detailed definitions of these properties is available in [**DSA**](https://atviriduomenys.readthedocs.io/dsa/dimensijos.html#savybe)
+        More detailed definitions of these properties are available in [**DSA**](https://atviriduomenys.readthedocs.io/dsa/dimensijos.html#savybe)
 
         The main operations are flexible, but have to conform to a strict syntax.
 
@@ -39,7 +43,7 @@ schema:
         - `_sw` - starts with
         - `_ew` - ends with
         - `_co` - contains
-        
+
         For example to filter code to have agreater value than 42 a query containing `&code._gt=42` can be used.
 
   properties:
@@ -84,7 +88,7 @@ schema:
       type: string
       examples:
         - '-code,country.name'
-      description: >
+      description: |
         Comma separated list of properties, optionally prefixed with `+` or `-` operators to control sort direction:
 
         - `+` - ascending sort (1, 2, 3), this is used by default if sort direction is not given.
@@ -107,6 +111,7 @@ schema:
         ```
     _page:
       type: string
-      format: uuidv4
       description: |
-        If _limit is set and results in multiple pages of results to be available, _page value is returned as part of the response, linking to the next page after the current set. This value can be used directly for example `&page="WyIxOTAzNmM0ZS1mZmIyLTQyMTAtYjIyMi01YTJkZDQ2MWU5MzQiXQ=="`. Or through a nex page request `&page.next`.
+        If _limit is set and results in multiple pages of results to be available, _page value is returned as part of the response, linking to the next page after the current set. This value can be used directly for example `&page="WyIxOTAzNmM0ZS1mZmIyLTQyMTAtYjIyMi01YTJkZDQ2MWU5MzQiXQ=="`. Or through a next page request `&page.next`.
+
+        Recommeded format `base64` - `base64(json([v1, v2, ...]))`

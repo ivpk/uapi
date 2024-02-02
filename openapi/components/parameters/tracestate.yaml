@@ -3,11 +3,10 @@ in: header
 required: true
 description: |
   The main purpose of the `tracestate` HTTP header is to provide additional vendor-specific trace identification information across different distributed tracing systems and is a companion header for the `traceparent` field. It also conveys information about the request’s position in multiple distributed tracing graphs.
-
-  If the vendor failed to parse `traceparent`, it MUST NOT attempt to parse `tracestate`. Note that the opposite is not true: failure to parse `tracestate` MUST NOT affect the parsing of `traceparent`.
-
-  The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-members` are ignored. There can be a maximum of 32 `list-members` in a `list`. If adding an entry would cause the `tracestate` list to contain more than 32 `list-members` the right-most `list-member` should be removed from the list.
+  For more context check [***trace-context***](https://w3c.github.io/trace-context/) documentation.
 schema:
   type: string
+  description: |
+    Consists of a `list` of `list-members` separated by commas (`,`)
   examples:
     - rojo=00f067aa0ba902b7,congo=t61rcWkgMzE

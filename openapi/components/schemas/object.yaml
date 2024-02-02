@@ -37,6 +37,12 @@ properties:
     type: string
     examples:
       - Europe
+  _file:
+    description: |
+      A flag that indicates if the object is a file and it's file type. If empty, object is not a file. If value is present, it is a file extension of the file (e.g. ".txt", ".jpg").
+    type: string
+    examples:
+      - jpg
 patternProperties:
   ^[a-z](_?[a-z0-9]+)*$:
     oneOf:
