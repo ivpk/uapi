@@ -3,8 +3,8 @@
   "info": {
     "title": "Universal application programming interface",
     "summary": "Open Data Repository API for data access and upload",
-    "description": "The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.\n\nAll data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.\n\nThe API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the `/` symbol, for example:\n`/datasets/gov/dc/geo/Continent`\nThis address is made up of the `datasets/gov/dc/geo` namespace and the `Continent` model name.\nThe `datasets` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example `datasets/gov/dc/geo/Continent` may be merged into a common `Continent` model in the root namespace. However, to ensure a stable and constant API, the initial raw data API points will be preserved.\nSpecifically, all models in the `datasets` namespace have a clearly defined structure. For example, while examining the `datasets/gov/dc/geo/Continent` example, the meanings of the separate path components are as follows:\n- `datasets/` - namespace for raw primary institutional data.\n- `gov/` - namespace for government institution data.\n- `dc/` - acronym for a specific government institution.\n- `geo/` - abbreviation for the institution's open data set.\n- `Continent` - data model (or table).\n",
-    "version": "0.0.2"
+    "description": "The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.\n\nAll data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.\n\nThe API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the `/` symbol, for example:\n\n`/datasets/gov/dc/geo/Continent`\n\nThis address is made up of the `datasets/gov/dc/geo` namespace and the `Continent` model name.\n\nThe `datasets` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example `datasets/gov/dc/geo/Continent` may be merged into a common `Continent` model in the root namespace. This namespace is likely to be `onthology`, thus defining a specific ruleset for the rest of the URI structure based on a national or EU semantic model. It would be supported by a national metadata catalog, that would be maintained by all organisations in scope and would provide a way to understand and find datasets or their internal structures.\n\nHowever, to ensure a stable and constant API, the initial raw data API endpoints and URIs will be preserved.\n\nSpecifically, all models in the `datasets` namespace have a clearly defined structure. For example, while examining the `datasets/gov/dc/geo/Continent` example, the meanings of the separate path components are as follows:\n\n* `datasets/` - namespace for raw primary institutional data.\n\n* `gov/` - namespace for government institution data.\n\n* `dc/` - acronym for a specific government institution.\n\n* `geo/` - abbreviation for the institution's open data set.\n\n* `Continent` - data model (or table).\n",
+    "version": "0.1.0"
   },
   "servers": [
     {
@@ -34,18 +34,104 @@
       "description": "Operations with single Object"
     },
     {
-      "name": "changes",
+      "name": "change",
       "description": "Change tracking operations"
     },
     {
       "name": "services",
-      "description": "Service operations"
+      "description": "Service functions are not as restricted as data API endpoints. Services\nare not required to return an object with a public id, there are no\nchanges API, nor revisions.\n\nThis section is primarily for definition of legacy or non data access services that do not have to be fully based on DSA data structure.\n"
+    },
+    {
+      "name": "utility",
+      "description": "Utility operations performed on the API itself"
     }
   ],
   "externalDocs": {
     "url": "https://atviriduomenys.readthedocs.io/api/index.html"
   },
   "paths": {
+    "/version": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
+        }
+      ],
+      "get": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Get API version",
+        "description": "Get the version of the API that is being called\n",
+        "operationId": "version",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/version"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
+          }
+        }
+      }
+    },
+    "/health": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
+        }
+      ],
+      "get": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Perform the API health check",
+        "description": "Performs API helth check with a check of the underlying system health\n",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/health"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
+          }
+        }
+      }
+    },
     "/{group}/{form}/{org}/{dataset}/{model}": {
       "parameters": [
         {
@@ -61,14 +147,33 @@
           "$ref": "#/components/parameters/dataset"
         },
         {
+          "$ref": "#/components/parameters/version"
+        },
+        {
           "$ref": "#/components/parameters/model"
+        },
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
+        },
+        {
+          "$ref": "#/components/parameters/Cache-Control"
+        },
+        {
+          "$ref": "#/components/parameters/If-None-Match"
+        },
+        {
+          "$ref": "#/components/parameters/Accept-Language"
         }
       ],
       "head": {
         "tags": [
           "objects"
         ],
-        "summary": "Return only headers for all objects.",
+        "summary": "Return only headers for the API.",
+        "description": "`HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.\n",
         "responses": {
           "200": {
             "description": "OK"
@@ -90,6 +195,23 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/Cache-Control"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/Last-Modified"
+              },
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -98,11 +220,34 @@
               }
             }
           },
+          "304": {
+            "description": "Not Modified",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/Cache-Control"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/Last-Modified"
+              },
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            }
+          },
           "400": {
             "$ref": "#/components/responses/error400"
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       },
@@ -113,17 +258,17 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:spinta_datasets_gov_myorg_insert"
+              "write:datasets/gov/myorg/insert"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:spinta_datasets_gov_myorg_insert"
+              "write:datasets/gov/myorg/insert"
             ]
           }
         ],
         "summary": "Create a single new object or create, update or delete multiple objects in a single request.",
-        "description": "## Operation where one or multiple new objects are created.\n\n When multiple object are created _data is an array of new objects each listing \n * _op as operation to be performed\n * _type as a namespace of modelname where it is to be performed\n * the new object itself in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n\n Or\n\n A single object is created. New object details should be provided in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n",
+        "description": "## Operation where one or multiple new objects are created.\n\nWhen multiple object are created _data is an array of new objects each listing \n* _op as operation to be performed\n* _type as a namespace of modelname where it is to be performed\n* the new object itself in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n\nOr\n\nA single object is created. New object details should be provided in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n",
         "operationId": "insert",
         "requestBody": {
           "required": true,
@@ -145,6 +290,11 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -168,6 +318,9 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       }
@@ -184,12 +337,39 @@
           "$ref": "#/components/parameters/dataset"
         },
         {
+          "$ref": "#/components/parameters/version"
+        },
+        {
           "$ref": "#/components/parameters/model"
         },
         {
           "$ref": "#/components/parameters/id"
+        },
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
+        },
+        {
+          "$ref": "#/components/parameters/If-None-Match"
+        },
+        {
+          "$ref": "#/components/parameters/Accept-Language"
         }
       ],
+      "head": {
+        "tags": [
+          "objects"
+        ],
+        "summary": "Return only headers for the API.",
+        "description": "`HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.\n",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "get": {
         "tags": [
           "object"
@@ -200,6 +380,23 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/Cache-Control"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/Last-Modified"
+              },
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -215,6 +412,26 @@
               }
             }
           },
+          "304": {
+            "description": "Not Modified",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/Cache-Control"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/Last-Modified"
+              },
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            }
+          },
           "400": {
             "$ref": "#/components/responses/error400"
           },
@@ -223,6 +440,9 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       },
@@ -233,17 +453,17 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:spinta_datasets_gov_myorg_upsert"
+              "write:datasets/gov/myorg/upsert"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:spinta_datasets_gov_myorg_upsert"
+              "write:datasets/gov/myorg/upsert"
             ]
           }
         ],
-        "summary": "Upsert an object by {id}.",
-        "description": "This performs an ```Upsert``` action. First it checks if there is an existing object based on ```_where```, if there is, it performs ```Patch``` action, if there isn't it performs ```Update```\n",
+        "summary": "Upsert an object by {id}. This operation can only be performed on fields that can be indexed.",
+        "description": "This performs an `Upsert` action. First it checks if there is an existing object based on `{id}`, if there is, it performs `Patch` action, if there isn't it performs `Update`\n",
         "operationId": "upsert",
         "requestBody": {
           "required": true,
@@ -258,6 +478,11 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -277,6 +502,9 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       },
@@ -287,12 +515,12 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:spinta_datasets_gov_myorg_update"
+              "write:datasets/gov/myorg/update"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:spinta_datasets_gov_myorg_update"
+              "write:datasets/gov/myorg/update"
             ]
           }
         ],
@@ -316,6 +544,11 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -335,6 +568,9 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       },
@@ -345,12 +581,12 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:spinta_datasets_gov_myorg_patch"
+              "write:datasets/gov/myorg/patch"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:spinta_datasets_gov_myorg_patch"
+              "write:datasets/gov/myorg/patch"
             ]
           }
         ],
@@ -370,6 +606,11 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -389,6 +630,9 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       },
@@ -399,12 +643,12 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:spinta_datasets_gov_myorg_delete"
+              "write:datasets/gov/myorg/delete"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:spinta_datasets_gov_myorg_delete"
+              "write:datasets/gov/myorg/delete"
             ]
           }
         ],
@@ -413,7 +657,12 @@
         "operationId": "delete",
         "responses": {
           "204": {
-            "description": "No Content"
+            "description": "No Content",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/error400"
@@ -426,6 +675,9 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       }
@@ -446,6 +698,12 @@
         },
         {
           "$ref": "#/components/parameters/id"
+        },
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
         }
       ],
       "delete": {
@@ -470,6 +728,11 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -495,6 +758,113 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
+          }
+        }
+      }
+    },
+    "/{gruop}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/form"
+        },
+        {
+          "$ref": "#/components/parameters/org"
+        },
+        {
+          "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/version"
+        },
+        {
+          "$ref": "#/components/parameters/model"
+        },
+        {
+          "$ref": "#/components/parameters/id"
+        },
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
+        },
+        {
+          "$ref": "#/components/parameters/If-None-Match"
+        },
+        {
+          "$ref": "#/components/parameters/Accept-Language"
+        }
+      ],
+      "get": {
+        "tags": [
+          "object"
+        ],
+        "summary": "For a given specific object by {id}, retrieve a {file} from it's structure.",
+        "description": "Retrieve a specific file from an object structure, where it is available.\n\nBy default when retrieving object you recive data items from it's structure, where files (documents, images, etc.) are part of it's set of data, they are not retrieved and this service is to be used.\n\nReturned content depends on the file but is presented as binary.\n",
+        "operationId": "getfile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/Cache-Control"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/Last-Modified"
+              },
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            },
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not Modified",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/Cache-Control"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/Last-Modified"
+              },
+              "ETag": {
+                "$ref": "#/components/headers/ETag"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       }
@@ -515,6 +885,12 @@
         },
         {
           "$ref": "#/components/parameters/cid"
+        },
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
         }
       ],
       "get": {
@@ -543,6 +919,9 @@
           },
           "500": {
             "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         },
         "externalDocs": {
@@ -551,7 +930,6 @@
       }
     },
     "/services/{form}/{org}/{dataset}/{service}": {
-      "description": "Service functions are not as restricted as data API endpoints. Services\nare not required to return an object with a public id, there are no\nchanges API, nor revisions.\n",
       "parameters": [
         {
           "$ref": "#/components/parameters/form"
@@ -563,9 +941,64 @@
           "$ref": "#/components/parameters/dataset"
         },
         {
+          "$ref": "#/components/parameters/version"
+        },
+        {
           "$ref": "#/components/parameters/service"
+        },
+        {
+          "$ref": "#/components/parameters/traceparent"
+        },
+        {
+          "$ref": "#/components/parameters/tracestate"
+        },
+        {
+          "$ref": "#/components/parameters/If-None-Match"
+        },
+        {
+          "$ref": "#/components/parameters/Accept-Language"
         }
-      ]
+      ],
+      "get": {
+        "tags": [
+          "services"
+        ]
+      },
+      "put": {
+        "tags": [
+          "services"
+        ]
+      },
+      "post": {
+        "tags": [
+          "services"
+        ]
+      },
+      "delete": {
+        "tags": [
+          "services"
+        ]
+      },
+      "options": {
+        "tags": [
+          "services"
+        ]
+      },
+      "head": {
+        "tags": [
+          "services"
+        ]
+      },
+      "patch": {
+        "tags": [
+          "services"
+        ]
+      },
+      "trace": {
+        "tags": [
+          "services"
+        ]
+      }
     }
   },
   "components": {
@@ -577,12 +1010,12 @@
             "authorizationUrl": "https://put-test.data.gov.lt",
             "tokenUrl": "https://put-test.data.gov.lt/auth/token",
             "scopes": {
-              "write:spinta_datasets_gov_myorg_insert": "Insert",
-              "write:spinta_datasets_gov_myorg_upsert": "Upsert",
-              "write:spinta_datasets_gov_myorg_update": "Update",
-              "write:spinta_datasets_gov_myorg_patch": "Patch",
-              "write:spinta_datasets_gov_myorg_delete": "Delete",
-              "write:spinta_datasets_gov_myorg_wipe": "Wipe"
+              "write:datasets/gov/myorg/insert": "Insert",
+              "write:datasets/gov/myorg/upsert": "Upsert",
+              "write:datasets/gov/myorg/update": "Update",
+              "write:datasets/gov/myorg/patch": "Patch",
+              "write:datasets/gov/myorg/delete": "Delete",
+              "write:datasets/gov/myorg/wipe": "Wipe"
             }
           }
         }
@@ -594,18 +1027,45 @@
             "authorizationUrl": "https://put.data.gov.lt",
             "tokenUrl": "https://put.data.gov.lt/auth/token",
             "scopes": {
-              "write:spinta_datasets_gov_myorg_insert": "Insert",
-              "write:spinta_datasets_gov_myorg_upsert": "Upsert",
-              "write:spinta_datasets_gov_myorg_update": "Update",
-              "write:spinta_datasets_gov_myorg_patch": "Patch",
-              "write:spinta_datasets_gov_myorg_delete": "Delete",
-              "write:spinta_datasets_gov_myorg_wipe": "Wipe"
+              "write:datasets/gov/myorg/insert": "Insert",
+              "write:datasets/gov/myorg/upsert": "Upsert",
+              "write:datasets/gov/myorg/update": "Update",
+              "write:datasets/gov/myorg/patch": "Patch",
+              "write:datasets/gov/myorg/delete": "Delete",
+              "write:datasets/gov/myorg/wipe": "Wipe"
             }
           }
         }
       }
     },
     "parameters": {
+      "traceparent": {
+        "name": "traceparent",
+        "in": "header",
+        "description": "The `traceparent` request header represents the incoming request in a tracing system in a common format, understood by all vendors. For more context check [***trace-context***](https://w3c.github.io/trace-context/) documentation.\n",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[a-f0-9]{32}-[a-f0-9]{16}-[0-9]{2}",
+          "description": "Consists of `version` `trace-id` `parent-id` `trace-flags` separated by `-`. \n\n`trace-id` recommended to be in UUIDv4\n",
+          "examples": [
+            "00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01"
+          ]
+        }
+      },
+      "tracestate": {
+        "name": "tracestate",
+        "in": "header",
+        "required": true,
+        "description": "The main purpose of the `tracestate` HTTP header is to provide additional vendor-specific trace identification information across different distributed tracing systems and is a companion header for the `traceparent` field. It also conveys information about the request’s position in multiple distributed tracing graphs.\nFor more context check [***trace-context***](https://w3c.github.io/trace-context/) documentation.\n",
+        "schema": {
+          "type": "string",
+          "description": "Consists of a `list` of `list-members` separated by commas (`,`)\n",
+          "examples": [
+            "rojo=00f067aa0ba902b7,congo=t61rcWkgMzE"
+          ]
+        }
+      },
       "group": {
         "name": "group",
         "in": "path",
@@ -654,6 +1114,15 @@
         },
         "description": "A dataset or a standard abbreviation or short code name.\n\nAll lower case, words separated with `_` symbol.\n"
       },
+      "version": {
+        "name": "version",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/dataset"
+        },
+        "description": "Version determines a specific dataset version to be used when accessing data. This version definitions and metadata can be found in the catalog.\n\nIf version parameter is not provided, latest version is defaulted.\n"
+      },
       "model": {
         "name": "model",
         "in": "path",
@@ -663,16 +1132,52 @@
         },
         "description": "A short model code name.\n\nEach word startds with upper case letter, first letter can't be a\nnumber.\n"
       },
+      "Cache-Control": {
+        "name": "Cache-Control",
+        "in": "header",
+        "required": false,
+        "description": "`Cache-Control` header should be used if service supports caching. It allows the user to provide directives from their side. `no-cache` can be used to request revalidation of data with the origin server before reuse. `no-store` can be used to request to not store the data in caches.\n\nMultiple directives can be used separated by `, `. If they are conflicting, most restrictive directive should be honored.\n",
+        "schema": {
+          "type": "string",
+          "examples": [
+            "no-cache"
+          ]
+        }
+      },
+      "If-None-Match": {
+        "name": "If-None-Match",
+        "in": "header",
+        "required": false,
+        "description": "Using `If-None-Match` client can provide a revision number of an object to server to check if modification to the object has occured, if not, server will return `304 - Not Modified`.\n",
+        "schema": {
+          "type": "string",
+          "examples": [
+            "16dabe62-61e9-4549-a6bd-07cecfbc3508"
+          ]
+        }
+      },
+      "Accept-Language": {
+        "name": "Accept-Language",
+        "in": "header",
+        "required": false,
+        "description": "`Accept-Language` header is used to indicate the language preference of the user. It's a list of values with quality factors (e.g., `\"de, en\"`).\n",
+        "schema": {
+          "type": "string",
+          "examples": [
+            "lt"
+          ]
+        }
+      },
       "query": {
         "name": "query",
         "in": "query",
         "required": false,
-        "description": "Object filter.\nQuery example: \n  \n  ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```\n  \n  ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=1```\n",
+        "description": "Object filter. This filter and the pattern used to form a querie conforms to [***URI syntax standard***](https://datatracker.ietf.org/doc/html/rfc3986).\n\nOther implementations of this specification can use more complex queries depending on filtering rules. They should comply to [***AST***](https://en.wikipedia.org/wiki/Abstract_syntax_tree) formatting and logic.\n\nQuery example: \n\n  ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```\n\n  ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=1```\n",
         "schema": {
           "type": "object",
           "patternProperties": {
-            "^_?[a-z](_?[a-z0-9]+)*(\\._?[a-z](_?[a-z0-9]+)*)*$": {
-              "description": "Filter objects where given property is equal to given value.\n\nGiven property names, must be defined in data model.\n\nSome reserved property names can be used for filtering:\n\n- `_type`\n- `_id`\n\nFilters can by done by joining multiple tables if `.` operator is\nused, which means, that two tables if needed must be joined in\norder to perform a filter.\n\nLast name after `.` can be one of following filter operators:\n\n- `_gt` - greather than\n- `_ge` - greather than or equal\n- `_lt` - less than\n- `_le` - less than than or equal\n- `_sw` - starts with\n- `_ew` - ends with\n- `_co` - contains\n"
+            "^_?[a-z](_?[a-z0-9]+)*(\\\\._?[a-z](_?[a-z0-9]+)*)*$": {
+              "description": "Filter objects where given property is equal to given value.\n\nGiven property names, must be defined in data model.\n\nMore detailed definitions of these properties are available in [**DSA**](https://atviriduomenys.readthedocs.io/dsa/dimensijos.html#savybe)\n\nThe main operations are flexible, but have to conform to a strict syntax.\n\nSome reserved property names can be used for filtering:\n\n- `_type`\n- `_id`\n\nFilters can by done by joining multiple tables if `.` operator is\nused, which means, that two tables if needed must be joined in\norder to perform a filter.\n\nAlso after `.` there can be one of following filter operators:\n\n- `_gt` - greather than\n- `_ge` - greather than or equal\n- `_lt` - less than\n- `_le` - less than than or equal\n- `_sw` - starts with\n- `_ew` - ends with\n- `_co` - contains\n\nFor example to filter code to have agreater value than 42 a query containing `&code._gt=42` can be used.\n"
             }
           },
           "properties": {
@@ -698,16 +1203,12 @@
               "description": "Comma separated list of properties, optionally prefixed with `+` or `-` operators to control sort direction:\n\n- `+` - ascending sort (1, 2, 3), this is used by default if sort direction is not given.\n- `-` - descending sort (3, 2, 1).\n"
             },
             "_count": {
-              "type": "integer",
+              "type": "boolean",
               "description": "Return number of objects matching a given filter. If filter is\nnot given, return number of all objects.\n\nResult should be given in following form:\n\n```json\n{\n  \"_data\": [\n    {\"_count\": 42}\n  ]\n}\n```\n"
             },
-            "_or": {
-              "type": "boolean",
-              "description": "If true, following filters will be interpreted as OR conditions,\nuntil `_or` is set to false.\n\nBy default, filters are interpeted as AND conditions.\n\nIf `_or` is not turned off, then all conditions are interpreted\nas OR.\n"
-            },
-            "_and": {
-              "type": "boolean",
-              "description": "If true, following filters will be interpreted as AND conditions,\nuntil `_and` is set to false.\n\nBy default, filters are interpeted as AND conditions, so usage of\n`_and` makes sense only in an open `_or`.\n"
+            "_page": {
+              "type": "string",
+              "description": "If _limit is set and results in multiple pages of results to be available, _page value is returned as part of the response, linking to the next page after the current set. This value can be used directly for example `&page=\"WyIxOTAzNmM0ZS1mZmIyLTQyMTAtYjIyMi01YTJkZDQ2MWU5MzQiXQ==\"`. Or through a next page request `&page.next`.\n\nRecommeded format `base64` - `base64(json([v1, v2, ...]))`\n"
             }
           }
         }
@@ -740,7 +1241,106 @@
         "description": "A short service code name.\n\nEach word starts with upper case letter, first letter can't be a\nnumber.\n"
       }
     },
+    "headers": {
+      "traceresponse": {
+        "description": "The `traceresponse` HTTP response header field identifies a completed request in a tracing system. For more context check [***trace-context***](https://w3c.github.io/trace-context/) documentation.\n",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "[0-9]{2}-[a-f0-9]{32}-[a-f0-9]{16}-[0-9]{2}",
+          "description": "Consists of four fields - `version` `trace-id` `child-id` `trace-flags` separated by `-`.\n\n`trace-id` recommended to be in UUIDv4\n",
+          "examples": [
+            "00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01"
+          ]
+        }
+      },
+      "Cache-Control": {
+        "description": "`Cache-Control` header that returns the caching information of the service. Caching is optional functionality.\n\nIf implemented should return values that depend on the type of the cache and rules that are set for the data. For example if data should only be stored in private cache (e.g. local caches in browsers) it should return `private`. If there are set parameters on data age as an example it should return `max-age`.\n\nDepending on data usage rules and data sharing agreements that are in place, it should reinforce terms that are relevant to the data in question. Use `no-cache` if data needs to be revalidate before each use with the origin server or `no-store` if data should not be stored in any caches.\n\nMultiple directives can be used separated by `, `. If they are conflicting, most restrictive directive should be honored.\n",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "examples": [
+            "no-store"
+          ]
+        }
+      },
+      "Last-Modified": {
+        "description": "`Last-Modified` header that returns the `timestamp` of the last data modification. This is part of caching and is optional functionality.\n",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "timestamp",
+          "examples": [
+            "Tue, 22 Feb 2022 20:20:20 GMT"
+          ]
+        }
+      },
+      "ETag": {
+        "description": "`ETag` header is an entity tag that uniquely represents the requested resource. It is a revision number for this item.\n",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "examples": [
+            "16dabe62-61e9-4549-a6bd-07cecfbc3508"
+          ]
+        }
+      },
+      "Vary": {
+        "description": "`Vary` is a header used to indicate which headers are used when selecting a representation of a resource in a content negotiation and determines how to match future request headers to decide whether a cached response can be used rather than requesting a fresh one from the origin server. To allow multilanguage content support `Accept-Language` tag is used.\n",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "examples": [
+            "Accept-Language"
+          ]
+        }
+      }
+    },
     "schemas": {
+      "version": {
+        "type": "object",
+        "properties": {
+          "api": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string",
+                "examples": [
+                  "0.0.1"
+                ]
+              }
+            }
+          },
+          "implementation": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "examples": [
+                  "Spinta"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "examples": [
+                  0.1
+                ]
+              }
+            }
+          },
+          "build": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string",
+                "examples": [
+                  "0.0.1"
+                ]
+              }
+            }
+          }
+        }
+      },
       "dataset": {
         "type": "string",
         "pattern": "^[a-z](_?[a-z0-9]+)*$",
@@ -754,80 +1354,6 @@
         "examples": [
           "City"
         ]
-      },
-      "object": {
-        "type": "object",
-        "properties": {
-          "_type": {
-            "type": "string",
-            "examples": [
-              "datasets/gov/dc/geo/Continent"
-            ]
-          },
-          "_id": {
-            "type": "string",
-            "examples": [
-              "abdd1245-bbf9-4085-9366-f11c0f737c1d"
-            ]
-          },
-          "_revision": {
-            "type": "string",
-            "examples": [
-              "16dabe62-61e9-4549-a6bd-07cecfbc3508"
-            ]
-          },
-          "_txn": {
-            "type": "string",
-            "examples": [
-              "792a5029-63c9-4c07-995c-cbc063aaac2c"
-            ]
-          },
-          "_objectType": {
-            "type": "string",
-            "examples": [
-              "Continent"
-            ]
-          },
-          "_value": {
-            "type": "string",
-            "examples": [
-              "Europe"
-            ]
-          }
-        },
-        "patternProperties": {
-          "^[a-z](_?[a-z0-9]+)*$": {
-            "oneOf": [
-              {},
-              {
-                "allOf": [
-                  {
-                    "$ref": "./ref.yaml"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        "additionalProperties": false,
-        "description": "Object represents a single row in a table.\n\nSome properties can reference other objects, using composition as\nspecified in `components/schemas/ref`, optionally dublicating\nproperties from a referenced model or extending referenced model with\nnew properties.\n"
-      },
-      "objects": {
-        "type": "object",
-        "properties": {
-          "_type": {
-            "type": "string",
-            "examples": [
-              "datasets/gov/dc/geo/Continent"
-            ]
-          },
-          "_data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/object"
-            }
-          }
-        }
       },
       "property": {
         "type": "string",
@@ -845,6 +1371,7 @@
       },
       "error": {
         "type": "object",
+        "description": "In addition to usual HTTP error codes, additional error information available from the processing system is passed to the client.\n\nThis would include a more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nMore complex errors can further expand this structure.\n",
         "properties": {
           "type": {
             "type": "string",
@@ -900,6 +1427,126 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "dependency": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": [
+              "Spinta"
+            ]
+          },
+          "healthy": {
+            "type": "boolean"
+          }
+        }
+      },
+      "health": {
+        "type": "object",
+        "properties": {
+          "healthy": {
+            "type": "boolean"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/dependency"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "object": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "description": "Name of the namespace or model\n",
+            "type": "string",
+            "examples": [
+              "datasets/gov/dc/geo/Continent"
+            ]
+          },
+          "_id": {
+            "description": "Unique object ID in UUID format\n",
+            "type": "string",
+            "format": "uuidv4",
+            "examples": [
+              "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+            ]
+          },
+          "_revision": {
+            "description": "Revision number of the object. This number helps with ensuring data consistency during changes. Every time object is changed, it's revision number has to change.\n",
+            "type": "string",
+            "examples": [
+              "16dabe62-61e9-4549-a6bd-07cecfbc3508"
+            ]
+          },
+          "_txn": {
+            "description": "`_txn` is transaction number. Multiple objects can be changed during a single transaction. All objects changed during a single transaction receive same `txn`.\n",
+            "type": "string",
+            "examples": [
+              "792a5029-63c9-4c07-995c-cbc063aaac2c"
+            ]
+          },
+          "_objectType": {
+            "description": "Name of the object that is being added\n",
+            "type": "string",
+            "examples": [
+              "Continent"
+            ]
+          },
+          "_value": {
+            "description": "Value of the object that is being added\n",
+            "type": "string",
+            "examples": [
+              "Europe"
+            ]
+          },
+          "_file": {
+            "description": "A flag that indicates if the object is a file and it's file type. If empty, object is not a file. If value is present, it is a file extension of the file (e.g. \".txt\", \".jpg\").\n",
+            "type": "string",
+            "examples": [
+              "jpg"
+            ]
+          }
+        },
+        "patternProperties": {
+          "^[a-z](_?[a-z0-9]+)*$": {
+            "oneOf": [
+              {},
+              {
+                "allOf": [
+                  {
+                    "$ref": "./ref.yaml"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "description": "Object represents a single row in a table.\n\nSome properties can reference other objects, using composition as\nspecified in `components/schemas/ref`, optionally dublicating\nproperties from a referenced model or extending referenced model with\nnew properties.\n"
+      },
+      "objects": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string",
+            "examples": [
+              "datasets/gov/dc/geo/Continent"
+            ]
+          },
+          "_data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/object"
             }
           }
         }
@@ -1015,13 +1662,6 @@
               "upsert"
             ]
           },
-          "_where": {
-            "type": "string",
-            "pattern": "^[a-z]*$='[a-zA-Z]*$'",
-            "examples": [
-              "name='Europe'"
-            ]
-          },
           "_type": {
             "type": "string",
             "examples": [
@@ -1115,8 +1755,43 @@
       }
     },
     "responses": {
+      "error500": {
+        "description": "Internal Server Error",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/errors"
+            }
+          }
+        }
+      },
+      "error503": {
+        "description": "Service Uavailable",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/errors"
+            }
+          }
+        }
+      },
       "error400": {
         "description": "Bad Request",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
         "content": {
           "application/json": {
             "schema": {
@@ -1133,18 +1808,13 @@
           }
         }
       },
-      "error500": {
-        "description": "Internal Server Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/errors"
-            }
-          }
-        }
-      },
       "error403": {
         "description": "Forbidden",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
         "content": {
           "application/json": {
             "schema": {
@@ -1172,6 +1842,11 @@
       },
       "error404": {
         "description": "Not Found",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
         "content": {
           "application/json": {
             "schema": {

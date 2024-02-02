@@ -63,9 +63,9 @@ tags:
     description: Utility operations performed on the API itself
 
 paths:
-  /version
+  /version:
     $ref: paths/version.yaml
-  /health
+  /health:
     $ref: paths/health.yaml
   /{group}/{form}/{org}/{dataset}/{model}:
     $ref: paths/model.yaml

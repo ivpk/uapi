@@ -52,7 +52,7 @@ get:
     '304':
       description: Not Modified
       headers:
-       traceresponse:
+        traceresponse:
           $ref: ../components/headers/traceresponse.yaml
         Cache-Control:
           $ref: ../components/headers/Cache-Control.yaml
