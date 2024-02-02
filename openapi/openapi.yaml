@@ -1,54 +1,40 @@
 openapi: 3.1.0
+
 info:
   title: Universal application programming interface
   summary: Open Data Repository API for data access and upload
-  description: >
-    The Open Data Repository is an integral part of the Open Data Portal. The
-    purpose of the repository is to publish data at the highest level of
-    maturity, in various formats, via a convenient machine-readable interface
-    (API), adhering to the highest data publishing standards.
+  description: |
+    The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.
 
+    All data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.
 
-    All data sets published in the repository are combined into a large
-    database, where data can be interconnected, presented in bulk or in desired
-    slices. Tools are provided for downloading data incrementally.
-
-
-    The API is generated dynamically from the model code names located in the
-    [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model
-    column. Model names can have namespaces, and namespaces are separated by the
-    `/` symbol, for example:
+    The API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the `/` symbol, for example:
 
     `/datasets/gov/dc/geo/Continent`
 
-    This address is made up of the `datasets/gov/dc/geo` namespace and the
-    `Continent` model name.
+    This address is made up of the `datasets/gov/dc/geo` namespace and the `Continent` model name.
 
-    The `datasets` namespace indicates that the data is raw, i.e., as
-    provided by a certain institution. Over time, all institutional data will be
-    transformed into a uniform national dictionary, and for example
-    `datasets/gov/dc/geo/Continent` may be merged into a common
-    `Continent` model in the root namespace. However, to ensure a stable and
-    constant API, the initial raw data API points will be preserved.
+    The `datasets` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example `datasets/gov/dc/geo/Continent` may be merged into a common `Continent` model in the root namespace. This namespace is likely to be `onthology`, thus defining a specific ruleset for the rest of the URI structure based on a national or EU semantic model. It would be supported by a national metadata catalog, that would be maintained by all organisations in scope and would provide a way to understand and find datasets or their internal structures.
+    
+    However, to ensure a stable and constant API, the initial raw data API endpoints and URIs will be preserved.
 
-    Specifically, all models in the `datasets` namespace have a clearly
-    defined structure. For example, while examining the
-    `datasets/gov/dc/geo/Continent` example, the meanings of the separate
-    path components are as follows:
+    Specifically, all models in the `datasets` namespace have a clearly defined structure. For example, while examining the `datasets/gov/dc/geo/Continent` example, the meanings of the separate path components are as follows:
 
-    - `datasets/` - namespace for raw primary institutional data.
+    * `datasets/` - namespace for raw primary institutional data.
 
-    - `gov/` - namespace for government institution data.
+    * `gov/` - namespace for government institution data.
 
-    - `dc/` - acronym for a specific government institution.
+    * `dc/` - acronym for a specific government institution.
 
-    - `geo/` - abbreviation for the institution's open data set.
+    * `geo/` - abbreviation for the institution's open data set.
 
-    - `Continent` - data model (or table).
+    * `Continent` - data model (or table).
 
-  version: 0.0.2
+  version: 0.1.0
+
 externalDocs:
   url: https://atviriduomenys.readthedocs.io/api/index.html
+
 servers:
   - url: get.data.gov.lt
     description: Production data access server
@@ -58,17 +44,24 @@ servers:
     description: Test data access server
   - url: put-test.data.gov.lt
     description: Test data update server
+
 tags:
   - name: objects
     description: Operations with multiple Objects
   - name: object
     description: Operations with single Object
-  - name: changes
+  - name: change
     description: Change tracking operations
   - name: services
-    description: Service operations
+    description: |
+      Service functions are not as restricted as data API endpoints. Services
+      are not required to return an object with a public id, there are no
+      changes API, nor revisions.
+
+      This section is primarily for definition of legacy or non data access services that do not have to be fully based on DSA data structure.
   - name: utility
     description: Utility operations performed on the API itself
+
 paths:
   /version
     $ref: paths/version.yaml
@@ -80,6 +73,8 @@ paths:
     $ref: paths/object.yaml
   /{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe:
     $ref: paths/wipe.yaml
+  /{gruop}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}:
+    $ref: paths/file.yaml
   /{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}:
     $ref: paths/changes.yaml
   /services/{form}/{org}/{dataset}/{service}:

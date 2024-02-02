@@ -1,4 +1,10 @@
 type: object
+description: |
+  In addition to usual HTTP error codes, additional error information available from the processing system is passed to the client.
+
+  This would include a more detailed overview of the internal, business logic or request processing errors that have occurred.
+
+  More complex errors can further expand this structure.
 properties:
   type:
     type: string
