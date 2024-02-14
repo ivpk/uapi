@@ -6,9 +6,11 @@ parameters:
   - $ref: ../components/parameters/cid.yaml
   - $ref: ../components/parameters/traceparent.yaml
   - $ref: ../components/parameters/tracestate.yaml
+  - $ref: ../components/parameters/If-None-Match.yaml
+  - $ref: ../components/parameters/Accept-Language.yaml
 get:
   tags:
-    - changes
+    - change
   summary: Get all object changes since given {cid} (change id).
   description: |
     Get latest changes to a table.
