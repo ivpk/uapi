@@ -13,7 +13,7 @@ get:
       description: OK
       headers:
         traceresponse:
-          $ref: ../components/headers/traceresponse.aml
+          $ref: ../components/headers/traceresponse.yaml
       content:
         application/json:
           schema:
