@@ -2,7 +2,7 @@ name: version
 in: path
 required: true
 schema:
-  $ref: ../schemas/dataset.yaml
+  $ref: ../schemas/datasetVersion.yaml
 description: |
   Version determines a specific dataset version to be used when accessing data. This version definitions and metadata can be found in the catalog.
 

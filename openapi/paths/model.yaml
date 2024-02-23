@@ -49,6 +49,9 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/objects.yaml
+        text/csv:
+          schema:
+            $ref: ../components/schemas/objects-csv.yaml
     '304':
       description: Not Modified
       headers:

@@ -44,9 +44,10 @@ get:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: ../components/schemas/getone.yaml
-              - $ref: ../components/schemas/object.yaml
+            $ref: ../components/schemas/object.yaml
+        text/csv:
+          schema:
+            $ref: ../components/schemas/objects-csv.yaml
     '304':
       description: Not Modified
       headers:
