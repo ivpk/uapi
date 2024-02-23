@@ -4,10 +4,12 @@ parameters:
 get:
   tags:
     - utility
+  security:
+    - {}
   summary: Get API version
   description: |
     Get the version of the API that is being called
-  operationId: version
+  operationId: apiVersion
   responses:
     '200':
       description: OK

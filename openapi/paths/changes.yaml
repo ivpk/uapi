@@ -1,4 +1,5 @@
 parameters:
+  - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
   - $ref: ../components/parameters/dataset.yaml
@@ -11,6 +12,8 @@ parameters:
 get:
   tags:
     - change
+  security:
+    - {}
   summary: Get all object changes since given {cid} (change id).
   description: |
     Get latest changes to a table.
@@ -30,7 +33,7 @@ get:
     does not match, then client should do a full synce, because if last
     change id does not match, that means, that a data migration or some
     other alterations to data were made, which requires to do a full sync.
-  operationId: changes
+  operationId: getChanges
   responses:
     '200':
       description: OK

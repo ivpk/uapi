@@ -11,9 +11,9 @@ delete:
     - object
   security:
     - UAPI_test_auth:
-        - write:spinta_datasets_gov_myorg_wipe
+        - write:datasets/gov/myorg/myrole/wipe
     - UAPI_prod_auth:
-        - write:spinta_datasets_gov_myorg_wipe
+        - write:datasets/gov/myorg/myrole/wipe
   summary: Hard delete a single object by {id}
   description: >
     ## To be used by exception only
@@ -27,7 +27,7 @@ delete:
     not recommended, since that destroys all if the data change history and it
     may change data IDs. Data should be uploaded once and then updated whith
     what has changed.
-  operationId: wipe
+  operationId: wipeOne
   responses:
     '200':
       description: OK
@@ -41,7 +41,8 @@ delete:
             properties:
               wiped:
                 type: boolean
-                value: true
+                examples:
+		  - true
     '400':
       $ref: ../components/responses/error400.yaml
     '403':

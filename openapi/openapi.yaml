@@ -33,6 +33,9 @@ info:
     **Once the system is fully operational, this API, and other APIs based on this specification will be provided by a unified endpoint api.gov.lt.**
 
   version: 0.1.0
+  license:
+    name: GDFL
+    url: https://www.gnu.org/licenses/fdl-1.3.html
 
 externalDocs:
   url: https://atviriduomenys.readthedocs.io/api/index.html
@@ -69,17 +72,17 @@ paths:
     $ref: paths/version.yaml
   /health:
     $ref: paths/health.yaml
-  /{group}/{form}/{org}/{dataset}/{model}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}:
     $ref: paths/model.yaml
-  /{gruop}/{form}/{org}/{dataset}/{model}/{id}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}:
     $ref: paths/object.yaml
-  /{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/:wipe:
     $ref: paths/wipe.yaml
-  /{gruop}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}:
     $ref: paths/file.yaml
-  /{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/:changes/{cid}:
     $ref: paths/changes.yaml
-  /services/{form}/{org}/{dataset}/{service}:
+  /services/{form}/{org}/{dataset}/{version}/{service}:
     $ref: paths/service.yaml
 components:
   securitySchemes:
