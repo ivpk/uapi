@@ -1,0 +1,9 @@
+name: file
+in: header
+required: false
+description: |
+  `file` header is used to indicate the file that needs to be retrieved form the object structure.
+schema:
+  type: string
+  examples:
+    - "map"

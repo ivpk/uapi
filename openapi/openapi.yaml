@@ -30,7 +30,12 @@ info:
 
     * `Continent` - data model (or table).
 
+    **Once the system is fully operational, this API, and other APIs based on this specification will be provided by a unified endpoint api.gov.lt.**
+
   version: 0.1.0
+  license:
+    name: GDFL
+    url: https://www.gnu.org/licenses/fdl-1.3.html
 
 externalDocs:
   url: https://atviriduomenys.readthedocs.io/api/index.html
@@ -67,41 +72,43 @@ paths:
     $ref: paths/version.yaml
   /health:
     $ref: paths/health.yaml
-  /{group}/{form}/{org}/{dataset}/{model}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}:
     $ref: paths/model.yaml
-  /{gruop}/{form}/{org}/{dataset}/{model}/{id}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}:
     $ref: paths/object.yaml
-  /{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/:wipe:
     $ref: paths/wipe.yaml
-  /{gruop}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}:
     $ref: paths/file.yaml
-  /{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}:
+  /{group}/{form}/{org}/{dataset}/{version}/{model}/:changes/{cid}:
     $ref: paths/changes.yaml
-  /services/{form}/{org}/{dataset}/{service}:
+  /services/{form}/{org}/{dataset}/{version}/{service}:
     $ref: paths/service.yaml
 components:
   securitySchemes:
     # Can be implemented based on the available security settings. Are not limmited to OAuth clientCredentials implementations
 
     UAPI_test_auth:
+      description: Test environment authentication. Provides access based on client credentials. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials
       type: oauth2
       flows:
         clientCredentials:
           authorizationUrl: https://put-test.data.gov.lt
-          tokenUrl: https://put-test.data.gov.lt/auth/token
+          tokenUrl: https://auth.gov.lt/auth/token
           scopes:
-            write:datasets/gov/myorg/insert: Insert
-            write:datasets/gov/myorg/upsert: Upsert
-            write:datasets/gov/myorg/update: Update
-            write:datasets/gov/myorg/patch: Patch
-            write:datasets/gov/myorg/delete: Delete
-            write:datasets/gov/myorg/wipe: Wipe
+            write:datasets/gov/myorg/myrole/insert: Insert
+            write:datasets/gov/myorg/myrole/upsert: Upsert
+            write:datasets/gov/myorg/myrole/update: Update
+            write:datasets/gov/myorg/myrole/patch: Patch
+            write:datasets/gov/myorg/myrole/delete: Delete
+            write:datasets/gov/myorg/myrole/wipe: Wipe
     UAPI_prod_auth:
+      description: Provides access based on client credentials. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials
       type: oauth2
       flows:
         clientCredentials:
           authorizationUrl: https://put.data.gov.lt
-          tokenUrl: https://put.data.gov.lt/auth/token
+          tokenUrl: https://auth.gov.lt/auth/token
           scopes:
             write:datasets/gov/myorg/insert: Insert
             write:datasets/gov/myorg/upsert: Upsert
@@ -109,3 +116,7 @@ components:
             write:datasets/gov/myorg/patch: Patch
             write:datasets/gov/myorg/delete: Delete
             write:datasets/gov/myorg/wipe: Wipe
+    UAPI_example_apiKey:
+      type: apiKey
+      name: api_key
+      in: header

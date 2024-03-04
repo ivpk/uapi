@@ -14,9 +14,12 @@ parameters:
 head:
   tags:
     - objects
+  security:
+    - {}
   summary: Return only headers for the API.
   description: |
     `HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.
+  operationId: modelHead
   responses:
     '200':
       description: OK
@@ -24,10 +27,12 @@ head:
 get:
   tags:
     - objects
+  security:
+    - {}
   summary: Get multiple objects.
   description: |
     Return list of objects for a given model.
-  operationId: getall
+  operationId: getAll
   parameters:
     - $ref: ../components/parameters/query.yaml
 
@@ -49,6 +54,9 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/objects.yaml
+        text/csv:
+          schema:
+            $ref: ../components/schemas/objects-csv.yaml
     '304':
       description: Not Modified
       headers:
@@ -75,9 +83,9 @@ post:
     - objects
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/insert
+      - write:datasets/gov/myorg/myrole/insert
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/insert
+      - write:datasets/gov/myorg/myrole/insert
   summary: Create a single new object or create, update or delete multiple objects in a single request.
   description: |
     ## Operation where one or multiple new objects are created.
@@ -90,7 +98,7 @@ post:
     Or
 
     A single object is created. New object details should be provided in a form of {"_type" : "_value"} format. Example {"Continent" : "Europe"}
-  operationId: insert
+  operationId: insertAll
   requestBody:
     required: true
     content:

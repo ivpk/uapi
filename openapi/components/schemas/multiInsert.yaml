@@ -4,12 +4,12 @@ properties:
     type: array
     items:
       anyOf:
-        - _op: null
+        - _op:
           type: string
           enum:
             - insert
             - patch
-        - _type: null
+        - _type:
           type: string
           examples:
             - datasets/gov/dc/geo/Continent

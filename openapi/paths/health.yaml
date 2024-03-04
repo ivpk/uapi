@@ -4,10 +4,12 @@ parameters:
 get:
   tags:
     - utility
+  security:
+    - {}
   summary: Perform the API health check
   description: |
     Performs API helth check with a check of the underlying system health
-  operationId: health
+  operationId: apiHealth
   responses:
     '200':
       description: OK

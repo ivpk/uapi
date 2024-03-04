@@ -9,10 +9,13 @@ parameters:
   - $ref: ../components/parameters/tracestate.yaml
   - $ref: ../components/parameters/If-None-Match.yaml
   - $ref: ../components/parameters/Accept-Language.yaml
+  - $ref: ../components/parameters/file.yaml
 
 get:
   tags: 
     - object
+  security:
+    - {}
   summary: For a given specific object by {id}, retrieve a {file} from it's structure.
   description: |
     Retrieve a specific file from an object structure, where it is available.
@@ -20,7 +23,7 @@ get:
     By default when retrieving object you recive data items from it's structure, where files (documents, images, etc.) are part of it's set of data, they are not retrieved and this service is to be used.
 
     Returned content depends on the file but is presented as binary.
-  operationId: getfile
+  operationId: getFile
   responses:
     '200':
       description: OK

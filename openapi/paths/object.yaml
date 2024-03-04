@@ -13,9 +13,12 @@ parameters:
 head:
   tags:
     - objects
+  security:
+    - {}
   summary: Return only headers for the API.
   description: |
     `HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.
+  operationId: headOne
   responses:
     '200':
       description: OK
@@ -23,10 +26,12 @@ head:
 get:
   tags:
     - object
+  security:
+    - {}
   summary: Get a single object by given {id}.
   description: |
     Retrieve a single specific object based on it's unique object identifier {id}
-  operationId: getone
+  operationId: getOne
   responses:
     '200':
       description: OK
@@ -44,9 +49,10 @@ get:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: ../components/schemas/getone.yaml
-              - $ref: ../components/schemas/object.yaml
+            $ref: ../components/schemas/object.yaml
+        text/csv:
+          schema:
+            $ref: ../components/schemas/objects-csv.yaml
     '304':
       description: Not Modified
       headers:
@@ -75,13 +81,13 @@ post:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/upsert
+      - write:datasets/gov/myorg/myrole/upsert
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/upsert
+      - write:datasets/gov/myorg/myrole/upsert
   summary: Upsert an object by {id}. This operation can only be performed on fields that can be indexed.
   description: |
     This performs an `Upsert` action. First it checks if there is an existing object based on `{id}`, if there is, it performs `Patch` action, if there isn't it performs `Update`
-  operationId: upsert
+  operationId: upsertOne
   requestBody:
     required: true
     content:
@@ -114,9 +120,9 @@ put:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/update
+      - write:datasets/gov/myorg/myrole/update
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/update
+      - write:datasets/gov/myorg/myrole/update
   summary: Update a single object by {id}.
   description: |
     Overwrite whole object. Property values, that are not given in request
@@ -125,7 +131,7 @@ put:
     This triggers `_rev` to be updated. And before update, existing `_rev`
     will be compared with given in request body, to prevent concurent
     overwrites.
-  operationId: update
+  operationId: updateOne
   requestBody:
     required: true
     content:
@@ -159,9 +165,9 @@ patch:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/patch
+      - write:datasets/gov/myorg/myrole/patch
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/patch
+      - write:datasets/gov/myorg/myrole/patch
   summary: Patch a single object.
   description: |
     Partial object update, only property values given in request body will
@@ -170,7 +176,7 @@ patch:
     This triggers `_rev` to be updated. And before update, existing `_rev`
     will be compared with given in request body, to prevent concurent
     overwrites.
-  operationId: patch
+  operationId: patchOne
   requestBody:
     required: true
     content:
@@ -203,9 +209,9 @@ delete:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/delete
+      - write:datasets/gov/myorg/myrole/delete
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/delete
+      - write:datasets/gov/myorg/myrole/delete
   summary: Delete a single object by {id}
   description: |
     Delete object. This is a soft delete operation, object should not be
@@ -217,7 +223,7 @@ delete:
 
     Before delete, existing `_rev` will be compared with given in request
     body, to prevent concurent overwrites.
-  operationId: delete
+  operationId: deleteOne
   responses:
     '204':
       description: No Content
