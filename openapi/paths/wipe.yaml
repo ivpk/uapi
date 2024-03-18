@@ -42,7 +42,7 @@ delete:
               wiped:
                 type: boolean
                 examples:
-		  - true
+                  - true
     '400':
       $ref: ../components/responses/error400.yaml
     '403':
