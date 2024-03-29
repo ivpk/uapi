@@ -1,0 +1,14 @@
+type: object
+properties:
+  id:
+    description: File unique identifier. During storage this will become an indetifier for the file.
+    type: string
+    format: UUID
+  name:
+    type: string
+  type:
+    description: A [Media type](https://en.wikipedia.org/wiki/Media_type) of the file.
+    type: string
+  size:
+    description: File size in bytes.
+    type: integer

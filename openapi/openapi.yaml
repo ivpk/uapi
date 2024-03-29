@@ -32,7 +32,7 @@ info:
 
     **Once the system is fully operational, this API, and other APIs based on this specification will be provided by a unified endpoint api.gov.lt.**
 
-  version: 0.1.0
+  version: 0.2.0
   license:
     name: GDFL
     url: https://www.gnu.org/licenses/fdl-1.3.html
@@ -86,37 +86,69 @@ paths:
     $ref: paths/service.yaml
 components:
   securitySchemes:
-    # Can be implemented based on the available security settings. Are not limmited to OAuth clientCredentials implementations
 
     UAPI_test_auth:
-      description: Test environment authentication. Provides access based on client credentials. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials
+      description: |
+        Test environment authentication.
+
+        Client Credentials flow
+        Provides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.
+
+        Authorization Code flow
+        Provides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.
       type: oauth2
       flows:
         clientCredentials:
-          authorizationUrl: https://put-test.data.gov.lt
           tokenUrl: https://auth.gov.lt/auth/token
           scopes:
-            write:datasets/gov/myorg/myrole/insert: Insert
-            write:datasets/gov/myorg/myrole/upsert: Upsert
-            write:datasets/gov/myorg/myrole/update: Update
-            write:datasets/gov/myorg/myrole/patch: Patch
-            write:datasets/gov/myorg/myrole/delete: Delete
-            write:datasets/gov/myorg/myrole/wipe: Wipe
+            read:datasets/gov/myorg/@myrole: Read objects in my Org for my Role
+            write:datasets/gov/myorg/@myrole: Write objects in my Org for my Role
+            rw:datasets/gov/myorg/@myrole: Read and Write objects in my Org for my Role
+            write:datasets/gov/myorg/@myrole/:wipe: Wipe objects in my Org for my Role
+            read:datasets/gov/myorg/: Read objects in my Org
+            write:datasets/gov/myorg/: Write objects in my Org
+            rw:datasets/gov/myorg/: Read and Write objects in my Org
+            write:datasets/gov/myorg/:wipe: Wipe objects in my Org
+        authorizationCode:
+          authorizationUrl: https://api.gov.lt/oauth
+          tokenUrl: https://auth.gov.lt/auth/token
+          scopes:
+            read:datasets/gov/:all: Read all objects in raw structures
+            read:onthology/:all: Read all objects
+            read:onthology/myContract/: Read all data based on active Smart Contracts
+
     UAPI_prod_auth:
-      description: Provides access based on client credentials. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials
+      description: |
+        Can be implemented based on the available security settings. Are not limmited to OAuth clientCredentials or authorizationCode implementations. But when API is provided via api.gov.lt gateway, clientCredentials and authorizationCode are preffered method. This functionality will be provided in a tandem with auth.gov.lt server, which will control the authentication. API agent (or equivalent functional component of the implemented API) will receive and double check the tokens (with auth.gov.lt server) and will control the row and operation level authorisation of data access.
+
+        Client Credentials flow
+        Provides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.
+
+        Authorization Code flow
+        Provides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.
+        **Scope elements**
+        - read: - provides access to perform `getOne`, `getAll`, `getChanges` `getFile`.
+        - write: - privides access to perform `insertAll`, `insertOne`, `upsertOne`, `updateOne`, `patchOne`, `deleteOne`
+        - write:{}/:wipe - privides access to perform `wipeOne`
+        - myorg - represents the organisation client is assigned to in the metadata catalogue
+        - myrole - represents the role client is assigned in the metadata catalogue
       type: oauth2
       flows:
         clientCredentials:
-          authorizationUrl: https://put.data.gov.lt
           tokenUrl: https://auth.gov.lt/auth/token
           scopes:
-            write:datasets/gov/myorg/insert: Insert
-            write:datasets/gov/myorg/upsert: Upsert
-            write:datasets/gov/myorg/update: Update
-            write:datasets/gov/myorg/patch: Patch
-            write:datasets/gov/myorg/delete: Delete
-            write:datasets/gov/myorg/wipe: Wipe
-    UAPI_example_apiKey:
-      type: apiKey
-      name: api_key
-      in: header
+            read:datasets/gov/myorg/@myrole: Read objects in my Org for my Role
+            write:datasets/gov/myorg/@myrole: Write objects in my Org for my Role
+            rw:datasets/gov/myorg/@myrole: Read and Write objects in my Org for my Role
+            write:datasets/gov/myorg/@myrole/:wipe: Wipe objects in my Org for my Role
+            read:datasets/gov/myorg/: Read objects in my Org
+            write:datasets/gov/myorg/: Write objects in my Org
+            rw:datasets/gov/myorg/: Read and Write objects in my Org
+            write:datasets/gov/myorg/:wipe: Wipe objects in my Org
+        authorizationCode:
+          authorizationUrl: https://api.gov.lt/oauth
+          tokenUrl: https://auth.gov.lt/auth/token
+          scopes:
+            read:datasets/gov/:all: Read all objects in raw structures
+            read:onthology/:all: Read all objects
+            read:onthology/myContract/: Read all data based on active Smart Contracts

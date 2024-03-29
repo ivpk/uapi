@@ -11,9 +11,9 @@ delete:
     - object
   security:
     - UAPI_test_auth:
-        - write:datasets/gov/myorg/myrole/wipe
+      - write:datasets/gov/myorg/:wipe
     - UAPI_prod_auth:
-        - write:datasets/gov/myorg/myrole/wipe
+      - write:datasets/gov/myorg/:wipe
   summary: Hard delete a single object by {id}
   description: >
     ## To be used by exception only

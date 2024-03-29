@@ -6,12 +6,3 @@ content:
   application/json:
     schema:
       $ref: ../schemas/errors.yaml
-      examples:
-        - errors:
-            - items:
-                code: InsufficientPermission
-                context:
-                  scope: auth_clients
-                message: You need to have 'auth_clients' in order to access this API endpoint.
-                template: You need to have {scope!r} in order to access this API endpoint.
-                type: system
