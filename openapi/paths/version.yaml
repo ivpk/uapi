@@ -20,6 +20,8 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/version.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
     '500':
       $ref: ../components/responses/error500.yaml
     '503':
