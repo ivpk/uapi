@@ -6,7 +6,3 @@ content:
   application/json:
     schema:
       $ref: ../schemas/errors.yaml
-      examples:
-        - errors:
-            error: Invalid_client
-            error_description: Invalid client name

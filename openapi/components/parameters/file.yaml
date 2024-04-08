@@ -1,8 +1,8 @@
 name: file
-in: header
-required: false
+in: path
+required: true
 description: |
-  `file` header is used to indicate the file that needs to be retrieved form the object structure.
+  `file` parameter is used to indicate the file that needs to be retrieved form the object structure.
 schema:
   type: string
   examples:

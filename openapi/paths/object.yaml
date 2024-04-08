@@ -1,4 +1,5 @@
 parameters:
+  - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
   - $ref: ../components/parameters/dataset.yaml
@@ -12,7 +13,7 @@ parameters:
 
 head:
   tags:
-    - objects
+    - object
   security:
     - {}
   summary: Return only headers for the API.
@@ -22,12 +23,29 @@ head:
   responses:
     '200':
       description: OK
+    '400':
+      $ref: ../components/responses/error400.yaml
 
 get:
   tags:
     - object
   security:
-    - {}
+    - UAPI_test_auth:
+      - read:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
+      - read:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
+      - read:datasets/gov/:all
+      - read:onthology/:all
+      - read:onthology/myContract/
+    - UAPI_prod_auth:
+      - read:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
+      - read:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
+      - read:datasets/gov/:all
+      - read:onthology/:all
+      - read:onthology/myContract/
   summary: Get a single object by given {id}.
   description: |
     Retrieve a single specific object based on it's unique object identifier {id}
@@ -81,9 +99,11 @@ post:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/myrole/upsert
+      - write:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/myrole/upsert
+      - write:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
   summary: Upsert an object by {id}. This operation can only be performed on fields that can be indexed.
   description: |
     This performs an `Upsert` action. First it checks if there is an existing object based on `{id}`, if there is, it performs `Patch` action, if there isn't it performs `Update`
@@ -120,9 +140,11 @@ put:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/myrole/update
+      - write:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/myrole/update
+      - write:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
   summary: Update a single object by {id}.
   description: |
     Overwrite whole object. Property values, that are not given in request
@@ -165,9 +187,11 @@ patch:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/myrole/patch
+      - write:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/myrole/patch
+      - write:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
   summary: Patch a single object.
   description: |
     Partial object update, only property values given in request body will
@@ -209,9 +233,11 @@ delete:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/myrole/delete
+      - write:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/myrole/delete
+      - write:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
   summary: Delete a single object by {id}
   description: |
     Delete object. This is a soft delete operation, object should not be

@@ -1,7 +1,9 @@
 parameters:
+  - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
   - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/model.yaml
   - $ref: ../components/parameters/id.yaml
   - $ref: ../components/parameters/traceparent.yaml
@@ -11,9 +13,9 @@ delete:
     - object
   security:
     - UAPI_test_auth:
-        - write:datasets/gov/myorg/myrole/wipe
+      - write:datasets/gov/myorg/:wipe
     - UAPI_prod_auth:
-        - write:datasets/gov/myorg/myrole/wipe
+      - write:datasets/gov/myorg/:wipe
   summary: Hard delete a single object by {id}
   description: >
     ## To be used by exception only
@@ -42,7 +44,7 @@ delete:
               wiped:
                 type: boolean
                 examples:
-		  - true
+                  - true
     '400':
       $ref: ../components/responses/error400.yaml
     '403':

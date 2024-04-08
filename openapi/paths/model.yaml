@@ -23,12 +23,29 @@ head:
   responses:
     '200':
       description: OK
+    '400':
+      $ref: ../components/responses/error400.yaml
 
 get:
   tags:
     - objects
   security:
-    - {}
+    - UAPI_test_auth:
+      - read:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
+      - read:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
+      - read:datasets/gov/:all
+      - read:onthology/:all
+      - read:onthology/myContract/
+    - UAPI_prod_auth:
+      - read:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
+      - read:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
+      - read:datasets/gov/:all
+      - read:onthology/:all
+      - read:onthology/myContract/
   summary: Get multiple objects.
   description: |
     Return list of objects for a given model.
@@ -83,9 +100,11 @@ post:
     - objects
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/myrole/insert
+      - write:datasets/gov/myorg/@myrole
+      - rw:datasets/gov/myorg/@myrole
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/myrole/insert
+      - write:datasets/gov/myorg/
+      - rw:datasets/gov/myorg/
   summary: Create a single new object or create, update or delete multiple objects in a single request.
   description: |
     ## Operation where one or multiple new objects are created.

@@ -1,9 +1,7 @@
 type: object
 properties:
   _type:
-    type: string
-    examples:
-      - datasets/gov/dc/geo/Continent
+    $ref: ./_type.yaml
   _data:
     type: array
     items:

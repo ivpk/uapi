@@ -1,7 +1,15 @@
-type: object
-properties:
-  _type:
-    type: string
-  _id:
-    type: string
-    format: uuidv4
+description: Reference to an entry in another table
+oneOf:
+  - type: object
+    description: maturity level > 3
+    properties:
+      _type:
+        type: string
+      _id:
+        type: string
+        format: uuidv4
+  - type: object
+    description: maturity level >= 3
+    properties:
+      _type:
+        type: string

@@ -43,6 +43,7 @@ options:
   security:
     - {}
   summary: OPTIONS operation
+  operationId: serviceOptions
 head:
   tags:
     - services

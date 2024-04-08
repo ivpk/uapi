@@ -1,11 +1,7 @@
 type: object
 properties:
   _type:
-    description: |
-      Name of the namespace or model
-    type: string
-    examples:
-      - datasets/gov/dc/geo/Continent
+    $ref: ./_type.yaml
   _id:
     description: |
       Unique object ID in UUID format
@@ -46,9 +42,29 @@ properties:
 patternProperties:
   ^[a-z](_?[a-z0-9]+)*$:
     oneOf:
-      - {}
-      - allOf:
-          - $ref: ./ref.yaml
+      - $ref: ./absent.yaml
+      - $ref: ./boolean.yaml
+      - $ref: ./integer.yaml
+      - $ref: ./number.yaml
+      - $ref: ./binary.yaml
+      - $ref: ./string.yaml
+      - $ref: ./text.yaml
+      - $ref: ./dateTime.yaml
+      - $ref: ./date.yaml
+      - $ref: ./time.yaml
+      - $ref: ./temporal.yaml
+      - $ref: ./geometry.yaml
+      - $ref: ./spatial.yaml
+      - $ref: ./money.yaml
+      - $ref: ./file.yaml
+      - $ref: ./image.yaml
+      - $ref: ./generic.yaml
+      - $ref: ./ref.yaml
+      - $ref: ./backref.yaml
+      - $ref: ./array.yaml
+      - $ref: ./URL.yaml
+      - $ref: ./URI.yaml
+      # - $ref: ./object.yaml
 additionalProperties: false
 description: |
   Object represents a single row in a table.
