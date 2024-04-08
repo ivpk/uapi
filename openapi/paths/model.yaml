@@ -23,6 +23,8 @@ head:
   responses:
     '200':
       description: OK
+    '400':
+      $ref: ../components/responses/error400.yaml
 
 get:
   tags:

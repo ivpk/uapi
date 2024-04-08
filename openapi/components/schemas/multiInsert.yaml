@@ -4,13 +4,6 @@ properties:
     type: array
     items:
       anyOf:
-        - _op:
-          type: string
-          enum:
-            - insert
-            - patch
-        - _type:
-          type: string
-          examples:
-            - datasets/gov/dc/geo/Continent
-        - $ref: insert.yaml
+        - $ref: ./_op.yaml
+        - $ref: ./_type.yaml
+        - $ref: ./insert.yaml

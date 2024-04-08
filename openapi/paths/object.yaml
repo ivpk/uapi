@@ -1,4 +1,5 @@
 parameters:
+  - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
   - $ref: ../components/parameters/dataset.yaml
@@ -22,6 +23,8 @@ head:
   responses:
     '200':
       description: OK
+    '400':
+      $ref: ../components/responses/error400.yaml
 
 get:
   tags:
