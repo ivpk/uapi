@@ -3,8 +3,12 @@
   "info": {
     "title": "Universal application programming interface",
     "summary": "Open Data Repository API for data access and upload",
-    "description": "The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.\n\nAll data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.\n\nThe API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the `/` symbol, for example:\n\n`/datasets/gov/dc/geo/Continent`\n\nThis address is made up of the `datasets/gov/dc/geo` namespace and the `Continent` model name.\n\nThe `datasets` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example `datasets/gov/dc/geo/Continent` may be merged into a common `Continent` model in the root namespace. This namespace is likely to be `onthology`, thus defining a specific ruleset for the rest of the URI structure based on a national or EU semantic model. It would be supported by a national metadata catalog, that would be maintained by all organisations in scope and would provide a way to understand and find datasets or their internal structures.\n\nHowever, to ensure a stable and constant API, the initial raw data API endpoints and URIs will be preserved.\n\nSpecifically, all models in the `datasets` namespace have a clearly defined structure. For example, while examining the `datasets/gov/dc/geo/Continent` example, the meanings of the separate path components are as follows:\n\n* `datasets/` - namespace for raw primary institutional data.\n\n* `gov/` - namespace for government institution data.\n\n* `dc/` - acronym for a specific government institution.\n\n* `geo/` - abbreviation for the institution's open data set.\n\n* `Continent` - data model (or table).\n",
-    "version": "0.1.0"
+    "description": "The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.\n\nAll data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.\n\nThe API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the `/` symbol, for example:\n\n`/datasets/gov/dc/geo/Continent`\n\nThis address is made up of the `datasets/gov/dc/geo` namespace and the `Continent` model name.\n\nThe `datasets` namespace indicates that the data is raw, i.e., as provided by a certain institution. Over time, all institutional data will be transformed into a uniform national dictionary, and for example `datasets/gov/dc/geo/Continent` may be merged into a common `Continent` model in the root namespace. This namespace is likely to be `onthology`, thus defining a specific ruleset for the rest of the URI structure based on a national or EU semantic model. It would be supported by a national metadata catalog, that would be maintained by all organisations in scope and would provide a way to understand and find datasets or their internal structures.\n\nHowever, to ensure a stable and constant API, the initial raw data API endpoints and URIs will be preserved.\n\nSpecifically, all models in the `datasets` namespace have a clearly defined structure. For example, while examining the `datasets/gov/dc/geo/Continent` example, the meanings of the separate path components are as follows:\n\n* `datasets/` - namespace for raw primary institutional data.\n\n* `gov/` - namespace for government institution data.\n\n* `dc/` - acronym for a specific government institution.\n\n* `geo/` - abbreviation for the institution's open data set.\n\n* `Continent` - data model (or table).\n\n**Once the system is fully operational, this API, and other APIs based on this specification will be provided by a unified endpoint api.gov.lt.**\n",
+    "version": "0.2.0",
+    "license": {
+      "name": "GDFL",
+      "url": "https://www.gnu.org/licenses/fdl-1.3.html"
+    }
   },
   "servers": [
     {
@@ -63,9 +67,12 @@
         "tags": [
           "utility"
         ],
+        "security": [
+          {}
+        ],
         "summary": "Get API version",
         "description": "Get the version of the API that is being called\n",
-        "operationId": "version",
+        "operationId": "apiVersion",
         "responses": {
           "200": {
             "description": "OK",
@@ -81,6 +88,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
           },
           "500": {
             "$ref": "#/components/responses/error500"
@@ -104,9 +114,12 @@
         "tags": [
           "utility"
         ],
+        "security": [
+          {}
+        ],
         "summary": "Perform the API health check",
         "description": "Performs API helth check with a check of the underlying system health\n",
-        "operationId": "health",
+        "operationId": "apiHealth",
         "responses": {
           "200": {
             "description": "OK",
@@ -123,6 +136,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
           "500": {
             "$ref": "#/components/responses/error500"
           },
@@ -132,7 +148,7 @@
         }
       }
     },
-    "/{group}/{form}/{org}/{dataset}/{model}": {
+    "/{group}/{form}/{org}/{dataset}/{version}/{model}": {
       "parameters": [
         {
           "$ref": "#/components/parameters/group"
@@ -172,11 +188,18 @@
         "tags": [
           "objects"
         ],
+        "security": [
+          {}
+        ],
         "summary": "Return only headers for the API.",
         "description": "`HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.\n",
+        "operationId": "modelHead",
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
           }
         }
       },
@@ -184,9 +207,33 @@
         "tags": [
           "objects"
         ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "read:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole",
+              "read:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/",
+              "read:datasets/gov/:all",
+              "read:onthology/:all",
+              "read:onthology/myContract/"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "read:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole",
+              "read:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/",
+              "read:datasets/gov/:all",
+              "read:onthology/:all",
+              "read:onthology/myContract/"
+            ]
+          }
+        ],
         "summary": "Get multiple objects.",
         "description": "Return list of objects for a given model.\n",
-        "operationId": "getall",
+        "operationId": "getAll",
         "parameters": [
           {
             "$ref": "#/components/parameters/query"
@@ -216,6 +263,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/objects"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/objects-csv"
                 }
               }
             }
@@ -258,18 +310,20 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:datasets/gov/myorg/insert"
+              "write:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:datasets/gov/myorg/insert"
+              "write:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/"
             ]
           }
         ],
         "summary": "Create a single new object or create, update or delete multiple objects in a single request.",
         "description": "## Operation where one or multiple new objects are created.\n\nWhen multiple object are created _data is an array of new objects each listing \n* _op as operation to be performed\n* _type as a namespace of modelname where it is to be performed\n* the new object itself in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n\nOr\n\nA single object is created. New object details should be provided in a form of {\"_type\" : \"_value\"} format. Example {\"Continent\" : \"Europe\"}\n",
-        "operationId": "insert",
+        "operationId": "insertAll",
         "requestBody": {
           "required": true,
           "content": {
@@ -325,8 +379,11 @@
         }
       }
     },
-    "/{gruop}/{form}/{org}/{dataset}/{model}/{id}": {
+    "/{group}/{form}/{org}/{dataset}/{version}/{model}/{id}": {
       "parameters": [
+        {
+          "$ref": "#/components/parameters/group"
+        },
         {
           "$ref": "#/components/parameters/form"
         },
@@ -360,13 +417,20 @@
       ],
       "head": {
         "tags": [
-          "objects"
+          "object"
+        ],
+        "security": [
+          {}
         ],
         "summary": "Return only headers for the API.",
         "description": "`HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.\n",
+        "operationId": "headOne",
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
           }
         }
       },
@@ -374,9 +438,33 @@
         "tags": [
           "object"
         ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "read:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole",
+              "read:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/",
+              "read:datasets/gov/:all",
+              "read:onthology/:all",
+              "read:onthology/myContract/"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "read:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole",
+              "read:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/",
+              "read:datasets/gov/:all",
+              "read:onthology/:all",
+              "read:onthology/myContract/"
+            ]
+          }
+        ],
         "summary": "Get a single object by given {id}.",
         "description": "Retrieve a single specific object based on it's unique object identifier {id}\n",
-        "operationId": "getone",
+        "operationId": "getOne",
         "responses": {
           "200": {
             "description": "OK",
@@ -400,14 +488,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/getone"
-                    },
-                    {
-                      "$ref": "#/components/schemas/object"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/object"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/objects-csv"
                 }
               }
             }
@@ -453,18 +539,20 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:datasets/gov/myorg/upsert"
+              "write:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:datasets/gov/myorg/upsert"
+              "write:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/"
             ]
           }
         ],
         "summary": "Upsert an object by {id}. This operation can only be performed on fields that can be indexed.",
         "description": "This performs an `Upsert` action. First it checks if there is an existing object based on `{id}`, if there is, it performs `Patch` action, if there isn't it performs `Update`\n",
-        "operationId": "upsert",
+        "operationId": "upsertOne",
         "requestBody": {
           "required": true,
           "content": {
@@ -515,18 +603,20 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:datasets/gov/myorg/update"
+              "write:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:datasets/gov/myorg/update"
+              "write:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/"
             ]
           }
         ],
         "summary": "Update a single object by {id}.",
         "description": "Overwrite whole object. Property values, that are not given in request\nbody, will be reset to defaul values.\n\nThis triggers `_rev` to be updated. And before update, existing `_rev`\nwill be compared with given in request body, to prevent concurent\noverwrites.\n",
-        "operationId": "update",
+        "operationId": "updateOne",
         "requestBody": {
           "required": true,
           "content": {
@@ -581,18 +671,20 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:datasets/gov/myorg/patch"
+              "write:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:datasets/gov/myorg/patch"
+              "write:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/"
             ]
           }
         ],
         "summary": "Patch a single object.",
         "description": "Partial object update, only property values given in request body will\nbe update, other properties will not be touched.\n\nThis triggers `_rev` to be updated. And before update, existing `_rev`\nwill be compared with given in request body, to prevent concurent\noverwrites.\n",
-        "operationId": "patch",
+        "operationId": "patchOne",
         "requestBody": {
           "required": true,
           "content": {
@@ -643,18 +735,20 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:datasets/gov/myorg/delete"
+              "write:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:datasets/gov/myorg/delete"
+              "write:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/"
             ]
           }
         ],
         "summary": "Delete a single object by {id}",
         "description": "Delete object. This is a soft delete operation, object should not be\ndeleted, but marked for deletion. Soft delete is needed for changes API\nto know, when something was deleted.\n\nAfter some agreed time period, objects marked as deleted can be deleted\npermanently.\n\nBefore delete, existing `_rev` will be compared with given in request\nbody, to prevent concurent overwrites.\n",
-        "operationId": "delete",
+        "operationId": "deleteOne",
         "responses": {
           "204": {
             "description": "No Content",
@@ -682,8 +776,11 @@
         }
       }
     },
-    "/{gruop}/{form}/{org}/{dataset}/{model}/{id}/:wipe": {
+    "/{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/:wipe": {
       "parameters": [
+        {
+          "$ref": "#/components/parameters/group"
+        },
         {
           "$ref": "#/components/parameters/form"
         },
@@ -692,6 +789,9 @@
         },
         {
           "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/version"
         },
         {
           "$ref": "#/components/parameters/model"
@@ -713,18 +813,18 @@
         "security": [
           {
             "UAPI_test_auth": [
-              "write:spinta_datasets_gov_myorg_wipe"
+              "write:datasets/gov/myorg/:wipe"
             ]
           },
           {
             "UAPI_prod_auth": [
-              "write:spinta_datasets_gov_myorg_wipe"
+              "write:datasets/gov/myorg/:wipe"
             ]
           }
         ],
         "summary": "Hard delete a single object by {id}",
         "description": "## To be used by exception only\n```wipe``` operation is used by exception only, if there were errors in data upload scripts, data was currupted due to errors etc. It is best to test data upload in test environment.\n\nData upload practice of deleting all published data and reuploading it is not recommended, since that destroys all if the data change history and it may change data IDs. Data should be uploaded once and then updated whith what has changed.\n",
-        "operationId": "wipe",
+        "operationId": "wipeOne",
         "responses": {
           "200": {
             "description": "OK",
@@ -740,7 +840,9 @@
                   "properties": {
                     "wiped": {
                       "type": "boolean",
-                      "value": true
+                      "examples": [
+                        true
+                      ]
                     }
                   }
                 }
@@ -765,8 +867,11 @@
         }
       }
     },
-    "/{gruop}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}": {
+    "/{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}": {
       "parameters": [
+        {
+          "$ref": "#/components/parameters/group"
+        },
         {
           "$ref": "#/components/parameters/form"
         },
@@ -796,15 +901,42 @@
         },
         {
           "$ref": "#/components/parameters/Accept-Language"
+        },
+        {
+          "$ref": "#/components/parameters/file"
         }
       ],
       "get": {
         "tags": [
           "object"
         ],
+        "security": [
+          {
+            "UAPI_test_auth": [
+              "read:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole",
+              "read:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/",
+              "read:datasets/gov/:all",
+              "read:onthology/:all",
+              "read:onthology/myContract/"
+            ]
+          },
+          {
+            "UAPI_prod_auth": [
+              "read:datasets/gov/myorg/@myrole",
+              "rw:datasets/gov/myorg/@myrole",
+              "read:datasets/gov/myorg/",
+              "rw:datasets/gov/myorg/",
+              "read:datasets/gov/:all",
+              "read:onthology/:all",
+              "read:onthology/myContract/"
+            ]
+          }
+        ],
         "summary": "For a given specific object by {id}, retrieve a {file} from it's structure.",
         "description": "Retrieve a specific file from an object structure, where it is available.\n\nBy default when retrieving object you recive data items from it's structure, where files (documents, images, etc.) are part of it's set of data, they are not retrieved and this service is to be used.\n\nReturned content depends on the file but is presented as binary.\n",
-        "operationId": "getfile",
+        "operationId": "getFile",
         "responses": {
           "200": {
             "description": "OK",
@@ -869,8 +1001,11 @@
         }
       }
     },
-    "/{group}/{form}/{org}/{dataset}/{model}/:changes/{cid}": {
+    "/{group}/{form}/{org}/{dataset}/{version}/{model}/:changes/{cid}": {
       "parameters": [
+        {
+          "$ref": "#/components/parameters/group"
+        },
         {
           "$ref": "#/components/parameters/form"
         },
@@ -879,6 +1014,9 @@
         },
         {
           "$ref": "#/components/parameters/dataset"
+        },
+        {
+          "$ref": "#/components/parameters/version"
         },
         {
           "$ref": "#/components/parameters/model"
@@ -891,15 +1029,24 @@
         },
         {
           "$ref": "#/components/parameters/tracestate"
+        },
+        {
+          "$ref": "#/components/parameters/If-None-Match"
+        },
+        {
+          "$ref": "#/components/parameters/Accept-Language"
         }
       ],
       "get": {
         "tags": [
-          "changes"
+          "change"
+        ],
+        "security": [
+          {}
         ],
         "summary": "Get all object changes since given {cid} (change id).",
         "description": "Get latest changes to a table.\n\nIf {cid} is not given, return changes, since very first available\nchange.\n\nIf {cid} is gven, return only changes, since given change id, including\nchange id itself.\n\nThis API can return changes, that were returned previously, client\nshould be responsible for checking if a change was received previously\nor not.\n\nLast change id is included in the request, in order for clients to check\nif last change id matches change received by client. If last change\ndoes not match, then client should do a full synce, because if last\nchange id does not match, that means, that a data migration or some\nother alterations to data were made, which requires to do a full sync.\n",
-        "operationId": "changes",
+        "operationId": "getChanges",
         "responses": {
           "200": {
             "description": "OK",
@@ -929,7 +1076,7 @@
         }
       }
     },
-    "/services/{form}/{org}/{dataset}/{service}": {
+    "/services/{form}/{org}/{dataset}/{version}/{service}": {
       "parameters": [
         {
           "$ref": "#/components/parameters/form"
@@ -962,77 +1109,139 @@
       "get": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "GET operation",
+        "operationId": "getService"
       },
       "put": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "PUT operation",
+        "operationId": "putService"
       },
       "post": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "POST operation",
+        "operationId": "postService"
       },
       "delete": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "DELETE operation",
+        "operationId": "deleteService"
       },
       "options": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "OPTIONS operation",
+        "operationId": "serviceOptions"
       },
       "head": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "HEAD operation",
+        "operationId": "serviceHead"
       },
       "patch": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "PATCH operation",
+        "operationId": "patchService"
       },
       "trace": {
         "tags": [
           "services"
-        ]
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "TRACE operation",
+        "operationId": "serviceTrace"
       }
     }
   },
   "components": {
     "securitySchemes": {
       "UAPI_test_auth": {
+        "description": "Test environment authentication.\n\nClient Credentials flow\nProvides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.\n\nAuthorization Code flow\nProvides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.\n",
         "type": "oauth2",
         "flows": {
           "clientCredentials": {
-            "authorizationUrl": "https://put-test.data.gov.lt",
-            "tokenUrl": "https://put-test.data.gov.lt/auth/token",
+            "tokenUrl": "https://auth.gov.lt/auth/token",
             "scopes": {
-              "write:datasets/gov/myorg/insert": "Insert",
-              "write:datasets/gov/myorg/upsert": "Upsert",
-              "write:datasets/gov/myorg/update": "Update",
-              "write:datasets/gov/myorg/patch": "Patch",
-              "write:datasets/gov/myorg/delete": "Delete",
-              "write:datasets/gov/myorg/wipe": "Wipe"
+              "read:datasets/gov/myorg/@myrole": "Read objects in my Org for my Role",
+              "write:datasets/gov/myorg/@myrole": "Write objects in my Org for my Role",
+              "rw:datasets/gov/myorg/@myrole": "Read and Write objects in my Org for my Role",
+              "write:datasets/gov/myorg/@myrole/:wipe": "Wipe objects in my Org for my Role",
+              "read:datasets/gov/myorg/": "Read objects in my Org",
+              "write:datasets/gov/myorg/": "Write objects in my Org",
+              "rw:datasets/gov/myorg/": "Read and Write objects in my Org",
+              "write:datasets/gov/myorg/:wipe": "Wipe objects in my Org"
+            }
+          },
+          "authorizationCode": {
+            "authorizationUrl": "https://api.gov.lt/oauth",
+            "tokenUrl": "https://auth.gov.lt/auth/token",
+            "scopes": {
+              "read:datasets/gov/:all": "Read all objects in raw structures",
+              "read:onthology/:all": "Read all objects",
+              "read:onthology/myContract/": "Read all data based on active Smart Contracts"
             }
           }
         }
       },
       "UAPI_prod_auth": {
+        "description": "Can be implemented based on the available security settings. Are not limmited to OAuth clientCredentials or authorizationCode implementations. But when API is provided via api.gov.lt gateway, clientCredentials and authorizationCode are preffered method. This functionality will be provided in a tandem with auth.gov.lt server, which will control the authentication. API agent (or equivalent functional component of the implemented API) will receive and double check the tokens (with auth.gov.lt server) and will control the row and operation level authorisation of data access.\n\nClient Credentials flow\nProvides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.\n\nAuthorization Code flow\nProvides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.\n**Scope elements**\n- read: - provides access to perform `getOne`, `getAll`, `getChanges` `getFile`.\n- write: - privides access to perform `insertAll`, `insertOne`, `upsertOne`, `updateOne`, `patchOne`, `deleteOne`\n- write:{}/:wipe - privides access to perform `wipeOne`\n- myorg - represents the organisation client is assigned to in the metadata catalogue\n- myrole - represents the role client is assigned in the metadata catalogue\n",
         "type": "oauth2",
         "flows": {
           "clientCredentials": {
-            "authorizationUrl": "https://put.data.gov.lt",
-            "tokenUrl": "https://put.data.gov.lt/auth/token",
+            "tokenUrl": "https://auth.gov.lt/auth/token",
             "scopes": {
-              "write:datasets/gov/myorg/insert": "Insert",
-              "write:datasets/gov/myorg/upsert": "Upsert",
-              "write:datasets/gov/myorg/update": "Update",
-              "write:datasets/gov/myorg/patch": "Patch",
-              "write:datasets/gov/myorg/delete": "Delete",
-              "write:datasets/gov/myorg/wipe": "Wipe"
+              "read:datasets/gov/myorg/@myrole": "Read objects in my Org for my Role",
+              "write:datasets/gov/myorg/@myrole": "Write objects in my Org for my Role",
+              "rw:datasets/gov/myorg/@myrole": "Read and Write objects in my Org for my Role",
+              "write:datasets/gov/myorg/@myrole/:wipe": "Wipe objects in my Org for my Role",
+              "read:datasets/gov/myorg/": "Read objects in my Org",
+              "write:datasets/gov/myorg/": "Write objects in my Org",
+              "rw:datasets/gov/myorg/": "Read and Write objects in my Org",
+              "write:datasets/gov/myorg/:wipe": "Wipe objects in my Org"
+            }
+          },
+          "authorizationCode": {
+            "authorizationUrl": "https://api.gov.lt/oauth",
+            "tokenUrl": "https://auth.gov.lt/auth/token",
+            "scopes": {
+              "read:datasets/gov/:all": "Read all objects in raw structures",
+              "read:onthology/:all": "Read all objects",
+              "read:onthology/myContract/": "Read all data based on active Smart Contracts"
             }
           }
         }
@@ -1119,7 +1328,7 @@
         "in": "path",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/dataset"
+          "$ref": "#/components/schemas/datasetVersion"
         },
         "description": "Version determines a specific dataset version to be used when accessing data. This version definitions and metadata can be found in the catalog.\n\nIf version parameter is not provided, latest version is defaulted.\n"
       },
@@ -1221,6 +1430,18 @@
           "$ref": "#/components/schemas/id"
         },
         "description": "Public global object identifier.\n\nIdentifiers should be UUID v4.\n\nOnce object is assigned a global identifier, it should never change.\nInternally local identifiers, should be associated with public\nidentifiers.\n"
+      },
+      "file": {
+        "name": "file",
+        "in": "path",
+        "required": true,
+        "description": "`file` parameter is used to indicate the file that needs to be retrieved form the object structure.\n",
+        "schema": {
+          "type": "string",
+          "examples": [
+            "map"
+          ]
+        }
       },
       "cid": {
         "name": "cid",
@@ -1371,7 +1592,7 @@
       },
       "error": {
         "type": "object",
-        "description": "In addition to usual HTTP error codes, additional error information available from the processing system is passed to the client.\n\nThis would include a more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nMore complex errors can further expand this structure.\n",
+        "description": "In addition to usual HTTP error codes, additional error information available from the processing system is passed to the client.\n\nThis should include a more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nMore complex errors can further expand this structure.\n",
         "properties": {
           "type": {
             "type": "string",
@@ -1383,21 +1604,41 @@
             ]
           },
           "code": {
-            "type": "string",
-            "pattern": "^[A-Z]([A-Z]?[a-z0-9]+)*$",
-            "examples": [
-              "NotImplementedError",
-              "TypeError"
+            "description": "Each code corresponds to template text for that code",
+            "type": "integer",
+            "enum": [
+              400,
+              401,
+              403,
+              404,
+              409,
+              500,
+              503
             ]
           },
           "template": {
-            "type": "string"
+            "description": "Corresponds to HTTP code",
+            "type": "string",
+            "enum": [
+              "Bad Request",
+              "Unauthorised",
+              "Forbidden",
+              "Not Found",
+              "Conflict",
+              "Internal Server Error",
+              "Service Unavalable"
+            ]
           },
           "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
             "type": "string",
             "examples": [
               "Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>",
-              "Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead."
+              "Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.",
+              "Property {property!r} not found",
+              "Given value {value} is not defined in enum.",
+              "New item has revision already set",
+              "You do not have permission to push this property."
             ]
           },
           "context": {
@@ -1463,15 +1704,25 @@
           }
         }
       },
+      "datasetVersion": {
+        "type": "integer",
+        "pattern": "^[0-9]+$",
+        "examples": [
+          1
+        ]
+      },
+      "_type": {
+        "description": "Name of the namespace or model\n",
+        "type": "string",
+        "examples": [
+          "datasets/gov/dc/geo/Continent"
+        ]
+      },
       "object": {
         "type": "object",
         "properties": {
           "_type": {
-            "description": "Name of the namespace or model\n",
-            "type": "string",
-            "examples": [
-              "datasets/gov/dc/geo/Continent"
-            ]
+            "$ref": "#/components/schemas/_type"
           },
           "_id": {
             "description": "Unique object ID in UUID format\n",
@@ -1520,13 +1771,71 @@
         "patternProperties": {
           "^[a-z](_?[a-z0-9]+)*$": {
             "oneOf": [
-              {},
               {
-                "allOf": [
-                  {
-                    "$ref": "./ref.yaml"
-                  }
-                ]
+                "$ref": "./absent.yaml"
+              },
+              {
+                "$ref": "./boolean.yaml"
+              },
+              {
+                "$ref": "./integer.yaml"
+              },
+              {
+                "$ref": "./number.yaml"
+              },
+              {
+                "$ref": "./binary.yaml"
+              },
+              {
+                "$ref": "./string.yaml"
+              },
+              {
+                "$ref": "./text.yaml"
+              },
+              {
+                "$ref": "./dateTime.yaml"
+              },
+              {
+                "$ref": "./date.yaml"
+              },
+              {
+                "$ref": "./time.yaml"
+              },
+              {
+                "$ref": "./temporal.yaml"
+              },
+              {
+                "$ref": "./geometry.yaml"
+              },
+              {
+                "$ref": "./spatial.yaml"
+              },
+              {
+                "$ref": "./money.yaml"
+              },
+              {
+                "$ref": "./file.yaml"
+              },
+              {
+                "$ref": "./image.yaml"
+              },
+              {
+                "$ref": "./generic.yaml"
+              },
+              {
+                "$ref": "./ref.yaml"
+              },
+              {
+                "$ref": "./backref.yaml"
+              },
+              {
+                "$ref": "./array.yaml"
+              },
+              {
+                "$ref": "./URL.yaml"
+              },
+              {
+                "$ref": "./URI.yaml"
               }
             ]
           }
@@ -1550,6 +1859,38 @@
             }
           }
         }
+      },
+      "object-csv": {
+        "type": "string",
+        "description": "A string of object values separated by `,`",
+        "examples": [
+          "datasets/gov/dc/geo/Continent,abdd1245-bbf9-4085-9366-f11c0f737c1d,16dabe62-61e9-4549-a6bd-07cecfbc3508,792a5029-63c9-4c07-995c-cbc063aaac2c,Continent,Europe,"
+        ]
+      },
+      "objects-csv": {
+        "type": "object",
+        "properties": {
+          "_header": {
+            "type": "string",
+            "description": "A string of header values of the object separated by ','",
+            "examples": [
+              "_type,_id,_revision,_txn,_objectType,_value"
+            ]
+          },
+          "_data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/object-csv"
+            }
+          }
+        }
+      },
+      "_op": {
+        "type": "string",
+        "enum": [
+          "insert",
+          "patch"
+        ]
       },
       "insert": {
         "type": "object",
@@ -1577,19 +1918,10 @@
             "items": {
               "anyOf": [
                 {
-                  "_op": null,
-                  "type": "string",
-                  "enum": [
-                    "insert",
-                    "patch"
-                  ]
+                  "$ref": "#/components/schemas/_op"
                 },
                 {
-                  "_type": null,
-                  "type": "string",
-                  "examples": [
-                    "datasets/gov/dc/geo/Continent"
-                  ]
+                  "$ref": "#/components/schemas/_type"
                 },
                 {
                   "$ref": "#/components/schemas/insert"
@@ -1598,35 +1930,6 @@
             }
           }
         }
-      },
-      "getone": {
-        "type": "object",
-        "properties": {
-          "_type": {
-            "type": "string"
-          },
-          "_id": {
-            "type": "string",
-            "format": "uuidv4",
-            "examples": [
-              "abdd1245-bbf9-4085-9366-f11c0f737c1d"
-            ]
-          },
-          "_rev": {
-            "type": "string",
-            "format": "uuidv4",
-            "examples": [
-              "16dabe62-61e9-4549-a6bd-07cecfbc3508"
-            ]
-          },
-          "_txn": {
-            "type": "string",
-            "examples": [
-              "792a5029-63c9-4c07-995c-cbc063aaac2c"
-            ]
-          }
-        },
-        "additionalProperties": false
       },
       "update": {
         "type": "object",
@@ -1740,10 +2043,7 @@
         "type": "object",
         "properties": {
           "_type": {
-            "type": "string",
-            "examples": [
-              "datasets/gov/dc/geo/Continent"
-            ]
+            "$ref": "#/components/schemas/_type"
           },
           "_data": {
             "type": "array",
@@ -1755,6 +2055,21 @@
       }
     },
     "responses": {
+      "error400": {
+        "description": "Bad Request",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/errors"
+            }
+          }
+        }
+      },
       "error500": {
         "description": "Internal Server Error",
         "headers": {
@@ -1785,29 +2100,6 @@
           }
         }
       },
-      "error400": {
-        "description": "Bad Request",
-        "headers": {
-          "traceresponse": {
-            "$ref": "#/components/headers/traceresponse"
-          }
-        },
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/errors",
-              "examples": [
-                {
-                  "errors": {
-                    "error": "Invalid_client",
-                    "error_description": "Invalid client name"
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
       "error403": {
         "description": "Forbidden",
         "headers": {
@@ -1818,24 +2110,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/errors",
-              "examples": [
-                {
-                  "errors": [
-                    {
-                      "items": {
-                        "code": "InsufficientPermission",
-                        "context": {
-                          "scope": "auth_clients"
-                        },
-                        "message": "You need to have 'auth_clients' in order to access this API endpoint.",
-                        "template": "You need to have {scope!r} in order to access this API endpoint.",
-                        "type": "system"
-                      }
-                    }
-                  ]
-                }
-              ]
+              "$ref": "#/components/schemas/errors"
             }
           }
         }
@@ -1850,15 +2125,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/errors",
-              "examples": [
-                {
-                  "errors": {
-                    "error": "ItemDoesNotExist",
-                    "error_description": "Resource 'c9b40700-ddbf-48d9-b747-d1f90a37e32c' not found."
-                  }
-                }
-              ]
+              "$ref": "#/components/schemas/errors"
             }
           }
         }
