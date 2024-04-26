@@ -1,0 +1,35 @@
+type: object
+properties:
+  code: 
+    type: string
+    value: InvalidToken
+  status_code:
+    type: integer
+    value: 401
+    description: '401'
+  type:
+    type: string
+    value: system
+    description: system
+  template:
+    type: string
+    value: Invalid token
+    description: Invalid token
+  headers:
+    type: string
+    value: "{WWW-Authenticate': 'Bearer error'='invalid_token'}"
+    description: "{'WWW-Authenticate': 'Bearer error'='invalid_token'}"
+  message:
+    description: |
+      Message within the error object contains a more detailed description of the server errors.
+      These should include more detailed overview of the internal, business logic or request processing errors that have occurred.
+
+      For example:
+        - "Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>"
+        - "Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead."
+        - "Property {property!r} not found"
+        - "Given value {value} is not defined in enum."
+        - "New item has revision already set"
+        - "You do not have permission to push this property."
+    type: string
+  additionalProperties: true

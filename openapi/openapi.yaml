@@ -31,8 +31,12 @@ info:
     * `Continent` - data model (or table).
 
     **Once the system is fully operational, this API, and other APIs based on this specification will be provided by a unified endpoint api.gov.lt.**
-
-  version: 0.2.0
+  termsOfService: https://creativecommons.org/licenses/by/4.0/
+  contact:
+    name: IVPK
+    url: https://ivpk.lrv.lt/
+    email: info@ivpk.lt
+  version: 0.2.1
   license:
     name: GDFL
     url: https://www.gnu.org/licenses/fdl-1.3.html
@@ -72,17 +76,19 @@ paths:
     $ref: paths/version.yaml
   /health:
     $ref: paths/health.yaml
-  /{group}/{form}/{org}/{dataset}/{version}/{model}:
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}:
     $ref: paths/model.yaml
-  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}:
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}:
     $ref: paths/object.yaml
-  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/:wipe:
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/:wipe:
     $ref: paths/wipe.yaml
-  /{group}/{form}/{org}/{dataset}/{version}/{model}/{id}/{file}:
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/{property}:
+    $ref: paths/property.yaml
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/{file}:
     $ref: paths/file.yaml
-  /{group}/{form}/{org}/{dataset}/{version}/{model}/:changes/{cid}:
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/:changes/{cid}:
     $ref: paths/changes.yaml
-  /services/{form}/{org}/{dataset}/{version}/{service}:
+  /services/{form}/{org}/{catalog}/{dataset}/{version}/{service}:
     $ref: paths/service.yaml
 components:
   securitySchemes:
@@ -96,59 +102,94 @@ components:
 
         Authorization Code flow
         Provides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.
+
+        **Scope elements**
+        The core structure of the scope is `uapi:/{group}/{form}/{org}/{catalog}/{dataset}/{model}/@{scope}/:{action}`
+
+        This is a full path that can be used to narrow down the scope of access. It is constructed from these elements:
+          - `uapi:/` - core API element. Grants all access if used on its own.
+          - `uapi:/:{action}` - provides `{action}` access on all elements.
+          - `uapi:/@{scope}` - provides all access on elements based on `{scope}` filter.
+          - `uapi:/@{scope}/:{action}` - provides `{action}` acces s on elements based on `{scope}` filter.
+          - `uapi:/{group}/{form}/{org}/{catalog}/{dataset}` - provides all access for a specific `{dataset}`
+
+        List of available `{action}`:
+          - `getone` - ability to get one object data, based on provided identifier.
+          - `getall` - ability to get a list of all objects.
+          - `search` - ability to get data based on URL query.
+          - `changes` - ability to get change history of a single object or multiple objects.
+          - `insert` - ability to create new objects.
+          - `update` - ability to update existing objects.
+          - `delete` - galimybė trinti objektus, paliekant įrašą keitimų istorijoje.
+          - `wipe` - galimybė neatstatomai trinti objektus, nepaliekant įrašo keitimų istorijoje.
+
+        Combined actions:
+          - `read` - combines getone, getall, search, changes.
+          - `write` - combines insert, update, delete.
+          - `upsert` - combines insert and update.
+          - `rw` - combines read and write.
+
+        The scope definition is dynamic and is dependent on the specific resource and UAPI implementation. Additional usage specific scope can be defined added to the flows below.
+
+        The mandatory part is the use of OAuth as the authentication and authorization method and the use of either Client Credentials or Autorization Code flows, or both.
+
       type: oauth2
       flows:
         clientCredentials:
           tokenUrl: https://auth.gov.lt/auth/token
           scopes:
-            read:datasets/gov/myorg/@myrole: Read objects in my Org for my Role
-            write:datasets/gov/myorg/@myrole: Write objects in my Org for my Role
-            rw:datasets/gov/myorg/@myrole: Read and Write objects in my Org for my Role
-            write:datasets/gov/myorg/@myrole/:wipe: Wipe objects in my Org for my Role
-            read:datasets/gov/myorg/: Read objects in my Org
-            write:datasets/gov/myorg/: Write objects in my Org
-            rw:datasets/gov/myorg/: Read and Write objects in my Org
-            write:datasets/gov/myorg/:wipe: Wipe objects in my Org
+            {}
         authorizationCode:
           authorizationUrl: https://api.gov.lt/oauth
           tokenUrl: https://auth.gov.lt/auth/token
           scopes:
-            read:datasets/gov/:all: Read all objects in raw structures
-            read:onthology/:all: Read all objects
-            read:onthology/myContract/: Read all data based on active Smart Contracts
+            {}
 
     UAPI_prod_auth:
       description: |
-        Can be implemented based on the available security settings. Are not limmited to OAuth clientCredentials or authorizationCode implementations. But when API is provided via api.gov.lt gateway, clientCredentials and authorizationCode are preffered method. This functionality will be provided in a tandem with auth.gov.lt server, which will control the authentication. API agent (or equivalent functional component of the implemented API) will receive and double check the tokens (with auth.gov.lt server) and will control the row and operation level authorisation of data access.
-
         Client Credentials flow
         Provides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.
 
         Authorization Code flow
         Provides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.
+
         **Scope elements**
-        - read: - provides access to perform `getOne`, `getAll`, `getChanges` `getFile`.
-        - write: - privides access to perform `insertAll`, `insertOne`, `upsertOne`, `updateOne`, `patchOne`, `deleteOne`
-        - write:{}/:wipe - privides access to perform `wipeOne`
-        - myorg - represents the organisation client is assigned to in the metadata catalogue
-        - myrole - represents the role client is assigned in the metadata catalogue
+        The core structure of the scope is `uapi:/{group}/{form}/{org}/{catalog}/{dataset}/{model}/@{scope}/:{action}`
+
+        This is a full path that can be used to narrow down the scope of access. It is constructed from these elements:
+          - `uapi:/` - core API element. Grants all access if used on its own.
+          - `uapi:/:{action}` - provides `{action}` access on all elements.
+          - `uapi:/@{scope}` - provides all access on elements based on `{scope}` filter.
+          - `uapi:/@{scope}/:{action}` - provides `{action}` acces s on elements based on `{scope}` filter.
+          - `uapi:/{group}/{form}/{org}/{catalog}/{dataset}` - provides all access for a specific `{dataset}`
+
+        List of available `{action}`:
+          - `getone` - ability to get one object data, based on provided identifier.
+          - `getall` - ability to get a list of all objects.
+          - `search` - ability to get data based on URL query.
+          - `changes` - ability to get change history of a single object or multiple objects.
+          - `insert` - ability to create new objects.
+          - `update` - ability to update existing objects.
+          - `delete` - galimybė trinti objektus, paliekant įrašą keitimų istorijoje.
+          - `wipe` - galimybė neatstatomai trinti objektus, nepaliekant įrašo keitimų istorijoje.
+
+        Combined actions:
+          - `read` - combines getone, getall, search, changes.
+          - `write` - combines insert, update, delete.
+          - `upsert` - combines insert and update.
+          - `rw` - combines read and write.
+
+        The scope definition is dynamic and is dependent on the specific resource and UAPI implementation. Additional usage specific scope can be defined added to the flows below.
+
+        The mandatory part is the use of OAuth as the authentication and authorization method and the use of either Client Credentials or Autorization Code flows, or both.
       type: oauth2
       flows:
-        clientCredentials:
+        clientCredentials: 
           tokenUrl: https://auth.gov.lt/auth/token
           scopes:
-            read:datasets/gov/myorg/@myrole: Read objects in my Org for my Role
-            write:datasets/gov/myorg/@myrole: Write objects in my Org for my Role
-            rw:datasets/gov/myorg/@myrole: Read and Write objects in my Org for my Role
-            write:datasets/gov/myorg/@myrole/:wipe: Wipe objects in my Org for my Role
-            read:datasets/gov/myorg/: Read objects in my Org
-            write:datasets/gov/myorg/: Write objects in my Org
-            rw:datasets/gov/myorg/: Read and Write objects in my Org
-            write:datasets/gov/myorg/:wipe: Wipe objects in my Org
+            {}
         authorizationCode:
           authorizationUrl: https://api.gov.lt/oauth
           tokenUrl: https://auth.gov.lt/auth/token
           scopes:
-            read:datasets/gov/:all: Read all objects in raw structures
-            read:onthology/:all: Read all objects
-            read:onthology/myContract/: Read all data based on active Smart Contracts
+            {}

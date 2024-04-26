@@ -1,5 +1,7 @@
 type: object
 properties:
+  _context:
+    $ref: ./_context.yaml
   _type:
     $ref: ./_type.yaml
   _id:
@@ -33,12 +35,20 @@ properties:
     type: string
     examples:
       - Europe
-  _file:
+  _created:
     description: |
-      A flag that indicates if the object is a file and it's file type. If empty, object is not a file. If value is present, it is a file extension of the file (e.g. ".txt", ".jpg").
+      Date and time when the object was created provided in a standard format based on [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html)
+
+      Minimum value: `0001-01-01T00:00:00`
+      Maximum value: `999-12-31T23:59:59.999999`
     type: string
-    examples:
-      - jpg
+  _updated:
+    description: |
+      Date and time when the object was updated provided in a standard format based on [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html)
+
+      Minimum value: `0001-01-01T00:00:00`
+      Maximum value: `999-12-31T23:59:59.999999`
+    type: string
 patternProperties:
   ^[a-z](_?[a-z0-9]+)*$:
     oneOf:
@@ -62,9 +72,9 @@ patternProperties:
       - $ref: ./ref.yaml
       - $ref: ./backref.yaml
       - $ref: ./array.yaml
-      - $ref: ./URL.yaml
-      - $ref: ./URI.yaml
-      # - $ref: ./object.yaml
+      - $ref: ./url.yaml
+      - $ref: ./uri.yaml
+      - $ref: ./jsonobject.yaml
 additionalProperties: false
 description: |
   Object represents a single row in a table.

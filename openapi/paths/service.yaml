@@ -1,6 +1,7 @@
 parameters:
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/catalog.yaml
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/service.yaml
