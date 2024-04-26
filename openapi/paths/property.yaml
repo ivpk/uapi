@@ -60,7 +60,7 @@ get:
               - $ref: ../components/schemas/geometry.yaml
               - $ref: ../components/schemas/spatial.yaml
               - $ref: ../components/schemas/money.yaml
-              - $ref: ../components/schemas/file..yaml
+              - $ref: ../components/schemas/file.yaml
               - $ref: ../components/schemas/image.yaml
               - $ref: ../components/schemas/generic.yaml
               - $ref: ../components/schemas/ref.yaml
