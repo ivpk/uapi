@@ -2,18 +2,15 @@ type: object
 properties:
   code: 
     type: string
-    value: ItemDoesNotExist
+    description: ItemDoesNotExist
   status_code:
     type: integer
-    value: 404
     description: '404'
   type:
     type: string
-    value: system
     description: system
   template:
     type: string
-    value: Resource {id!r} not found.
     description: Resource {id!r} not found.
   message:
     description: |

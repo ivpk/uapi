@@ -2,18 +2,15 @@ type: object
 properties:
   code: 
     type: string
-    value: AuthorizedClientsOnly
+    description: AuthorizedClientsOnly
   status_code:
     type: integer
-    value: 401
     description: '401'
   type:
     type: string
-    value: system
     description: system
   template:
     type: string
-    value: This resource can only be accessed by an authorized client.
     description: This resource can only be accessed by an authorized client.
   message:
     description: |

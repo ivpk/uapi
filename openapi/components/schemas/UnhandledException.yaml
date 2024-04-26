@@ -2,25 +2,21 @@ type: object
 properties:
   code: 
     type: string
-    value: UnhandledException
+    description: UnhandledException
   status_code:
     type: integer
-    value: 500
     description: '500'
   type:
     type: string
-    value: system
     description: system
   template:
     type: string
-    value: "Unhandled exception {exception}: {error}."
     description: "Unhandled exception {exception}: {error}."
   context:
     type: object
     properties:
       exception:
         type: string
-        value: 'error.__class__.__name__'
         description: 'error.__class__.__name__'
   message:
     description: |

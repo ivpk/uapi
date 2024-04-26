@@ -18,15 +18,16 @@ get:
     - object
   security:
     - UAPI_test_auth:
-      -
+      - uapi:/
     - UAPI_prod_auth:
-      -
+      - uapi:/
   summary: For a given specific object by {id}, retrieve a {property} from it's structure (subresource).
   description: |
     Retrieve a specific property from an object structure.
 
     By default when retrieving object you recive all data items from it's structure, using this service you retrieve a specific property from it's structure.
 
+    If provided {property} is a file instead of getting the data, file is provided instead as binary bit stream.
   operationId: getProperty
   responses:
     "200":
@@ -60,7 +61,6 @@ get:
               - $ref: ../components/schemas/geometry.yaml
               - $ref: ../components/schemas/spatial.yaml
               - $ref: ../components/schemas/money.yaml
-              - $ref: ../components/schemas/file.yaml
               - $ref: ../components/schemas/image.yaml
               - $ref: ../components/schemas/generic.yaml
               - $ref: ../components/schemas/ref.yaml

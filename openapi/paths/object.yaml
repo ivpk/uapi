@@ -32,7 +32,9 @@ get:
     - object
   security:
     - UAPI_test_auth:
+      - uapi:/
     - UAPI_prod_auth:
+      - uapi:/
   summary: Get a single object by given {id}.
   description: |
     Retrieve a single specific object based on it's unique object identifier {id}
@@ -86,7 +88,9 @@ post:
     - object
   security:
     - UAPI_test_auth:
+      - uapi:/
     - UAPI_prod_auth:
+      - uapi:/
   summary: Upsert an object by {id}. This operation can only be performed on fields that can be indexed.
   description: |
     This performs an `Upsert` action. First it checks if there is an existing object based on `{id}`, if there is, it performs `Patch` action, if there isn't it performs `Update`
@@ -123,7 +127,9 @@ put:
     - object
   security:
     - UAPI_test_auth:
+      - uapi:/
     - UAPI_prod_auth:
+      - uapi:/
   summary: Update a single object by {id}.
   description: |
     Overwrite whole object. Property values, that are not given in request
@@ -166,7 +172,9 @@ patch:
     - object
   security:
     - UAPI_test_auth:
+      - uapi:/
     - UAPI_prod_auth:
+      - uapi:/
   summary: Patch a single object.
   description: |
     Partial object update, only property values given in request body will
@@ -208,7 +216,9 @@ delete:
     - object
   security:
     - UAPI_test_auth:
+      - uapi:/
     - UAPI_prod_auth:
+      - uapi:/
   summary: Delete a single object by {id}
   description: |
     Delete object. This is a soft delete operation, object should not be

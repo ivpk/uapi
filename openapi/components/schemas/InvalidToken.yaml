@@ -2,22 +2,18 @@ type: object
 properties:
   code: 
     type: string
-    value: InvalidToken
+    description: InvalidToken
   status_code:
     type: integer
-    value: 401
     description: '401'
   type:
     type: string
-    value: system
     description: system
   template:
     type: string
-    value: Invalid token
     description: Invalid token
   headers:
     type: string
-    value: "{WWW-Authenticate': 'Bearer error'='invalid_token'}"
     description: "{'WWW-Authenticate': 'Bearer error'='invalid_token'}"
   message:
     description: |

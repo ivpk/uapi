@@ -2,10 +2,9 @@ type: object
 properties:
   code: 
     type: string
-    value: ConflictingValue
+    description: ConflictingValue
   status_code:
     type: integer
-    value: 409
     description: '409'
   context:
     type: object
@@ -26,11 +25,9 @@ properties:
         type: string
   type:
     type: string
-    value: system
     description: system
   template:
     type: string
-    value: Conflicting Value
     description: Conflicting Value
   message:
     description: |

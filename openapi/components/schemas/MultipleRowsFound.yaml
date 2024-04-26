@@ -2,18 +2,15 @@ type: object
 properties:
   code: 
     type: string
-    value: MultipleRowsFound
+    description: MultipleRowsFound
   status_code:
     type: integer
-    value: 500
     description: '500'
   type:
     type: string
-    value: system
     description: system
   template:
     type: string
-    value: Multiple rows were found.
     description: Multiple rows were found.
   message:
     description: |
