@@ -4,9 +4,20 @@ info:
   title: Universal application programming interface
   summary: Open Data Repository API for data access and upload
   description: |
-    The Open Data Repository is an integral part of the Open Data Portal. The purpose of the repository is to publish data at the highest level of maturity, in various formats, via a convenient machine-readable interface (API), adhering to the highest data publishing standards.
+    Welcome to the **data.gov.lt API**, the source of reliable, constantly updated data, made available for Lithuanian government sector and other authorized parties.
 
-    All data sets published in the repository are combined into a large database, where data can be interconnected, presented in bulk or in desired slices. Tools are provided for downloading data incrementally.
+    ### Contact Details
+    This API specification and API ifrastructure is developed and provided by informacinės Visuomenės Plėtros Komitetas (**IVPK**) more information about the organisation is available at [https://ivpk.lrv.lt/](https://ivpk.lrv.lt/)
+
+    Contact email adress: [info@ivpk.lt](mailto:info@ivpk.lt)
+
+    ### Legal basis
+    Data portal and this API is provided in accordance to ***LIETUVOS RESPUBLIKOS VALSTYBĖS INFORMACINIŲ IŠTEKLIŲ VALDYMO ĮSTATYMAS*** [XI-1807](https://www.e-tar.lt/portal/lt/legalAct/TAR.85C510BA700A/asr)
+
+    ### About the API
+    This Data API is an integral part of the Data Portal. The purpose of the Data Portal is to provide metadata at the highest level of maturity, in various formats, and corresponding data via a convenient machine-readable interface (API), adhering to the highest data publishing standards.
+
+    All datasets provided by this API are combined into a large data map, where data can be interconnected, presented in bulk or in desired slices. Operations are provided for downloading data incrementally.
 
     The API is generated dynamically from the model code names located in the [**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column. Model names can have namespaces, and namespaces are separated by the `/` symbol, for example:
 
