@@ -1,0 +1,93 @@
+parameters:
+  - $ref: ../components/parameters/group.yaml
+  - $ref: ../components/parameters/form.yaml
+  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/catalog.yaml
+  - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/version.yaml
+  - $ref: ../components/parameters/model.yaml
+  - $ref: ../components/parameters/id.yaml
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
+  - $ref: ../components/parameters/If-None-Match.yaml
+  - $ref: ../components/parameters/Accept-Language.yaml
+  - $ref: ../components/parameters/property.yaml
+
+get:
+  tags: 
+    - object
+  security:
+    - UAPI_test_auth:
+      - uapi:/
+    - UAPI_prod_auth:
+      - uapi:/
+  summary: For a given specific object by {id}, retrieve a {property} from it's structure (subresource).
+  description: |
+    Retrieve a specific property from an object structure.
+
+    By default when retrieving object you recive all data items from it's structure, using this service you retrieve a specific property from it's structure.
+
+    If provided {property} is a file instead of getting the data, file is provided instead as binary bit stream.
+  operationId: getProperty
+  responses:
+    "200":
+      description: "OK"
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+        Cache-Control:
+          $ref: ../components/headers/Cache-Control.yaml
+        Last-Modified:
+          $ref: ../components/headers/Last-Modified.yaml
+        ETag:
+          $ref: ../components/headers/ETag.yaml
+        Vary:
+          $ref: ../components/headers/Vary.yaml
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: ../components/schemas/absent.yaml
+              - $ref: ../components/schemas/boolean.yaml
+              - $ref: ../components/schemas/integer.yaml
+              - $ref: ../components/schemas/number.yaml
+              - $ref: ../components/schemas/binary.yaml
+              - $ref: ../components/schemas/string.yaml
+              - $ref: ../components/schemas/text.yaml
+              - $ref: ../components/schemas/dateTime.yaml
+              - $ref: ../components/schemas/date.yaml
+              - $ref: ../components/schemas/time.yaml
+              - $ref: ../components/schemas/temporal.yaml
+              - $ref: ../components/schemas/geometry.yaml
+              - $ref: ../components/schemas/spatial.yaml
+              - $ref: ../components/schemas/money.yaml
+              - $ref: ../components/schemas/image.yaml
+              - $ref: ../components/schemas/generic.yaml
+              - $ref: ../components/schemas/ref.yaml
+              - $ref: ../components/schemas/backref.yaml
+              - $ref: ../components/schemas/array.yaml
+              - $ref: ../components/schemas/url.yaml
+              - $ref: ../components/schemas/uri.yaml
+              - $ref: ../components/schemas/jsonobject.yaml
+    '304':
+      description: Not Modified
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+        Cache-Control:
+          $ref: ../components/headers/Cache-Control.yaml
+        Last-Modified:
+          $ref: ../components/headers/Last-Modified.yaml
+        ETag:
+          $ref: ../components/headers/ETag.yaml
+        Vary:
+          $ref: ../components/headers/Vary.yaml
+
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml

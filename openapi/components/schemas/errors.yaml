@@ -1,6 +1,25 @@
 type: object
+description: |
+  In addition to usual HTTP error codes, additional error information available from the processing system is passed to the client.
+
+  This should include a more detailed overview of the internal, business logic or request processing errors that have occurred.
+
+  More complex errors can further expand this structure.
+
+  `status_code` within the error object corresponds to the HTTP error code that will be provided when the error is returned back.
 properties:
   errors:
     type: array
     items:
-      $ref: ./error.yaml
+      discriminator:
+        propertyName: code
+      oneOf:
+        - $ref: ./ConflictingValue.yaml
+        - $ref: ./UniqueConstraint.yaml
+        - $ref: ./ItemDoesNotExist.yaml
+        - $ref: ./NoItemRevision.yaml
+        - $ref: ./InvalidToken.yaml
+        - $ref: ./InvalidOperandValue.yaml
+        - $ref: ./AuthorizedClientsOnly.yaml
+        - $ref: ./MultipleRowsFound.yaml
+        - $ref: ./UnhandledException.yaml

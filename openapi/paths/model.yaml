@@ -2,6 +2,7 @@ parameters:
   - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/catalog.yaml
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/model.yaml
@@ -31,21 +32,9 @@ get:
     - objects
   security:
     - UAPI_test_auth:
-      - read:datasets/gov/myorg/@myrole
-      - rw:datasets/gov/myorg/@myrole
-      - read:datasets/gov/myorg/
-      - rw:datasets/gov/myorg/
-      - read:datasets/gov/:all
-      - read:onthology/:all
-      - read:onthology/myContract/
+      - uapi:/
     - UAPI_prod_auth:
-      - read:datasets/gov/myorg/@myrole
-      - rw:datasets/gov/myorg/@myrole
-      - read:datasets/gov/myorg/
-      - rw:datasets/gov/myorg/
-      - read:datasets/gov/:all
-      - read:onthology/:all
-      - read:onthology/myContract/
+      - uapi:/
   summary: Get multiple objects.
   description: |
     Return list of objects for a given model.
@@ -100,11 +89,9 @@ post:
     - objects
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/@myrole
-      - rw:datasets/gov/myorg/@myrole
+      - uapi:/
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/
-      - rw:datasets/gov/myorg/
+      - uapi:/
   summary: Create a single new object or create, update or delete multiple objects in a single request.
   description: |
     ## Operation where one or multiple new objects are created.

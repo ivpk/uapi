@@ -1,14 +1,15 @@
 type: object
 properties:
-  id:
-    description: File unique identifier. During storage this will become an indetifier for the file.
+  _name:
+    description: File name
     type: string
-    format: UUID
-  name:
-    type: string
-  type:
+  _content_type:
     description: A [Media type](https://en.wikipedia.org/wiki/Media_type) of the file.
     type: string
-  size:
+  _content:
+    description: Base64 encoded file content provided only if explicitly defined in '{object}._content'
+    type: string
+    format: base64
+  _size:
     description: File size in bytes.
     type: integer

@@ -8,8 +8,12 @@ oneOf:
       _id:
         type: string
         format: uuidv4
+      object:
+        $ref: ./object.yaml
   - type: object
     description: maturity level >= 3
     properties:
       _type:
         type: string
+      object:
+        $ref: ./object.yaml

@@ -2,6 +2,7 @@ parameters:
   - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/catalog.yaml
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/model.yaml
@@ -13,9 +14,9 @@ delete:
     - object
   security:
     - UAPI_test_auth:
-      - write:datasets/gov/myorg/:wipe
+      - uapi:/
     - UAPI_prod_auth:
-      - write:datasets/gov/myorg/:wipe
+      - uapi:/
   summary: Hard delete a single object by {id}
   description: >
     ## To be used by exception only
