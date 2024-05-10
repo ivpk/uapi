@@ -10,7 +10,7 @@ description: |
 
     ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```
 
-    ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=1```
+    ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=```
 schema:
   type: object
   patternProperties:
@@ -95,7 +95,7 @@ schema:
         - `-` - descending sort (3, 2, 1).
 
     _count:
-      type: boolean
+      type: string
       description: |
         Return number of objects matching a given filter. If filter is
         not given, return number of all objects.

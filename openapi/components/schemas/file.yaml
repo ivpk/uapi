@@ -6,10 +6,6 @@ properties:
   _content_type:
     description: A [Media type](https://en.wikipedia.org/wiki/Media_type) of the file.
     type: string
-  _content:
-    description: Base64 encoded file content provided only if explicitly defined in '{object}._content'
-    type: string
-    format: base64
   _size:
     description: File size in bytes.
     type: integer

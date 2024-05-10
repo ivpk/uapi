@@ -237,7 +237,7 @@ All API URI's are constructed using one of the following patters:
   <span class="green">dataset</span> `/`
   <span class="green">version</span> `/`
   <span class="green">model</span> `/:`
-  <span class="green">controller</span>
+  <span class="green">action</span>
 
   `/datasets/`
   <span class="green">form</span> `/`
@@ -247,7 +247,7 @@ All API URI's are constructed using one of the following patters:
   <span class="green">version</span> `/`
   <span class="green">model</span> `/`
   <span class="green">id</span> `/:`
-  <span class="green">controller</span>
+  <span class="green">action</span>
 
 - Legacy API, or APIs that do not support standart UAPI exchange protocol:
 
@@ -276,7 +276,7 @@ Meaning of dynamic URI parts explained bollow:
 - <span class="green">id</span> - unique object identifier in UUID format.
 - <span class="green">property</span> - a subresource used for some property
   data types liek files or arrays, in order to retrieve large content blobs.
-- <span class="green">controller</span> - an action performed with objects or a
+- <span class="green">action</span> - an action performed with objects or a
   single object.
 - <span class="green">service</span> - a service endpoint, that does not follow
   UAPI requirements, used of existing legacy API services.
@@ -434,26 +434,26 @@ GET /datasets/gov/rc/ar/ws/Country/e96cc0cc-08be-460d-a887-98f80612a402/flag
 And this will return raw image data as `image/png` content type.
 
 
-## Controller
+## Action
 
-Controller is an action performed with objects. Controllers in URI always
-starts with a `:` symbol:
+An action performed with multiple objects or a single object. Action name in a
+URI is denoted with a `:` symbol, for example:
 
 ```text
 GET datasets/gov/rc/ar/ws/Country/:changes
 ```
 
-This lists all changes made to `Country` objects. This is a controller, that
-works with multiple objects.
+In the example above action name is `changes` and it lists all changes made to
+`Country` objects. This is an action, that works on multiple objects.
 
-But also, there can be a controller on a single object:
+But also, there can be an action on a single object:
 
 ```text
 GET datasets/gov/rc/ar/ws/Country/e96cc0cc-08be-460d-a887-98f80612a402/:changes
 ```
 
-There is a list of build-in reserved implicit controllers, where you don't need
-to specify controller name:
+There is a list of build-in reserved implicit actions, where you don't need to
+specify action name:
 
 - `GET /…/{model}` (`:getall`) - get list of objects.
 - `GET /…/{model}/{id}` (`:getone`) - get a single object.
@@ -463,61 +463,482 @@ to specify controller name:
 - `PATCH /…/{model}/{id}` (`:path`) - update some properties of existing object.
 - `DELETE /…/{model}/{id}` (`:delete`) - delete an existing object.
 
-Also there are some built-in reserved explicit controllers:
+Also there are some built-in reserved explicit actions:
 
 - `GET /…/{model}/:changes` - get list of changes to all model objects.
 - `GET /…/{model}/{id}/:changes` - get list of changes to a single object.
-- `DELETE /…/{model}/{id}/:wipe` - completely remove object without storing changes in changelog.
+- `DELETE /…/{model}/{id}/:wipe` - completely remove object without storing
+  changes in changelog.
+
+Data agents might implement custom actions.
 
 
-Data agents might implement custom controllers.
+
+# Authorization
+
+Authorization must be implemented using OAuth 2.0 protocol.
+
+In order to understand authorization process, first we need to understand all
+the parties participating in data exchange process:
+
+- **User** - a person (a human being), that has access to data, a person can
+  represent himself or act as an organization representative. In OAuth terms,
+  this is a Resource Owner.
+
+- **Client** - a software (mobile, web or other application), that can act on
+  behalf of a user or itself.
+
+- **Auth** - authentication and authorization server responsible for
+  authenticating users and clients, issues access tokens. In OAuth terms this
+  is a Authorization Server.
+
+- **Catalog** - a data catalog, a place where all information about agents,
+  resource, clients and smart contracts are registered.
+
+- **Resource** - a data service, a database or a data file, place where data
+  are stored.
+
+- **Agent** - a software responsible for data exchange, accepts data queries,
+  reads data from a Resource and returns data via API using UDTS exchange
+  protocol.
+
+- **Gateway** - a reverse proxy, responsible for routing client requests to
+  multiple Agents and performs basic request data and access token validation.
+
+
+Following authorization flows (grant types) are supported:
+
+- Authorization code - for granting access to a specific User on behalf of a Client.
+- Client credentials - for granting access directly to a Client, who acts on its own.
+
+
+## Registration
+
+![](static/auth-smart-contracts.png)
+
+In order to get access to data, before any data exchange happens, following
+steps must be completed:
+
+1. An Agent must be installed and configured in order to be able to access
+   Resource data. Agents should be installed on the same infrastructure as
+   Resource.
+
+2. Agent inspects Resource data structure (DSA) and published collected information
+   about data structure to Catalog.
+
+3. Data steward organized data structures (DSA) into datasets, and specifies
+   what data can be use for exchange outside if Resource and published this
+   information for Client developers.
+
+4. Client developers discovers published datasets, registers client and
+   requests access to data they need. After registration, clients receive
+   client id and client secret assigned by the Authorization server.
+
+5. Resource maintainers reviews data access requests and by approving access
+   creates a smart contract. Information about smart contract is published to
+   Authorization serve. Authorization server knows what clients and what data
+   (scopes) can access.
+
+6. Agent and Gateway registers themselves with the Authorization servers and
+   receives public keys from Authorization server needed for access token
+   validation.
+
+When all these steps are completed all parties are ready for data exchange.
+
+
+## Client authorization
+
+![](static/auth-client-credentials.png)
+
+For client authorization client credentials flow (or grant type) is used, when
+client is granted access to data as a system service acting on its own without
+representing any specific user.
+
+In order to make requests, following steps are needed:
+
+1. Client, uses client id and secret received at client registration time, to
+   get access token from Authorization server:
+
+   ```http
+   POST /token HTTP/1.1
+   Host: auth.gov.lt
+   Authorization: Basic YjRjNTMyNDktMTQxZC00OTI2LWE5YzQtNjBjNGJiNjVlZWJmOnNlY3JldAo=
+
+   grant_type=client_credentials&
+   resource=https://api.gov.lt/&
+   scope=uapi:/datasets/gov/rc/ar/ws/Country/:getall
+   ```
+
+   Authorization server returns JWT access token in a following JSON response:
+
+   ```json
+   {
+     "token_type": "Bearer",
+     "expires_in": 3600,
+     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZWFkODU5MS01ZDUxLTQyNjQtYjFiMi1iNzk0M2UxNDIxNzUiLCJpc3MiOiJodHRwczovL2F1dGguZ292Lmx0LyIsImF1ZCI6Imh0dHBzOi8vYXBpLmdvdi5sdC8iLCJleHAiOjE2Mzk1Mjg5MTIsImlhdCI6MTYxODM1NDA5MCwic3ViIjoiNTMzMmM5Y2UtYmM5OC00YzRlLWExMjItYjgxZTVmOTQ5OGZjIiwiY2xpZW50X2lkIjoiYjRjNTMyNDktMTQxZC00OTI2LWE5YzQtNjBjNGJiNjVlZWJmIiwic2NvcGUiOiJ1YXBpOi9kYXRhc2V0cy9nb3YvcmMvYXIvd3MvQ291bnRyeS86Z2V0YWxsIn0.CcvXCq7_iSpWQJR5N_cGficA6EmDtQZoGxdaToA7OG0",
+     "scope": "uapi:/datasets/gov/rc/ar/ws/Country/:getall"
+   }
+   ```
+
+   Payload of JWT token (`access_token` value) looks like this:
+
+   ```json
+   {
+     "jti": "7ead8591-5d51-4264-b1b2-b7943e142175",
+     "iss": "https://auth.gov.lt/",
+     "aud": "https://api.gov.lt/",
+     "exp": 1639528912,
+     "iat": 1618354090,
+     "sub": "b4c53249-141d-4926-a9c4-60c4bb65eebf",
+     "client_id": "b4c53249-141d-4926-a9c4-60c4bb65eebf",
+     "scope": "uapi:/datasets/gov/rc/ar/ws/Country/:getall"
+   }
+   ```
+
+   When client acts on behalf of itself, `sub` and `client_id` must be the same.
+
+
+2. Client then uses received access token, to get data like this:
+
+
+   ```http
+   GET /datasets/gov/rc/ar/ws/Country HTTP/1.1
+   Host: api.gov.lt
+   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZWFkODU5MS01ZDUxLTQyNjQtYjFiMi1iNzk0M2UxNDIxNzUiLCJpc3MiOiJodHRwczovL2F1dGguZ292Lmx0LyIsImF1ZCI6Imh0dHBzOi8vYXBpLmdvdi5sdC8iLCJleHAiOjE2Mzk1Mjg5MTIsImlhdCI6MTYxODM1NDA5MCwic3ViIjoiNTMzMmM5Y2UtYmM5OC00YzRlLWExMjItYjgxZTVmOTQ5OGZjIiwiY2xpZW50X2lkIjoiYjRjNTMyNDktMTQxZC00OTI2LWE5YzQtNjBjNGJiNjVlZWJmIiwic2NvcGUiOiJ1YXBpOi9kYXRhc2V0cy9nb3YvcmMvYXIvd3MvQ291bnRyeS86Z2V0YWxsIn0.CcvXCq7_iSpWQJR5N_cGficA6EmDtQZoGxdaToA7OG0
+   ```
+
+   Request must be made to API Gateway, which validate access token using
+   public key received from Authorization server and validates request data
+   using OpenAPI schema received from Catalog.
+
+3. Gateway passes Client request to Agent, which again repeats token and
+   request data validation.
+
+   In addition to access token validation performed on Gateway, Agent
+   interprets given scope values and ensures, that Client has access to the
+   requested Resource.
+
+4. Finally Agent transforms an UAPI request into a protocol, that is understood
+   by a Resource, retrieves data and transforms result back to UAPI.
 
 
 
+## User authorization
 
-# REST API
+![](static/auth-authorization-code.png)
 
-This Data API is an integral part of the Data Portal. The purpose of the Data
-Portal is to provide metadata at the highest level of maturity, in various
-formats, and corresponding data via a convenient machine-readable interface
-(API), adhering to the highest data publishing standards.
+For user authorization authorization code flow (or grant type) is used.
 
-All datasets provided by this API are combined into a large data map, where
-data can be interconnected, presented in bulk or in desired slices. Operations
-are provided for downloading data incrementally.
+1. A User (a human being) uses a Client application in order to access a
+   Resource.
 
-The API is generated dynamically from the model code names located in the
-[**DSA**](https://atviriduomenys.readthedocs.io/dsa/index.html) model column.
-Model names can have namespaces, and namespaces are separated by the `/`
-symbol, for example:
+2. Client redirects User to Authorization server, where User can authenticate
+   and allow Client to act on behalf of User.
 
-    /datasets/gov/ivpk/dp/dcat/Dataset
+   When redirecting, following URL is constructed to the Authorization server:
 
-This address is made of the `datasets/gov/ivpk/dp/dcat` namespace and the
-`Dataset` model name.
+   ```uri
+   https://auth.gov.lt/auth?
+     response_type=code&
+     client_id=b4c53249-141d-4926-a9c4-60c4bb65eebf&
+     redirect_uri=https://app.example.com/auth&
+     scope=uapi:/datasets/gov/rc/ar/ws/Country/:getall&
+     state=xcoiv98y2kd22vusuye3kch
+   ```
 
-The `datasets` namespace indicates that the data is raw, i.e., as provided by a
-certain institution. Over time, all institutional data will be transformed into
-a uniform national dictionary, and for example `datasets/gov/dc/geo/Continent`
-may be merged into a common `Continent` model in the root namespace. This
-namespace is likely to be `onthology`, thus defining a specific ruleset for the
-rest of the URI structure based on a national or EU semantic model. It would be
-supported by a national metadata catalog, that would be maintained by all
-organisations in scope and would provide a way to understand and find datasets
-or their internal structures.
+3. Authorization server asks User to identify himself by providing user name
+   and password or other means of authentication.
 
-However, to ensure a stable and constant API, the initial raw data API
-endpoints and URIs will be preserved.
+   After authentication, User is asked if he agrees to authorize Client
+   application with scopes request by the Client application.
 
-Specifically, all models in the `datasets` namespace have a clearly defined
-structure. For example, while examining the `datasets/gov/dc/geo/Continent`
-example, the meanings of the separate path components are as follows:
+   If agreed, then Authorization server redirects User back to the Client
+   application with following URL:
 
-- `datasets/` - namespace for raw primary institutional data.
-- `gov/` - namespace for government institution data.
-- `dc/` - acronym for a specific government institution.
-- `geo/` - abbreviation for the institution's open data set.
-- `Continent` - data model (or table).
+   ```uri
+   https://app.example.com/auth?
+     response_type=code&
+     state=xcoiv98y2kd22vusuye3kch&
+     code=g0ZGZmNjVmOWIjNTk2NTk4ZTYyZGI3
+   ```
 
-Once the system is fully operational, this API, and other APIs based on this
-specification will be provided by an unified endpoint api.gov.lt.
+4. After successful User authentication, Client receives authorization code
+   (`code`) from Authorization server.
+
+   Client uses authorization code to get access token by making following
+   request to Authorization server:
+
+   ```http
+   POST /token HTTP/1.1
+   Host: auth.gov.lt
+   Authorization: Basic YjRjNTMyNDktMTQxZC00OTI2LWE5YzQtNjBjNGJiNjVlZWJmOnNlY3JldAo=
+
+   grant_type=authorization_code&
+   code=g0ZGZmNjVmOWIjNTk2NTk4ZTYyZGI3&
+   resource=https://api.gov.lt/&
+   scope=uapi:/datasets/gov/rc/ar/ws/Country/:getall
+   ```
+   Authorization server returns JWT access token in a following JSON response:
+
+   ```json
+   {
+     "token_type": "Bearer",
+     "expires_in": 3600,
+     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZWFkODU5MS01ZDUxLTQyNjQtYjFiMi1iNzk0M2UxNDIxNzUiLCJpc3MiOiJodHRwczovL2F1dGguZ292Lmx0LyIsImF1ZCI6Imh0dHBzOi8vYXBpLmdvdi5sdC8iLCJleHAiOjE2Mzk1Mjg5MTIsImlhdCI6MTYxODM1NDA5MCwic3ViIjoiNDA2M2YxYzAtN2Q4NC00MzBjLTliZDEtMWE0YmM5ZjdhZWFlIiwiY2xpZW50X2lkIjoiYjRjNTMyNDktMTQxZC00OTI2LWE5YzQtNjBjNGJiNjVlZWJmIiwic2NvcGUiOiJ1YXBpOi9kYXRhc2V0cy9nb3YvcmMvYXIvd3MvQ291bnRyeS86Z2V0YWxsIn0.I3BQ41W_-BHtrxBoPF_wmE92gfxI9T7DPCqcSZe7-v8",
+     "scope": "uapi:/datasets/gov/rc/ar/ws/Country/:getall"
+   }
+   ```
+
+   Payload of JWT token (`access_token` value) looks like this:
+
+   ```json
+   {
+     "jti": "7ead8591-5d51-4264-b1b2-b7943e142175",
+     "iss": "https://auth.gov.lt/",
+     "aud": "https://api.gov.lt/",
+     "exp": 1639528912,
+     "iat": 1618354090,
+     "sub": "4063f1c0-7d84-430c-9bd1-1a4bc9f7aeae",
+     "client_id": "b4c53249-141d-4926-a9c4-60c4bb65eebf",
+     "scope": "uapi:/datasets/gov/rc/ar/ws/Country/:getall"
+   }
+   ```
+
+   When client acts on behalf of a User, `sub` is a global identifier of a
+   representative, which is also must be used by the Resource in data, to
+   reference a representative. 
+
+   `sub` references not the User itself, bet a representative. Representative
+   can represent an organization or a User itself. This distinction is needed,
+   because Resource server might give different permissions of an employee of
+   an organization and for a person not associated with an organization.
+
+   Row level access scope might use representative identifier (`sub`) in order
+   to filter data that is only available for the representative.
+
+5. All other steps are the same as described for the [Client
+   authorization](#section/Authorization/Client-authorization).
+
+
+
+# Query
+
+Actions might use URI query to filter, limit, sort or otherwise influence
+result returned by an action.
+
+URI consists of following components (there are more components, but for
+simplicity reasons in this example are only listed main ones):
+
+<span class="green">scheme</span> `://`
+<span class="green">host</span> `/`
+<span class="green">path</span> `?`
+<span class="green">query</span>
+
+Query has name and value pairs called parameters:
+
+<span class="green">name</span> `=`
+<span class="green">value</span>
+
+There can be multiple query parameters separated by `&` symbol.
+
+<span class="green">param</span> `&`
+<span class="green">param</span>
+
+Parameter names can have one of two forms:
+
+- Reserved names - all names starting with `_` are reserved and has a function
+  or a predefined meaning.
+- Property names - all names not starting with `_` are interpreted as model
+  property names and can be used to filter data by a property value.
+
+Parameter names can have attributes:
+
+<span class="green">name</span> `.`
+<span class="green">attribute</span> `=`
+<span class="green">value</span> `&`
+
+There can be none, one or more than one attribute.
+
+For query examples following data model will be used.
+
+```mermaid
+classDiagram
+  direction LR
+  class Country {
+      code: string
+      name: string
+      population: integer
+  }
+  class City {
+      name: string
+  }
+
+  Country <-- City : country
+```
+
+## Filtering
+
+Simple filtering can be done like this:
+
+```uri
+Country?code=lt
+```
+
+This will filter countries by `code`.
+
+It is also possible to filter using different comparison operators, for example:
+
+```uri
+Country?population._gt=1000
+```
+
+List of all available operators:
+
+- `_gt` - greater than
+- `_ge` - greater than or equal
+- `_lt` - less than
+- `_le` - less than than or equal
+- `_sw` - starts with
+- `_ew` - ends with
+- `_co` - contains
+
+
+## Selecting
+
+By default, all model properties are returned, but it is possible to select
+only specific properties using `_select`:
+
+```uri
+Country?_select=code,name
+```
+
+This will return data containing only `code` and `name` properties.
+
+
+## Sorting
+
+By default objects are sorted by `_id`, but you can change order with `_sort`:
+
+```uri
+Country?_sort=name
+```
+
+By default sorting is done in ascending (a-z) order, but this can also be
+changed:
+
+```uri
+Country?_sort=-name
+```
+
+You can sort by multiple properties in different directions:
+
+
+```uri
+Country?_sort=-name,+code,population
+```
+
+## Limiting
+
+By default all objects are returned, but you can limit number of objects
+returned with `_limit`:
+
+```uri
+Country?_limit=10
+```
+
+This will limit result set to 10 objects.
+
+
+## Counting
+
+You can get total number of available objects with `_count`:
+
+```uri
+Country?_count=
+```
+
+## Pagination
+
+If number of objects is too large to get in a single request, you can use
+`_page` in combination with `_limit` and `_sort` to get all data in multiple
+pages.
+
+By default pagination is enabled if you specify `_limit`:
+
+```uri
+Country?_limit=10
+```
+
+This will enable pagination and query above is equivalent to:
+
+```uri
+Country?_sort=_id&_limit=10
+```
+
+Objects are ordered by `_id` by default, so we don't need to specify `_sort`,
+unless we want to change pagination key:
+
+```uri
+Country?_sort=code&_limit=10
+```
+
+When `_limit` is given, response document will include `_next` attribute
+pointing to the next page:
+
+```json
+{
+    "_data": [...],
+    "_next": "ImE3N2IyNWU1LWUzMDMtNGE4ZS04Y2YzLTllZmMyNWVlMjI0NiIK"
+}
+```
+
+You can get next page with `_page` query parameter:
+
+```uri
+Country?_sort=code&_limit=10&_page=ImE3N2IyNWU1LWUzMDMtNGE4ZS04Y2YzLTllZmMyNWVlMjI0NiIK
+```
+
+`_page` value is a base64 encoded (with `+/=` characters replaced with `-_.` to
+make it user safe) JSON string. In this case, decoded `_page` value is:
+
+```json
+"a77b25e5-e303-4a8e-8cf3-9efc25ee2246"
+```
+
+If result is sorted by more than one property, then `_page` JSON value will be
+an array, for example if we have:
+
+```uri
+Country?_sort=_id,code&_limit=10
+```
+
+Then decoded `_page` value will be:
+
+```json
+["a77b25e5-e303-4a8e-8cf3-9efc25ee2246","lt"]
+```
+
+Pagination might be enabled by default, by the Agent, this will be indicated in
+the result data:
+
+```json
+{
+    "_data": [...],
+    "_next": "ImE3N2IyNWU1LWUzMDMtNGE4ZS04Y2YzLTllZmMyNWVlMjI0NiIK",
+    "_limit": 1000
+}
+```
+
+Presence of `_limit` and `_next` in the result, indicates, that limit is
+enforced by the Agent.
+
+
+# Data types
+
+## ref
+
+<SchemaDefinition schemaRef="#/components/schemas/ref" />
+
+## file
+
+<SchemaDefinition schemaRef="#/components/schemas/file" />

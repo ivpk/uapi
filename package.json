@@ -2,7 +2,7 @@
   "name": "uapi",
   "version": "0.1.0",
   "dependencies": {
-    "@redocly/cli": "^1.5.0"
+    "@redocly/cli": "^1.12.0"
   },
   "scripts": {
     "start": "redocly preview-docs --use-community-edition",

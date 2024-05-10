@@ -47,6 +47,19 @@ tags:
   - name: utility
     description: Utility operations performed on the API itself
 
+x-tagGroups:
+  - name: Actions
+    tags:
+      - objects
+      - object
+      - change
+  - name: Services
+    tags:
+      - services
+  - name: Utility
+    tags:
+      - utility
+
 paths:
   /version:
     $ref: paths/version.yaml
@@ -64,6 +77,7 @@ paths:
     $ref: paths/changes.yaml
   /services/{form}/{org}/{catalog}/{dataset}/{version}/{service}:
     $ref: paths/service.yaml
+
 components:
   securitySchemes:
 
