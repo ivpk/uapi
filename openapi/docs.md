@@ -25,10 +25,10 @@ and this (in future) can be done in Data Portal (data.gov.lt).
   specification, describes a table format, for mapping data models between
   Physical, Logical and Conceptual data models.
 
-  Logical data model from DSA tables are used as API schemas. UDTS only
-  describes protocol, DSA tables provides data schemas for UDTS API.
+  Logical data model from DSA tables are used as API schemas. UAPI only
+  describes protocol, DSA tables provides data schemas for UAPI API.
 
-  DSA and UDTS are used together.
+  DSA and UAPI are used together.
 
 - DCAT-AP-LT - a semantic data model specification, based on BregDCAT-AP.
 
@@ -68,22 +68,23 @@ This document mainly describes data exchange protocol which is implemented by
 Data exchange and interoperability architecture consists of following main
 components:
 
-- **Data** source and **Data Service** - these components represents all data
-  sources, including variuos databases, web services, CSV, XLSX or other data
-  tables maintained by all the government institutions.
+- **Data** source and **Data Service** or **Resource** when referred to one or
+  the other - these components represents all data sources, including variuos
+  databases, web services, CSV, XLSX or other data files maintained by all the
+  government institutions.
 
   Data might be read directly from a primary data source or through a data
   service. 
 
 - **Data agent** - is a software component similar to **Data Service** but
-  published data in a standardized UDTS protocol and format.
+  publishes data in a standardized UAPI protocol.
 
-  IVPK provides an [Universal Data Agent
-  solution](https://github.com/atviriduomenys/spinta/), which uses DSA table to
-  convert between data source and UDTS protocol and data format.
+  IVPK provides an [Universal Data
+  Agent](https://github.com/atviriduomenys/spinta/), which uses DSA table to
+  convert between data provided by a Resource into UAPI protocol.
 
   Organizations are free to implement their own Data Agent solution according
-  to UDTS specification.
+  to UAPI specification.
 
 - **Data Catalog** - is used cataloging datasets from all public institutions.
   Data Catalog is built on top of
@@ -114,7 +115,7 @@ components:
   [Authorization Code](https://oauth.net/2/grant-types/authorization-code/)
   flows.
 
-Diagram is divided in two main data and metadata flows.
+Diagram is divided in two data and metadata flows.
 
 
 ## Metadata flow
@@ -139,7 +140,7 @@ OpenAPI format. This involves following steps:
    model](https://semiceu.github.io/style-guide/1.0.0/gc-conceptual-model-conventions.html).
 
 3. DSA tables marked as ready for publishing are converted into JSON Schemas
-   and merged with UDTS OpenAPI specification template to produce final OpenAPI
+   and merged with UAPI OpenAPI specification template to produce final OpenAPI
    specification, which is published in **API Gateway**.
 
    At the same time list of available authorization scopes are generated from
@@ -156,7 +157,7 @@ components:
    Service**. Data Agent supports multiple data exchange protocols and formats.
 
    Data Agent uses DSA table to transform data between physical and logical
-   data models and between source protocol and format into standardized UDTS
+   data models and between source protocol and format into standardized UAPI
    data exchange protocol using JSON format.
 
 2. **Data Agent** performs data authorization, using authorization scopes.
@@ -182,7 +183,7 @@ components:
 
 # Concepts
 
-## URI schema
+## URI
 
 All API URI's are constructed using one of the following patters:
 
@@ -206,6 +207,18 @@ All API URI's are constructed using one of the following patters:
   <span class="green">version</span> `/`
   <span class="green">model</span> `/`
   <span class="green">id</span>
+
+- Get an older version of a single object:
+
+  `/datasets/`
+  <span class="green">form</span> `/`
+  <span class="green">org</span> `/`
+  <span class="green">catalog</span> `/`
+  <span class="green">dataset</span> `/`
+  <span class="green">version</span> `/`
+  <span class="green">model</span> `/`
+  <span class="green">id</span> `/`
+  <span class="green">revision</span>
 
 - Get single object value:
 
@@ -249,7 +262,17 @@ All API URI's are constructed using one of the following patters:
   <span class="green">id</span> `/:`
   <span class="green">action</span>
 
-- Legacy API, or APIs that do not support standart UAPI exchange protocol:
+- Catalog component is optional:
+
+  `/datasets/`
+  <span class="green">form</span> `/`
+  <span class="green">org</span> `/`
+  <span class="green">dataset</span> `/`
+  <span class="green">version</span> `/`
+  <span class="green">model</span> `/`
+
+- APIs (mostly legacy APIs) that do not support standard UAPI exchange
+  protocol:
 
   `/services/`
   <span class="green">form</span> `/`
@@ -260,7 +283,7 @@ All API URI's are constructed using one of the following patters:
   <span class="green">service</span>
 
 
-Meaning of dynamic URI parts explained bollow:
+Meaning of dynamic URI parts explained bellow:
 
 - <span class="green">form</span> - legal form of an organization can be `gov`
   for government or `com` for private sector.
@@ -274,27 +297,47 @@ Meaning of dynamic URI parts explained bollow:
 - <span class="green">model</span> - a set of objects provided under the same
   data model.
 - <span class="green">id</span> - unique object identifier in UUID format.
+- <span class="green">revision</span> - unique identifier for an older object
+  version in UUID format.
 - <span class="green">property</span> - a subresource used for some property
   data types liek files or arrays, in order to retrieve large content blobs.
 - <span class="green">action</span> - an action performed with objects or a
   single object.
 - <span class="green">service</span> - a service endpoint, that does not follow
-  UAPI requirements, used of existing legacy API services.
+  UAPI requirements, used for existing legacy API services.
 
 URI example:
 
-```text
+```uri
 /datasets/gov/rc/ar/ws/Location/e96cc0cc-08be-460d-a887-98f80612a402
 ```
 
-## Global identifier
+When interpreting URI, there are few distinctions in each component, that might
+help separate components presented in URI:
 
-Global identifiers are assigned to real or fictional world entities. For
+- Namespace components <span class="green">form</span>,
+  <span class="green">org</span>, <span class="green">catalog</span> and
+  <span class="green">dataset</span> must start with lowercase ascii letter and
+  must always follow one after the other, with single catalog exception, where
+  dataset might be used without catalog.
+
+- <span class="green">model</span> name must always start with uppercase ascii
+  letter and can be used to separate namespace components from model.
+
+- <span class="green">property</span> must always start with lowercase ascii
+  letter and cannot contain `-` character to separate property from id.
+
+- <span class="green">action</span> has an explicit `:` marker.
+
+
+## Identifier
+
+Global object identifiers are assigned to real or fictional world entities. For
 example, there can be a building in real world, global identifier would be
 assigned to the building as a real object.
 
 That means, there can't be two different global identifiers, pointing to the
-same building.
+same building in any dataset.
 
 Different datasets and different models might have multiple local identifiers
 assigned by a database management system or a registry, all local identifiers
@@ -473,6 +516,86 @@ Also there are some built-in reserved explicit actions:
 Data agents might implement custom actions.
 
 
+## Version
+
+Schema version is applied to whole dataset and is specified apter dataset
+component in the URI:
+
+```uri
+/datasets/gov/rc/ar/ws/3/Country
+```
+
+In the example above, a third version of `ws` dataset is specified.
+
+If version component is not given, then latest schema version is used.
+
+Version number is a singe positive integer number.
+
+
+## Revision
+
+All objects must have a revision number provided as reserved `_revision`
+property name.
+
+Revision is a string, that identifies object version. This might be a UUID
+string.
+
+When update action is made on an object, revision number must always be
+provided, in order to compare object version received by the Client and object
+version in the Resource. This check is needed to avoid conflicts, when two or
+more concurrent requests try to update same object.
+
+When object is changed, a new revision number must also be generated.
+
+Revision number is also used, references older object version if Resource
+stores older object versions:
+
+```uri
+/datasets/gov/rc/ar/ws/Country/e96cc0cc-08be-460d-a887-98f80612a402/dd22f1b4-09c2-48ee-bf7a-7bf082da9940
+```
+
+Second UUID number is a revision ant following request retrieves an older
+object version.
+
+Revision number is also used as [HTTP ETag
+header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) to
+indicate if resource is outdated.
+
+
+## Maturity
+
+Data values might have different forms depending on data maturity level. There
+are five maturity levels:
+
+- `0` - data is not available, even if property is present, in such cases all
+  values are set to `null`.
+
+- `1` - data is not machine readable, usually this means, that there is no
+  clear structure or consistency in data values. For example a number might
+  have different units, bet unit itself is not known. Or date and time values
+  might be given using different formats.
+
+- `2` - data is consistent ant machine readable, but values are given in a
+  non-standard way. For example integer values, might be given as strings, o
+  date values might be given in a non-standard format.
+
+- `3` - objects do not have a global object identifier in UUID format, this
+  usually applies to categorical data, references and `_id` property of an
+  object. In such cases it is not possible to retrieve a single object by its
+  global identifier, `_id` might not be given.
+
+- `4` - objects have global identifiers, but object properties ar not linked
+  with a vocabulary terms describing semantic meaning of data.
+
+- `5` - all of the lower level requirements are met.
+
+Data with lower maturity level might require more effort to process, but still
+data in any form is better, than no data at all. The only thing, that is
+required, to specify correct maturity level value if data does not meet the
+requirements.
+
+Maturity level is set and can be found in the Catalog.
+
 
 # Authorization
 
@@ -499,7 +622,7 @@ the parties participating in data exchange process:
   are stored.
 
 - **Agent** - a software responsible for data exchange, accepts data queries,
-  reads data from a Resource and returns data via API using UDTS exchange
+  reads data from a Resource and returns data via API using UAPI exchange
   protocol.
 
 - **Gateway** - a reverse proxy, responsible for routing client requests to
@@ -531,12 +654,13 @@ steps must be completed:
    information for Client developers.
 
 4. Client developers discovers published datasets, registers client and
-   requests access to data they need. After registration, clients receive
-   client id and client secret assigned by the Authorization server.
+   requests access to data they need, specifying list of scopes that are
+   required for the Client. After registration, clients receive client id and
+   client secret assigned by the Authorization server.
 
 5. Resource maintainers reviews data access requests and by approving access
    creates a smart contract. Information about smart contract is published to
-   Authorization serve. Authorization server knows what clients and what data
+   Authorization server. Authorization server knows what clients and what data
    (scopes) can access.
 
 6. Agent and Gateway registers themselves with the Authorization servers and
@@ -580,7 +704,10 @@ In order to make requests, following steps are needed:
    }
    ```
 
-   Payload of JWT token (`access_token` value) looks like this:
+   Payload of JWT token (`access_token` value) must conform to [RFC 9068: JWT
+   Profile for OAuth 2.0 Access
+   Tokens](https://datatracker.ietf.org/doc/html/rfc9068) and should look like
+   this:
 
    ```json
    {
@@ -617,6 +744,9 @@ In order to make requests, following steps are needed:
    In addition to access token validation performed on Gateway, Agent
    interprets given scope values and ensures, that Client has access to the
    requested Resource.
+
+   Agent might require User authorization level token and refuse request if
+   client acts on itself.
 
 4. Finally Agent transforms an UAPI request into a protocol, that is understood
    by a Resource, retrieves data and transforms result back to UAPI.
@@ -689,7 +819,10 @@ For user authorization authorization code flow (or grant type) is used.
    }
    ```
 
-   Payload of JWT token (`access_token` value) looks like this:
+   Payload of JWT token (`access_token` value) must conform to [RFC 9068: JWT
+   Profile for OAuth 2.0 Access
+   Tokens](https://datatracker.ietf.org/doc/html/rfc9068) and should look like
+   this:
 
    ```json
    {
@@ -708,7 +841,7 @@ For user authorization authorization code flow (or grant type) is used.
    representative, which is also must be used by the Resource in data, to
    reference a representative. 
 
-   `sub` references not the User itself, bet a representative. Representative
+   `sub` references not the User itself, but a representative. Representative
    can represent an organization or a User itself. This distinction is needed,
    because Resource server might give different permissions of an employee of
    an organization and for a person not associated with an organization.
@@ -716,8 +849,75 @@ For user authorization authorization code flow (or grant type) is used.
    Row level access scope might use representative identifier (`sub`) in order
    to filter data that is only available for the representative.
 
+   Authorization server does not know which scopes are available for a specific
+   User, Authorization server only knows which scopes are available for the
+   Client. Even if a token is issued with administrator permissions, Agent does
+   additional validation, by checking if representative `sub` has permission to
+   use this scope.
+
+   Scope alone does not grant permission, because Agent validates if
+   representative is allowed to use this scope.
+
 5. All other steps are the same as described for the [Client
    authorization](#section/Authorization/Client-authorization).
+
+
+## Scope
+
+OAuth scope is a string granting permission to perform an action on Resource data.
+
+Scopes are generated in a similar way as API paths using following form:
+
+`uapi:/datasets/`
+<span class="green">form</span> `/`
+<span class="green">org</span> `/`
+<span class="green">catalog</span> `/`
+<span class="green">dataset</span> `/`
+<span class="green">model</span> `/`
+<span class="green">property</span> `/@`
+<span class="green">scope</span> `/:`
+<span class="green">action</span>
+
+Meaning of all the components in the scope is the same as described in [URI
+schema](#section/Concepts/URI), with some additions and differences
+described below:
+
+- <span class="green">property</span> - property is used to grand access only
+  to specific properties of a model.
+
+- `@` <span class="green">scope</span> - this is a row-level filter, filter is
+  defined in Catalog and executed by the Agent. Filters optionally might use
+  Representative `sub` identifier received from access token, to make dynamic
+  filtering for a specific representative.
+
+Scope is interpreted by the Agent in a dynamic way.
+
+Scope can take a broad form, for example:
+
+```uri
+uapi:/:getall
+```
+
+Granting access to `getall` action for all datasets and all models.
+
+But also scope can take a narrow form:
+
+```uri
+uapi:/datasets/gov/rc/ar/ws/Country/:getall
+```
+
+Scope can grant access to all data or with a row-level filter, for example:
+
+```uri
+uapi:/datasets/gov/rc/ar/ws/Country/@resident/:getall
+```
+
+`@resident` is a row-level filter, that grants access only to residents of that country.
+
+Row-level filters might require User authorization flow in order to get
+representative `sub` identifier, which might be used when filtering data.
+
+
 
 
 
@@ -776,7 +976,7 @@ classDiagram
   Country <-- City : country
 ```
 
-## Filtering
+## Filter
 
 Simple filtering can be done like this:
 
@@ -802,8 +1002,64 @@ List of all available operators:
 - `_ew` - ends with
 - `_co` - contains
 
+Multiple parameters can be added into query:
 
-## Selecting
+```uri
+Country?code=lt&population._gt=1000
+```
+
+
+### Logical connectives
+
+By default all filtering expressions are interpreted as logical conjunctions
+(AND), as indicated by query parameter separator `&` character.
+
+`_or` connects previous parameter into a logical disjunction (OR), for example:
+
+```uri
+Country?code=lt&_or.code=lv
+```
+Will produce `(code=lt OR code=lv)` query expression.
+
+`_and` connects previous parameter into a logical conjunction (AND):
+
+```uri
+Country?code=lt&_and.name=ltu&_or.code=lv&_and.name=lat
+```
+
+This will produce `(code=lt AND name=ltu) OR (code=lv AND name=lat)`.
+
+`&` operator always takes precedence, and if `_and` would not be added:
+
+```uri
+Country?code=lt&name=ltu&_or.code=lv&name=lat
+```
+
+We would get `code=lt AND (name=ltu OR code=lv) AND name=lat` expression, which
+would be a completely different thing.
+
+If `_and` or `_or` is used, it adds grouping to filter expressions, for
+example:
+
+```uri
+Country?code=lt&_and.name=ltu&code=lv&_and.name=lat
+```
+
+Will produce `(code=lt AND name=ltu) AND (code=lv AND name=lat)`.
+
+`_and` and `_or` can be used multiple times in sequence, to add multiple
+parameters into a logical connective group:
+
+
+```uri
+Country?code=lt&_or.code=lv&_or.code=ee
+```
+
+Will produce `(code=lt OR code=lv OR code=ee)` expression.
+
+
+
+## Select
 
 By default, all model properties are returned, but it is possible to select
 only specific properties using `_select`:
@@ -815,7 +1071,30 @@ Country?_select=code,name
 This will return data containing only `code` and `name` properties.
 
 
-## Sorting
+## Join
+
+Some Agents might provide joining capabilities, allowing to retrieve data from
+multiple models with a single request.
+
+Usually joins are allowed only if data physically stored on the same data
+management system, but more advanced Agents might allow to join models from
+different datasets stored in separately.
+
+A join can be requested by specifying attribute of a referenced object, for
+example:
+
+```uri
+City?_select=country.name,name
+```
+
+This will select data from both `City` and `Country` models, because
+`City/country` property is a Reference to the `Country` model.
+
+Joins can be used with for selecting, filtering, sorting and other places,
+where a property can be specified.
+
+
+## Sort
 
 By default objects are sorted by `_id`, but you can change order with `_sort`:
 
@@ -837,7 +1116,7 @@ You can sort by multiple properties in different directions:
 Country?_sort=-name,+code,population
 ```
 
-## Limiting
+## Limit
 
 By default all objects are returned, but you can limit number of objects
 returned with `_limit`:
@@ -849,7 +1128,7 @@ Country?_limit=10
 This will limit result set to 10 objects.
 
 
-## Counting
+## Count
 
 You can get total number of available objects with `_count`:
 
@@ -857,7 +1136,7 @@ You can get total number of available objects with `_count`:
 Country?_count=
 ```
 
-## Pagination
+## Page
 
 If number of objects is too large to get in a single request, you can use
 `_page` in combination with `_limit` and `_sort` to get all data in multiple
