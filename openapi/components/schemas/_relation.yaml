@@ -1,0 +1,12 @@
+type: object
+description: A tree:GreaterThanOrEqualToRelation element
+properties:
+  path:
+    type: string
+    format: sosa:resultTime
+  node:
+    type: string
+    description: A tree:node string that provides a query string to be used to retrieve this page (Node)
+  value:
+    type: string
+    format: xsd:dateTime

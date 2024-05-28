@@ -8,7 +8,7 @@ description: |
 
   Query example: 
 
-    ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_limit=10&_select=name,country.name,country.continent.name```
+    ```?code=42&country.name=Lithuania&country.continent.name=Europe&_sort=-code,country.name&_select=name,country.name,country.continent.name```
 
     ```?_select=_id,_rev&code._gt=42,country._id=26ae559c-e650-4e0d-90da-5c0907dcb9fd,&_or=1&code=1&code=2,&_count=```
 schema:
@@ -75,15 +75,6 @@ schema:
         source. An attempt to join data from multiple data sources,
         should return an error.
 
-    _limit:
-      type: integer
-      examples:
-        - 10
-      description: |
-        Limit result to given number of objects.
-
-        If `_sort` is not given, then sorty by `_id`.
-
     _sort:
       type: string
       examples:
@@ -110,8 +101,4 @@ schema:
         }
         ```
     _page:
-      type: string
-      description: |
-        If _limit is set and results in multiple pages of results to be available, _page value is returned as part of the response, linking to the next page after the current set. This value can be used directly for example `&page="WyIxOTAzNmM0ZS1mZmIyLTQyMTAtYjIyMi01YTJkZDQ2MWU5MzQiXQ=="`. Or through a next page request `&page.next`.
-
-        Recommeded format `base64` - `base64(json([v1, v2, ...]))`
+      $ref: ../schemas/_view.yaml
