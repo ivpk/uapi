@@ -73,7 +73,7 @@ paths:
     $ref: paths/wipe.yaml
   /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/{property}:
     $ref: paths/property.yaml
-  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/:changes/{cid}:
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/:changes:
     $ref: paths/changes.yaml
   /services/{form}/{org}/{catalog}/{dataset}/{version}/{service}:
     $ref: paths/service.yaml
