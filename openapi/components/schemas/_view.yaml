@@ -1,0 +1,11 @@
+type: string
+description: |
+  A tree:view element represented as a string that provides a query string was used to retrieve this page (Node) in the result tree. <?page=1> is used for first (default) node of the tree
+_node:
+  type: object
+  description: A tree:Node object representing this nodes relations to other nodes in the tree
+properties:
+  relation:
+    type: array
+    items:
+      $ref: ./_relation.yaml

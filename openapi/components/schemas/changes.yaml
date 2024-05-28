@@ -1,8 +1,16 @@
 type: object
+description: |
+  Changes are presented back as a [LDES](https://semiceu.github.io/LinkedDataEventStreams/) Event Stream.
+
+  Changes is an ```ldes:EventStream``` object
 properties:
-  _type:
-    $ref: ./_type.yaml
-  _data:
+  _shape:
+    type: string
+    description: A tree:shape element represented as a string that provides a relative path to the corresponding {name}.schacl shape document.
+  _member:
     type: array
+    description: A collection of one or many tree:member elements
     items:
       $ref: ./change.yaml
+  _view:
+    $ref: ./_view.yaml

@@ -1,40 +1,23 @@
 type: object
+description: |
+  A tree:member element that represents an immutable instance of an object 
+
+  This is usualy a version of an object within the data. Changes to the object result in new versions of this object to be created and added to the tree.
+
+  Latest version of the object can be determined by _issued date
 properties:
-  _cid:
-    type: integer
-    examples:
-      - 11
   _id:
     type: string
+    description: UUID of the object instance
     format: uuidv4
     examples:
-      - abdd1245-bbf9-4085-9366-f11c0f737c1d
-  _rev:
+      - "abdd1245-bbf9-4085-9366-f11c0f737c1d"
+  _issued:
     type: string
-    format: uuidv4
+    format: xsd:dateTime
     examples:
-      - 16dabe62-61e9-4549-a6bd-07cecfbc3508
-  _txn:
+      - "2021-07-30T14:03:14.645198Z"
+  _isVersionOf:
     type: string
-    examples:
-      - 792a5029-63c9-4c07-995c-cbc063aaac2c
-  _created:
-    type: string
-    format: datetime
-    examples:
-      - '2021-07-30T14:03:14.645198'
-  _op:
-    type: string
-    enum:
-      - insert
-      - patch
-      - delete
-  _objectType:
-    type: string
-    examples:
-      - Continent
-  _value:
-    type: string
-    examples:
-      - Europe
+    description: An element that this member is a version of
 additionalProperties: false
