@@ -10,29 +10,29 @@ oneOf:
         format: uuidv4
       ^[a-z](_?[a-z0-9]+)*$:
         oneOf:
-          - $ref: ../components/schemas/absent.yaml
-          - $ref: ../components/schemas/boolean.yaml
-          - $ref: ../components/schemas/integer.yaml
-          - $ref: ../components/schemas/number.yaml
-          - $ref: ../components/schemas/binary.yaml
-          - $ref: ../components/schemas/string.yaml
-          - $ref: ../components/schemas/text.yaml
-          - $ref: ../components/schemas/dateTime.yaml
-          - $ref: ../components/schemas/date.yaml
-          - $ref: ../components/schemas/time.yaml
-          - $ref: ../components/schemas/temporal.yaml
-          - $ref: ../components/schemas/geometry.yaml
-          - $ref: ../components/schemas/spatial.yaml
-          - $ref: ../components/schemas/money.yaml
-          - $ref: ../components/schemas/file.yaml
-          - $ref: ../components/schemas/image.yaml
-          - $ref: ../components/schemas/generic.yaml
-          - $ref: ../components/schemas/ref.yaml
-          - $ref: ../components/schemas/backref.yaml
-          - $ref: ../components/schemas/array.yaml
-          - $ref: ../components/schemas/url.yaml
-          - $ref: ../components/schemas/uri.yaml
-          - $ref: ../components/schemas/jsonobject.yaml
+          - $ref: ./absent.yaml
+          - $ref: ./boolean.yaml
+          - $ref: ./integer.yaml
+          - $ref: ./number.yaml
+          - $ref: ./binary.yaml
+          - $ref: ./string.yaml
+          - $ref: ./text.yaml
+          - $ref: ./dateTime.yaml
+          - $ref: ./date.yaml
+          - $ref: ./time.yaml
+          - $ref: ./temporal.yaml
+          - $ref: ./geometry.yaml
+          - $ref: ./spatial.yaml
+          - $ref: ./money.yaml
+          - $ref: ./file.yaml
+          - $ref: ./image.yaml
+          - $ref: ./generic.yaml
+          - $ref: ./ref.yaml
+          - $ref: ./backref.yaml
+          - $ref: ./array.yaml
+          - $ref: ./url.yaml
+          - $ref: ./uri.yaml
+          - $ref: ./jsonobject.yaml
   - type: object
     title: Maturity < 4
     properties:
@@ -40,26 +40,26 @@ oneOf:
         type: string
       ^[a-z](_?[a-z0-9]+)*$:
         oneOf:
-          - $ref: ../components/schemas/absent.yaml
-          - $ref: ../components/schemas/boolean.yaml
-          - $ref: ../components/schemas/integer.yaml
-          - $ref: ../components/schemas/number.yaml
-          - $ref: ../components/schemas/binary.yaml
-          - $ref: ../components/schemas/string.yaml
-          - $ref: ../components/schemas/text.yaml
-          - $ref: ../components/schemas/dateTime.yaml
-          - $ref: ../components/schemas/date.yaml
-          - $ref: ../components/schemas/time.yaml
-          - $ref: ../components/schemas/temporal.yaml
-          - $ref: ../components/schemas/geometry.yaml
-          - $ref: ../components/schemas/spatial.yaml
-          - $ref: ../components/schemas/money.yaml
-          - $ref: ../components/schemas/file.yaml
-          - $ref: ../components/schemas/image.yaml
-          - $ref: ../components/schemas/generic.yaml
-          - $ref: ../components/schemas/ref.yaml
-          - $ref: ../components/schemas/backref.yaml
-          - $ref: ../components/schemas/array.yaml
-          - $ref: ../components/schemas/url.yaml
-          - $ref: ../components/schemas/uri.yaml
-          - $ref: ../components/schemas/jsonobject.yaml
+          - $ref: ./absent.yaml
+          - $ref: ./boolean.yaml
+          - $ref: ./integer.yaml
+          - $ref: ./number.yaml
+          - $ref: ./binary.yaml
+          - $ref: ./string.yaml
+          - $ref: ./text.yaml
+          - $ref: ./dateTime.yaml
+          - $ref: ./date.yaml
+          - $ref: ./time.yaml
+          - $ref: ./temporal.yaml
+          - $ref: ./geometry.yaml
+          - $ref: ./spatial.yaml
+          - $ref: ./money.yaml
+          - $ref: ./file.yaml
+          - $ref: ./image.yaml
+          - $ref: ./generic.yaml
+          - $ref: ./ref.yaml
+          - $ref: ./backref.yaml
+          - $ref: ./array.yaml
+          - $ref: ./url.yaml
+          - $ref: ./uri.yaml
+          - $ref: ./jsonobject.yaml
