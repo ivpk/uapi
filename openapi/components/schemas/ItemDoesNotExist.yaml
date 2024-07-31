@@ -3,9 +3,6 @@ properties:
   code: 
     type: string
     description: ItemDoesNotExist
-  status_code:
-    type: integer
-    description: '404'
   type:
     type: string
     description: system

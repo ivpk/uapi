@@ -22,19 +22,17 @@ externalDocs:
 
 servers:
   - url: get.data.gov.lt
-    description: Production data access server
+    description: Data access server
   - url: put.data.gov.lt
-    description: Production data update server
-  - url: get-test.data.gov.lt
-    description: Test data access server
-  - url: put-test.data.gov.lt
-    description: Test data update server
+    description: Data update server
 
 tags:
   - name: objects
     description: Operations with multiple Objects
   - name: object
     description: Operations with single Object
+  - name: subresource
+    description: Operations with Object subresource
   - name: change
     description: Change tracking operations
   - name: services
@@ -81,59 +79,7 @@ paths:
 components:
   securitySchemes:
 
-    UAPI_test_auth:
-      description: |
-        Test environment authentication.
-
-        Client Credentials flow
-        Provides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.
-
-        Authorization Code flow
-        Provides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.
-
-        **Scope elements**
-        The core structure of the scope is `uapi:/{group}/{form}/{org}/{catalog}/{dataset}/{model}/@{scope}/:{action}`
-
-        This is a full path that can be used to narrow down the scope of access. It is constructed from these elements:
-          - `uapi:/` - core API element. Grants all access if used on its own.
-          - `uapi:/:{action}` - provides `{action}` access on all elements.
-          - `uapi:/@{scope}` - provides all access on elements based on `{scope}` filter.
-          - `uapi:/@{scope}/:{action}` - provides `{action}` acces s on elements based on `{scope}` filter.
-          - `uapi:/{group}/{form}/{org}/{catalog}/{dataset}` - provides all access for a specific `{dataset}`
-
-        List of available `{action}`:
-          - `getone` - ability to get one object data, based on provided identifier.
-          - `getall` - ability to get a list of all objects.
-          - `search` - ability to get data based on URL query.
-          - `changes` - ability to get change history of a single object or multiple objects.
-          - `insert` - ability to create new objects.
-          - `update` - ability to update existing objects.
-          - `delete` - galimybė trinti objektus, paliekant įrašą keitimų istorijoje.
-          - `wipe` - galimybė neatstatomai trinti objektus, nepaliekant įrašo keitimų istorijoje.
-
-        Combined actions:
-          - `read` - combines getone, getall, search, changes.
-          - `write` - combines insert, update, delete.
-          - `upsert` - combines insert and update.
-          - `rw` - combines read and write.
-
-        The scope definition is dynamic and is dependent on the specific resource and UAPI implementation. Additional usage specific scope can be defined added to the flows below.
-
-        The mandatory part is the use of OAuth as the authentication and authorization method and the use of either Client Credentials or Autorization Code flows, or both.
-
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: https://auth.gov.lt/auth/token
-          scopes:
-            uapi:/ : All access
-        authorizationCode:
-          authorizationUrl: https://api.gov.lt/oauth
-          tokenUrl: https://auth.gov.lt/auth/token
-          scopes:
-            uapi:/ : All access
-
-    UAPI_prod_auth:
+    UAPI_auth:
       description: |
         Client Credentials flow
         Provides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.

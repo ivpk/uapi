@@ -5,4 +5,7 @@ headers:
 content:
   application/json:
     schema:
-      $ref: ../schemas/errors.yaml
+      oneOf:
+        - $ref: ../schemas/UniqueConstraint.yaml
+        - $ref: ../schemas/NoItemRevision.yaml
+        - $ref: ../schemas/InvalidOperandValue.yaml

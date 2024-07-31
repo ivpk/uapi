@@ -3,9 +3,6 @@ properties:
   code: 
     type: string
     description: AuthorizedClientsOnly
-  status_code:
-    type: integer
-    description: '401'
   type:
     type: string
     description: system

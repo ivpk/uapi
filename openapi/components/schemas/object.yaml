@@ -1,6 +1,6 @@
 type: object
 properties:
-  _context:
+  "@context":
     $ref: ./_context.yaml
   _type:
     $ref: ./_type.yaml
@@ -23,18 +23,6 @@ properties:
     type: string
     examples:
       - 792a5029-63c9-4c07-995c-cbc063aaac2c
-  _objectType:
-    description: |
-      Name of the object that is being added
-    type: string
-    examples:
-      - Continent
-  _value:
-    description: |
-      Value of the object that is being added
-    type: string
-    examples:
-      - Europe
   _created:
     description: |
       Date and time when the object was created provided in a standard format based on [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html)
@@ -52,29 +40,29 @@ properties:
 patternProperties:
   ^[a-z](_?[a-z0-9]+)*$:
     oneOf:
-      - $ref: ./absent.yaml
-      - $ref: ./boolean.yaml
-      - $ref: ./integer.yaml
-      - $ref: ./number.yaml
-      - $ref: ./binary.yaml
-      - $ref: ./string.yaml
-      - $ref: ./text.yaml
-      - $ref: ./dateTime.yaml
-      - $ref: ./date.yaml
-      - $ref: ./time.yaml
-      - $ref: ./temporal.yaml
-      - $ref: ./geometry.yaml
-      - $ref: ./spatial.yaml
-      - $ref: ./money.yaml
-      - $ref: ./file.yaml
-      - $ref: ./image.yaml
-      - $ref: ./generic.yaml
-      - $ref: ./ref.yaml
-      - $ref: ./backref.yaml
-      - $ref: ./array.yaml
-      - $ref: ./url.yaml
-      - $ref: ./uri.yaml
-      - $ref: ./jsonobject.yaml
+      - $ref: ../components/schemas/absent.yaml
+      - $ref: ../components/schemas/boolean.yaml
+      - $ref: ../components/schemas/integer.yaml
+      - $ref: ../components/schemas/number.yaml
+      - $ref: ../components/schemas/binary.yaml
+      - $ref: ../components/schemas/string.yaml
+      - $ref: ../components/schemas/text.yaml
+      - $ref: ../components/schemas/dateTime.yaml
+      - $ref: ../components/schemas/date.yaml
+      - $ref: ../components/schemas/time.yaml
+      - $ref: ../components/schemas/temporal.yaml
+      - $ref: ../components/schemas/geometry.yaml
+      - $ref: ../components/schemas/spatial.yaml
+      - $ref: ../components/schemas/money.yaml
+      - $ref: ../components/schemas/file.yaml
+      - $ref: ../components/schemas/image.yaml
+      - $ref: ../components/schemas/generic.yaml
+      - $ref: ../components/schemas/ref.yaml
+      - $ref: ../components/schemas/backref.yaml
+      - $ref: ../components/schemas/array.yaml
+      - $ref: ../components/schemas/url.yaml
+      - $ref: ../components/schemas/uri.yaml
+      - $ref: ../components/schemas/jsonobject.yaml
 additionalProperties: false
 description: |
   Object represents a single row in a table.
