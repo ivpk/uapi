@@ -1,3 +1,3 @@
-# Universal Application Programmin Interface (UAPI)
+# Universal Application Programming Interface (UAPI)
 
 
