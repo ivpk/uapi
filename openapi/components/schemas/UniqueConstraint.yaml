@@ -3,9 +3,6 @@ properties:
   code: 
     type: string
     description: UniqueConstraint
-  status_code:
-    type: integer
-    description: '400'
   type:
     type: string
     description: system

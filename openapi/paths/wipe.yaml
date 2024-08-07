@@ -13,9 +13,7 @@ delete:
   tags:
     - object
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Hard delete a single object by {id}
   description: >
@@ -48,6 +46,8 @@ delete:
                   - true
     '400':
       $ref: ../components/responses/error400.yaml
+    '401':
+      $ref: ../components/responses/error401.yaml
     '403':
       $ref: ../components/responses/error403.yaml
     '404':

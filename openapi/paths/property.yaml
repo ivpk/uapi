@@ -13,13 +13,30 @@ parameters:
   - $ref: ../components/parameters/Accept-Language.yaml
   - $ref: ../components/parameters/property.yaml
 
+head:
+  tags:
+    - subresource
+  security:
+    - {}
+  summary: Return only headers for the API.
+  description: |
+    `HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.
+  operationId: headProperty
+  responses:
+    '200':
+      description: OK
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
+
 get:
   tags: 
-    - object
+    - subresource
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: For a given specific object by {id}, retrieve a {property} from it's structure (subresource).
   description: |
@@ -85,6 +102,134 @@ get:
 
     '400':
       $ref: ../components/responses/error400.yaml
+    '401':
+      $ref: ../components/responses/error401.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
+
+post:
+  tags:
+    - subresource
+  security:
+    - UAPI_auth:
+      - uapi:/
+  summary: Upsert an object property by object {id} and {property}. This operation can only be performed on fields that can be indexed.
+  description: |
+    This performs an `Upsert` action. First it checks if there is an existing object based on `{id}` and if there is {property}, if there is, it performs `Patch` action, if there isn't it performs `Update`
+  operationId: upsertProperty
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/upsert.yaml
+  responses:
+    '200':
+      description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/object.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '401':
+      $ref: ../components/responses/error401.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '409':
+      $ref: ../components/responses/error409.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
+
+put:
+  tags:
+    - subresource
+  security:
+    - UAPI_auth:
+      - uapi:/
+  summary: Update a single object property by {id} and {property}.
+  description: |
+    Overwrite object property value.
+
+    This triggers `_rev` to be updated. And before update, existing `_rev`
+    will be compared with given in request body, to prevent concurent
+    overwrites.
+  operationId: updateProperty
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          anyOf:
+            - $ref: ../components/schemas/update.yaml
+  responses:
+    '200':
+      description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/object.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '401':
+      $ref: ../components/responses/error401.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '409':
+      $ref: ../components/responses/error409.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
+
+delete:
+  tags:
+    - subresource
+  security:
+    - UAPI_auth:
+      - uapi:/
+  summary: Delete a single object property by {id} and {property}
+  description: |
+    Delete object property. This is a soft delete operation, object property should not be
+    deleted, but marked for deletion. Soft delete is needed for changes API
+    to know, when something was deleted.
+
+    After some agreed time period, objects and properties marked as deleted can be deleted
+    permanently.
+
+    Before delete, existing `_rev` will be compared with given in request
+    body, to prevent concurent overwrites.
+  operationId: deleteProperty
+  responses:
+    '204':
+      description: No Content
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '401':
+      $ref: ../components/responses/error401.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
     '404':
       $ref: ../components/responses/error404.yaml
     '500':

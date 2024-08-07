@@ -26,14 +26,16 @@ head:
       description: OK
     '400':
       $ref: ../components/responses/error400.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml
 
 get:
   tags:
     - objects
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Get multiple objects.
   description: |
@@ -79,6 +81,12 @@ get:
 
     '400':
       $ref: ../components/responses/error400.yaml
+    '401':
+      $ref: ../components/responses/error401.yaml
+    '403':
+      $ref: ../components/responses/error403.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
     '500':
       $ref: ../components/responses/error500.yaml
     '503':
@@ -88,9 +96,7 @@ post:
   tags:
     - objects
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Create a single new object or create, update or delete multiple objects in a single request.
   description: |
@@ -127,8 +133,12 @@ post:
               - $ref: ../components/schemas/object.yaml
     '400':
       $ref: ../components/responses/error400.yaml
+    '401':
+      $ref: ../components/responses/error401.yaml
     '403':
       $ref: ../components/responses/error403.yaml
+    '409':
+      $ref: ../components/responses/error409.yaml
     '500':
       $ref: ../components/responses/error500.yaml
     '503':

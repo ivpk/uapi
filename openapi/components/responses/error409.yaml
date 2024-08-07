@@ -1,8 +1,8 @@
-description: Not Found
+description: Bad Request
 headers:
   traceresponse:
     $ref: ../headers/traceresponse.yaml
 content:
   application/json:
     schema:
-      $ref: ../schemas/ItemDoesNotExist.yaml
+      $ref: ../schemas/ConflictingValue.yaml

@@ -31,9 +31,7 @@ get:
   tags:
     - object
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Get a single object by given {id}.
   description: |
@@ -87,9 +85,7 @@ post:
   tags:
     - object
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Upsert an object by {id}. This operation can only be performed on fields that can be indexed.
   description: |
@@ -126,9 +122,7 @@ put:
   tags:
     - object
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Update a single object by {id}.
   description: |
@@ -171,9 +165,7 @@ patch:
   tags:
     - object
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Patch a single object.
   description: |
@@ -215,9 +207,7 @@ delete:
   tags:
     - object
   security:
-    - UAPI_test_auth:
-      - uapi:/
-    - UAPI_prod_auth:
+    - UAPI_auth:
       - uapi:/
   summary: Delete a single object by {id}
   description: |
