@@ -18,19 +18,11 @@
   "servers": [
     {
       "url": "get.data.gov.lt",
-      "description": "Production data access server"
+      "description": "Data access server"
     },
     {
       "url": "put.data.gov.lt",
-      "description": "Production data update server"
-    },
-    {
-      "url": "get-test.data.gov.lt",
-      "description": "Test data access server"
-    },
-    {
-      "url": "put-test.data.gov.lt",
-      "description": "Test data update server"
+      "description": "Data update server"
     }
   ],
   "tags": [
@@ -41,6 +33,10 @@
     {
       "name": "object",
       "description": "Operations with single Object"
+    },
+    {
+      "name": "subresource",
+      "description": "Operations with Object subresource"
     },
     {
       "name": "change",
@@ -208,6 +204,12 @@
           },
           "400": {
             "$ref": "#/components/responses/error400"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
           }
         }
       },
@@ -217,12 +219,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -291,6 +288,15 @@
           "400": {
             "$ref": "#/components/responses/error400"
           },
+          "401": {
+            "$ref": "#/components/responses/error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
           "500": {
             "$ref": "#/components/responses/error500"
           },
@@ -305,12 +311,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -361,8 +362,14 @@
           "400": {
             "$ref": "#/components/responses/error400"
           },
+          "401": {
+            "$ref": "#/components/responses/error401"
+          },
           "403": {
             "$ref": "#/components/responses/error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/error409"
           },
           "500": {
             "$ref": "#/components/responses/error500"
@@ -437,12 +444,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -523,12 +525,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -585,12 +582,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -651,12 +643,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -713,12 +700,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -792,12 +774,7 @@
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -831,6 +808,9 @@
           },
           "400": {
             "$ref": "#/components/responses/error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/error401"
           },
           "403": {
             "$ref": "#/components/responses/error403"
@@ -889,18 +869,38 @@
           "$ref": "#/components/parameters/property"
         }
       ],
+      "head": {
+        "tags": [
+          "subresource"
+        ],
+        "security": [
+          {}
+        ],
+        "summary": "Return only headers for the API.",
+        "description": "`HEAD` method requests the headers that would be returned if the HEAD request's URL was instead requested with the `GET` method.\n",
+        "operationId": "headProperty",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
+          }
+        }
+      },
       "get": {
         "tags": [
-          "object"
+          "subresource"
         ],
         "security": [
           {
-            "UAPI_test_auth": [
-              "uapi:/"
-            ]
-          },
-          {
-            "UAPI_prod_auth": [
+            "UAPI_auth": [
               "uapi:/"
             ]
           }
@@ -1025,6 +1025,185 @@
           },
           "400": {
             "$ref": "#/components/responses/error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "subresource"
+        ],
+        "security": [
+          {
+            "UAPI_auth": [
+              "uapi:/"
+            ]
+          }
+        ],
+        "summary": "Upsert an object property by object {id} and {property}. This operation can only be performed on fields that can be indexed.",
+        "description": "This performs an `Upsert` action. First it checks if there is an existing object based on `{id}` and if there is {property}, if there is, it performs `Patch` action, if there isn't it performs `Update`\n",
+        "operationId": "upsertProperty",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/upsert"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/object"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "subresource"
+        ],
+        "security": [
+          {
+            "UAPI_auth": [
+              "uapi:/"
+            ]
+          }
+        ],
+        "summary": "Update a single object property by {id} and {property}.",
+        "description": "Overwrite object property value.\n\nThis triggers `_rev` to be updated. And before update, existing `_rev`\nwill be compared with given in request body, to prevent concurent\noverwrites.\n",
+        "operationId": "updateProperty",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/update"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/object"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/error503"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "subresource"
+        ],
+        "security": [
+          {
+            "UAPI_auth": [
+              "uapi:/"
+            ]
+          }
+        ],
+        "summary": "Delete a single object property by {id} and {property}",
+        "description": "Delete object property. This is a soft delete operation, object property should not be\ndeleted, but marked for deletion. Soft delete is needed for changes API\nto know, when something was deleted.\n\nAfter some agreed time period, objects and properties marked as deleted can be deleted\npermanently.\n\nBefore delete, existing `_rev` will be compared with given in request\nbody, to prevent concurent overwrites.\n",
+        "operationId": "deleteProperty",
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {
+              "traceresponse": {
+                "$ref": "#/components/headers/traceresponse"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/error403"
           },
           "404": {
             "$ref": "#/components/responses/error404"
@@ -1233,26 +1412,7 @@
   },
   "components": {
     "securitySchemes": {
-      "UAPI_test_auth": {
-        "description": "Test environment authentication.\n\nClient Credentials flow\nProvides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.\n\nAuthorization Code flow\nProvides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.\n\n**Scope elements**\nThe core structure of the scope is `uapi:/{group}/{form}/{org}/{catalog}/{dataset}/{model}/@{scope}/:{action}`\n\nThis is a full path that can be used to narrow down the scope of access. It is constructed from these elements:\n  - `uapi:/` - core API element. Grants all access if used on its own.\n  - `uapi:/:{action}` - provides `{action}` access on all elements.\n  - `uapi:/@{scope}` - provides all access on elements based on `{scope}` filter.\n  - `uapi:/@{scope}/:{action}` - provides `{action}` acces s on elements based on `{scope}` filter.\n  - `uapi:/{group}/{form}/{org}/{catalog}/{dataset}` - provides all access for a specific `{dataset}`\n\nList of available `{action}`:\n  - `getone` - ability to get one object data, based on provided identifier.\n  - `getall` - ability to get a list of all objects.\n  - `search` - ability to get data based on URL query.\n  - `changes` - ability to get change history of a single object or multiple objects.\n  - `insert` - ability to create new objects.\n  - `update` - ability to update existing objects.\n  - `delete` - galimybė trinti objektus, paliekant įrašą keitimų istorijoje.\n  - `wipe` - galimybė neatstatomai trinti objektus, nepaliekant įrašo keitimų istorijoje.\n\nCombined actions:\n  - `read` - combines getone, getall, search, changes.\n  - `write` - combines insert, update, delete.\n  - `upsert` - combines insert and update.\n  - `rw` - combines read and write.\n\nThe scope definition is dynamic and is dependent on the specific resource and UAPI implementation. Additional usage specific scope can be defined added to the flows below.\n\nThe mandatory part is the use of OAuth as the authentication and authorization method and the use of either Client Credentials or Autorization Code flows, or both.\n",
-        "type": "oauth2",
-        "flows": {
-          "clientCredentials": {
-            "tokenUrl": "https://auth.gov.lt/auth/token",
-            "scopes": {
-              "uapi:/": "All access"
-            }
-          },
-          "authorizationCode": {
-            "authorizationUrl": "https://api.gov.lt/oauth",
-            "tokenUrl": "https://auth.gov.lt/auth/token",
-            "scopes": {
-              "uapi:/": "All access"
-            }
-          }
-        }
-      },
-      "UAPI_prod_auth": {
+      "UAPI_auth": {
         "description": "Client Credentials flow\nProvides access based on client credentials. Used to manage data for your Organisation. Access is granted to perform actions based on scope selected and access levels assigned to the client credentials.\n\nAuthorization Code flow\nProvides general access to the data. Data access is managed by client rights and the authorization code. In addition to that, if there are active Smart Contracts associated with the client.\n\n**Scope elements**\nThe core structure of the scope is `uapi:/{group}/{form}/{org}/{catalog}/{dataset}/{model}/@{scope}/:{action}`\n\nThis is a full path that can be used to narrow down the scope of access. It is constructed from these elements:\n  - `uapi:/` - core API element. Grants all access if used on its own.\n  - `uapi:/:{action}` - provides `{action}` access on all elements.\n  - `uapi:/@{scope}` - provides all access on elements based on `{scope}` filter.\n  - `uapi:/@{scope}/:{action}` - provides `{action}` acces s on elements based on `{scope}` filter.\n  - `uapi:/{group}/{form}/{org}/{catalog}/{dataset}` - provides all access for a specific `{dataset}`\n\nList of available `{action}`:\n  - `getone` - ability to get one object data, based on provided identifier.\n  - `getall` - ability to get a list of all objects.\n  - `search` - ability to get data based on URL query.\n  - `changes` - ability to get change history of a single object or multiple objects.\n  - `insert` - ability to create new objects.\n  - `update` - ability to update existing objects.\n  - `delete` - galimybė trinti objektus, paliekant įrašą keitimų istorijoje.\n  - `wipe` - galimybė neatstatomai trinti objektus, nepaliekant įrašo keitimų istorijoje.\n\nCombined actions:\n  - `read` - combines getone, getall, search, changes.\n  - `write` - combines insert, update, delete.\n  - `upsert` - combines insert and update.\n  - `rw` - combines read and write.\n\nThe scope definition is dynamic and is dependent on the specific resource and UAPI implementation. Additional usage specific scope can be defined added to the flows below.\n\nThe mandatory part is the use of OAuth as the authentication and authorization method and the use of either Client Credentials or Autorization Code flows, or both.\n",
         "type": "oauth2",
         "flows": {
@@ -1599,89 +1759,12 @@
           }
         }
       },
-      "dataset": {
-        "type": "string",
-        "pattern": "^[a-z](_?[a-z0-9]+)*$",
-        "examples": [
-          "gov"
-        ]
-      },
-      "model": {
-        "type": "string",
-        "pattern": "^[A-Z]([A-Z]?[a-z0-9]+)*$",
-        "examples": [
-          "City"
-        ]
-      },
-      "property": {
-        "type": "string",
-        "pattern": "^[a-z](_?[a-z0-9]+)*$",
-        "examples": [
-          "name"
-        ]
-      },
-      "ConflictingValue": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "ConflictingValue"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "409"
-          },
-          "context": {
-            "type": "object",
-            "properties": {
-              "component": {
-                "type": "string"
-              },
-              "dataset": {
-                "$ref": "#/components/schemas/dataset"
-              },
-              "entity": {
-                "type": "string"
-              },
-              "manifest": {
-                "type": "string"
-              },
-              "model": {
-                "$ref": "#/components/schemas/model"
-              },
-              "property": {
-                "$ref": "#/components/schemas/property"
-              },
-              "schema": {
-                "type": "string"
-              }
-            }
-          },
-          "type": {
-            "type": "string",
-            "description": "system"
-          },
-          "template": {
-            "type": "string",
-            "description": "Conflicting Value"
-          },
-          "message": {
-            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
-            "type": "string"
-          },
-          "additionalProperties": true
-        }
-      },
       "UniqueConstraint": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string",
             "description": "UniqueConstraint"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "400"
           },
           "type": {
             "type": "string",
@@ -1698,42 +1781,12 @@
           "additionalProperties": true
         }
       },
-      "ItemDoesNotExist": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "ItemDoesNotExist"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "404"
-          },
-          "type": {
-            "type": "string",
-            "description": "system"
-          },
-          "template": {
-            "type": "string",
-            "description": "Resource {id!r} not found."
-          },
-          "message": {
-            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
-            "type": "string"
-          },
-          "additionalProperties": true
-        }
-      },
       "NoItemRevision": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string",
             "description": "NoItemRevision"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "400"
           },
           "type": {
             "type": "string",
@@ -1750,46 +1803,12 @@
           "additionalProperties": true
         }
       },
-      "InvalidToken": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "InvalidToken"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "401"
-          },
-          "type": {
-            "type": "string",
-            "description": "system"
-          },
-          "template": {
-            "type": "string",
-            "description": "Invalid token"
-          },
-          "headers": {
-            "type": "string",
-            "description": "{'WWW-Authenticate': 'Bearer error'='invalid_token'}"
-          },
-          "message": {
-            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
-            "type": "string"
-          },
-          "additionalProperties": true
-        }
-      },
       "InvalidOperandValue": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string",
             "description": "InvalidOperandValue"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "400"
           },
           "type": {
             "type": "string",
@@ -1806,68 +1825,12 @@
           "additionalProperties": true
         }
       },
-      "AuthorizedClientsOnly": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "AuthorizedClientsOnly"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "401"
-          },
-          "type": {
-            "type": "string",
-            "description": "system"
-          },
-          "template": {
-            "type": "string",
-            "description": "This resource can only be accessed by an authorized client."
-          },
-          "message": {
-            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
-            "type": "string"
-          },
-          "additionalProperties": true
-        }
-      },
-      "MultipleRowsFound": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "MultipleRowsFound"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "500"
-          },
-          "type": {
-            "type": "string",
-            "description": "system"
-          },
-          "template": {
-            "type": "string",
-            "description": "Multiple rows were found."
-          },
-          "message": {
-            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
-            "type": "string"
-          },
-          "additionalProperties": true
-        }
-      },
       "UnhandledException": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string",
             "description": "UnhandledException"
-          },
-          "status_code": {
-            "type": "integer",
-            "description": "500"
           },
           "type": {
             "type": "string",
@@ -1893,47 +1856,48 @@
           "additionalProperties": true
         }
       },
-      "errors": {
+      "MultipleRowsFound": {
         "type": "object",
-        "description": "In addition to usual HTTP error codes, additional error information available from the processing system is passed to the client.\n\nThis should include a more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nMore complex errors can further expand this structure.\n\n`status_code` within the error object corresponds to the HTTP error code that will be provided when the error is returned back.\n",
         "properties": {
-          "errors": {
-            "type": "array",
-            "items": {
-              "discriminator": {
-                "propertyName": "code"
-              },
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/ConflictingValue"
-                },
-                {
-                  "$ref": "#/components/schemas/UniqueConstraint"
-                },
-                {
-                  "$ref": "#/components/schemas/ItemDoesNotExist"
-                },
-                {
-                  "$ref": "#/components/schemas/NoItemRevision"
-                },
-                {
-                  "$ref": "#/components/schemas/InvalidToken"
-                },
-                {
-                  "$ref": "#/components/schemas/InvalidOperandValue"
-                },
-                {
-                  "$ref": "#/components/schemas/AuthorizedClientsOnly"
-                },
-                {
-                  "$ref": "#/components/schemas/MultipleRowsFound"
-                },
-                {
-                  "$ref": "#/components/schemas/UnhandledException"
-                }
-              ]
-            }
-          }
+          "code": {
+            "type": "string",
+            "description": "MultipleRowsFound"
+          },
+          "type": {
+            "type": "string",
+            "description": "system"
+          },
+          "template": {
+            "type": "string",
+            "description": "Multiple rows were found."
+          },
+          "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
+            "type": "string"
+          },
+          "additionalProperties": true
+        }
+      },
+      "ServiceNotAvailable": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Service Not Available"
+          },
+          "type": {
+            "type": "string",
+            "description": "system"
+          },
+          "template": {
+            "type": "string",
+            "description": "Service is currently not available."
+          },
+          "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
+            "type": "string"
+          },
+          "additionalProperties": true
         }
       },
       "dependency": {
@@ -1968,11 +1932,25 @@
           }
         }
       },
+      "dataset": {
+        "type": "string",
+        "pattern": "^[a-z](_?[a-z0-9]+)*$",
+        "examples": [
+          "gov"
+        ]
+      },
       "datasetVersion": {
         "type": "integer",
         "pattern": "^[0-9]+$",
         "examples": [
           1
+        ]
+      },
+      "model": {
+        "type": "string",
+        "pattern": "^[A-Z]([A-Z]?[a-z0-9]+)*$",
+        "examples": [
+          "City"
         ]
       },
       "_context": {
@@ -1992,7 +1970,7 @@
       "object": {
         "type": "object",
         "properties": {
-          "_context": {
+          "@context": {
             "$ref": "#/components/schemas/_context"
           },
           "_type": {
@@ -2020,20 +1998,6 @@
               "792a5029-63c9-4c07-995c-cbc063aaac2c"
             ]
           },
-          "_objectType": {
-            "description": "Name of the object that is being added\n",
-            "type": "string",
-            "examples": [
-              "Continent"
-            ]
-          },
-          "_value": {
-            "description": "Value of the object that is being added\n",
-            "type": "string",
-            "examples": [
-              "Europe"
-            ]
-          },
           "_created": {
             "description": "Date and time when the object was created provided in a standard format based on [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html)\n\nMinimum value: `0001-01-01T00:00:00`\nMaximum value: `999-12-31T23:59:59.999999`\n",
             "type": "string"
@@ -2047,73 +2011,73 @@
           "^[a-z](_?[a-z0-9]+)*$": {
             "oneOf": [
               {
-                "$ref": "./absent.yaml"
+                "$ref": "../components/schemas/absent.yaml"
               },
               {
-                "$ref": "./boolean.yaml"
+                "$ref": "../components/schemas/boolean.yaml"
               },
               {
-                "$ref": "./integer.yaml"
+                "$ref": "../components/schemas/integer.yaml"
               },
               {
-                "$ref": "./number.yaml"
+                "$ref": "../components/schemas/number.yaml"
               },
               {
-                "$ref": "./binary.yaml"
+                "$ref": "../components/schemas/binary.yaml"
               },
               {
-                "$ref": "./string.yaml"
+                "$ref": "../components/schemas/string.yaml"
               },
               {
-                "$ref": "./text.yaml"
+                "$ref": "../components/schemas/text.yaml"
               },
               {
-                "$ref": "./dateTime.yaml"
+                "$ref": "../components/schemas/dateTime.yaml"
               },
               {
-                "$ref": "./date.yaml"
+                "$ref": "../components/schemas/date.yaml"
               },
               {
-                "$ref": "./time.yaml"
+                "$ref": "../components/schemas/time.yaml"
               },
               {
-                "$ref": "./temporal.yaml"
+                "$ref": "../components/schemas/temporal.yaml"
               },
               {
-                "$ref": "./geometry.yaml"
+                "$ref": "../components/schemas/geometry.yaml"
               },
               {
-                "$ref": "./spatial.yaml"
+                "$ref": "../components/schemas/spatial.yaml"
               },
               {
-                "$ref": "./money.yaml"
+                "$ref": "../components/schemas/money.yaml"
               },
               {
-                "$ref": "./file.yaml"
+                "$ref": "../components/schemas/file.yaml"
               },
               {
-                "$ref": "./image.yaml"
+                "$ref": "../components/schemas/image.yaml"
               },
               {
-                "$ref": "./generic.yaml"
+                "$ref": "../components/schemas/generic.yaml"
               },
               {
-                "$ref": "./ref.yaml"
+                "$ref": "../components/schemas/ref.yaml"
               },
               {
-                "$ref": "./backref.yaml"
+                "$ref": "../components/schemas/backref.yaml"
               },
               {
-                "$ref": "./array.yaml"
+                "$ref": "../components/schemas/array.yaml"
               },
               {
-                "$ref": "./url.yaml"
+                "$ref": "../components/schemas/url.yaml"
               },
               {
-                "$ref": "./uri.yaml"
+                "$ref": "../components/schemas/uri.yaml"
               },
               {
-                "$ref": "./jsonobject.yaml"
+                "$ref": "../components/schemas/jsonobject.yaml"
               }
             ]
           }
@@ -2163,6 +2127,98 @@
           }
         }
       },
+      "AuthorizedClientsOnly": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "AuthorizedClientsOnly"
+          },
+          "type": {
+            "type": "string",
+            "description": "system"
+          },
+          "template": {
+            "type": "string",
+            "description": "This resource can only be accessed by an authorized client."
+          },
+          "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
+            "type": "string"
+          },
+          "additionalProperties": true
+        }
+      },
+      "InvalidToken": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "InvalidToken"
+          },
+          "type": {
+            "type": "string",
+            "description": "system"
+          },
+          "template": {
+            "type": "string",
+            "description": "Invalid token"
+          },
+          "headers": {
+            "type": "string",
+            "description": "{'WWW-Authenticate': 'Bearer error'='invalid_token'}"
+          },
+          "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
+            "type": "string"
+          },
+          "additionalProperties": true
+        }
+      },
+      "Forbidden": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Forbidden"
+          },
+          "type": {
+            "type": "string",
+            "description": "system"
+          },
+          "template": {
+            "type": "string",
+            "description": "Access is forbidden"
+          },
+          "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
+            "type": "string"
+          },
+          "additionalProperties": true
+        }
+      },
+      "ItemDoesNotExist": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "ItemDoesNotExist"
+          },
+          "type": {
+            "type": "string",
+            "description": "system"
+          },
+          "template": {
+            "type": "string",
+            "description": "Resource {id!r} not found."
+          },
+          "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
+            "type": "string"
+          },
+          "additionalProperties": true
+        }
+      },
       "_op": {
         "type": "string",
         "enum": [
@@ -2207,6 +2263,61 @@
               ]
             }
           }
+        }
+      },
+      "property": {
+        "type": "string",
+        "pattern": "^[a-z](_?[a-z0-9]+)*$",
+        "examples": [
+          "name"
+        ]
+      },
+      "ConflictingValue": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "ConflictingValue"
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "component": {
+                "type": "string"
+              },
+              "dataset": {
+                "$ref": "#/components/schemas/dataset"
+              },
+              "entity": {
+                "type": "string"
+              },
+              "manifest": {
+                "type": "string"
+              },
+              "model": {
+                "$ref": "#/components/schemas/model"
+              },
+              "property": {
+                "$ref": "#/components/schemas/property"
+              },
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "type": {
+            "type": "string",
+            "description": "system"
+          },
+          "template": {
+            "type": "string",
+            "description": "Conflicting Value"
+          },
+          "message": {
+            "description": "Message within the error object contains a more detailed description of the server errors.\nThese should include more detailed overview of the internal, business logic or request processing errors that have occurred.\n\nFor example:\n  - \"Could not find signature for and: <DaskDataFrameQueryBuilder, Expr>\"\n  - \"Cannot use .astype to convert from timezone-aware dtype to timezone-naive dtype. Use obj.tz_localize(None) or obj.tz_convert('UTC').tz_localize(None) instead.\"\n  - \"Property {property!r} not found\"\n  - \"Given value {value} is not defined in enum.\"\n  - \"New item has revision already set\"\n  - \"You do not have permission to push this property.\"\n",
+            "type": "string"
+          },
+          "additionalProperties": true
         }
       },
       "id": {
@@ -2475,8 +2586,78 @@
                 "type": "string",
                 "format": "uuidv4"
               },
-              "object": {
-                "$ref": "#/components/schemas/object"
+              "^[a-z](_?[a-z0-9]+)*$": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/absent"
+                  },
+                  {
+                    "$ref": "#/components/schemas/boolean"
+                  },
+                  {
+                    "$ref": "#/components/schemas/integer"
+                  },
+                  {
+                    "$ref": "#/components/schemas/number"
+                  },
+                  {
+                    "$ref": "#/components/schemas/binary"
+                  },
+                  {
+                    "$ref": "#/components/schemas/string"
+                  },
+                  {
+                    "$ref": "#/components/schemas/text"
+                  },
+                  {
+                    "$ref": "#/components/schemas/dateTime"
+                  },
+                  {
+                    "$ref": "#/components/schemas/date"
+                  },
+                  {
+                    "$ref": "#/components/schemas/time"
+                  },
+                  {
+                    "$ref": "#/components/schemas/temporal"
+                  },
+                  {
+                    "$ref": "#/components/schemas/geometry"
+                  },
+                  {
+                    "$ref": "#/components/schemas/geometry"
+                  },
+                  {
+                    "$ref": "#/components/schemas/money"
+                  },
+                  {
+                    "$ref": "#/components/schemas/file"
+                  },
+                  {
+                    "$ref": "#/components/schemas/file"
+                  },
+                  {
+                    "$ref": "#/components/schemas/generic"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ref"
+                  },
+                  {
+                    "$ref": "#/components/schemas/backref"
+                  },
+                  {
+                    "$ref": "#/components/schemas/array"
+                  },
+                  {
+                    "$ref": "#/components/schemas/url"
+                  },
+                  {
+                    "$ref": "#/components/schemas/uri"
+                  },
+                  {
+                    "$ref": "#/components/schemas/jsonobject"
+                  }
+                ]
               }
             }
           },
@@ -2487,8 +2668,78 @@
               "_type": {
                 "type": "string"
               },
-              "object": {
-                "$ref": "#/components/schemas/object"
+              "^[a-z](_?[a-z0-9]+)*$": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/absent"
+                  },
+                  {
+                    "$ref": "#/components/schemas/boolean"
+                  },
+                  {
+                    "$ref": "#/components/schemas/integer"
+                  },
+                  {
+                    "$ref": "#/components/schemas/number"
+                  },
+                  {
+                    "$ref": "#/components/schemas/binary"
+                  },
+                  {
+                    "$ref": "#/components/schemas/string"
+                  },
+                  {
+                    "$ref": "#/components/schemas/text"
+                  },
+                  {
+                    "$ref": "#/components/schemas/dateTime"
+                  },
+                  {
+                    "$ref": "#/components/schemas/date"
+                  },
+                  {
+                    "$ref": "#/components/schemas/time"
+                  },
+                  {
+                    "$ref": "#/components/schemas/temporal"
+                  },
+                  {
+                    "$ref": "#/components/schemas/geometry"
+                  },
+                  {
+                    "$ref": "#/components/schemas/geometry"
+                  },
+                  {
+                    "$ref": "#/components/schemas/money"
+                  },
+                  {
+                    "$ref": "#/components/schemas/file"
+                  },
+                  {
+                    "$ref": "#/components/schemas/file"
+                  },
+                  {
+                    "$ref": "#/components/schemas/generic"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ref"
+                  },
+                  {
+                    "$ref": "#/components/schemas/backref"
+                  },
+                  {
+                    "$ref": "#/components/schemas/array"
+                  },
+                  {
+                    "$ref": "#/components/schemas/url"
+                  },
+                  {
+                    "$ref": "#/components/schemas/uri"
+                  },
+                  {
+                    "$ref": "#/components/schemas/jsonobject"
+                  }
+                ]
               }
             }
           }
@@ -2599,7 +2850,17 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/errors"
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/UniqueConstraint"
+                },
+                {
+                  "$ref": "#/components/schemas/NoItemRevision"
+                },
+                {
+                  "$ref": "#/components/schemas/InvalidOperandValue"
+                }
+              ]
             }
           }
         }
@@ -2614,7 +2875,14 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/errors"
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/UnhandledException"
+                },
+                {
+                  "$ref": "#/components/schemas/MultipleRowsFound"
+                }
+              ]
             }
           }
         }
@@ -2629,7 +2897,29 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/errors"
+              "$ref": "#/components/schemas/ServiceNotAvailable"
+            }
+          }
+        }
+      },
+      "error401": {
+        "description": "Bad Request",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/AuthorizedClientsOnly"
+                },
+                {
+                  "$ref": "#/components/schemas/InvalidToken"
+                }
+              ]
             }
           }
         }
@@ -2644,7 +2934,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/errors"
+              "$ref": "#/components/schemas/Forbidden"
             }
           }
         }
@@ -2659,7 +2949,22 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/errors"
+              "$ref": "#/components/schemas/ItemDoesNotExist"
+            }
+          }
+        }
+      },
+      "error409": {
+        "description": "Bad Request",
+        "headers": {
+          "traceresponse": {
+            "$ref": "#/components/headers/traceresponse"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ConflictingValue"
             }
           }
         }
