@@ -33,8 +33,8 @@ oneOf:
           - $ref: ./url.yaml
           - $ref: ./uri.yaml
           - $ref: ./jsonobject.yaml
-      required:
-        - _id
+    required:
+      - _id
   - type: object
     title: Maturity < 4
     properties:
