@@ -6,7 +6,7 @@ properties:
     $ref: ./_type.yaml
   _id:
     description: |
-      Unique object ID in UUID format
+      Global unique object ID in UUID format.
     type: string
     format: uuidv4
     examples:
@@ -28,15 +28,22 @@ properties:
       Date and time when the object was created provided in a standard format based on [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html)
 
       Minimum value: `0001-01-01T00:00:00`
-      Maximum value: `999-12-31T23:59:59.999999`
+      Maximum value: `9999-12-31T23:59:59.999999`
     type: string
   _updated:
     description: |
       Date and time when the object was updated provided in a standard format based on [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html)
 
       Minimum value: `0001-01-01T00:00:00`
-      Maximum value: `999-12-31T23:59:59.999999`
+      Maximum value: `9999-12-31T23:59:59.999999`
     type: string
+required:
+  - "@context"
+  - _type
+  - _id
+  - _revision
+  - _txn
+  - _created
 patternProperties:
   ^[a-z](_?[a-z0-9]+)*$:
     oneOf:
