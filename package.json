@@ -6,7 +6,7 @@
   },
   "scripts": {
     "start": "redocly preview-docs --use-community-edition",
-    "build": "redocly bundle --ext json",
+    "build": "redocly bundle --output docs --ext json",
     "test": "redocly lint"
   }
 }
