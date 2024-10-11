@@ -35,8 +35,8 @@ and this (in future) can be done in Data Portal (data.gov.lt).
 
 ## Contact Details
 
-This document is maintained by Lithuanian [Information Society Development
-Community](https://ivpk.lrv.lt/) (IVPK).
+This document is maintained by Lithuanian [State Digital Solutions
+Agency](https://vssa.lrv.lt/) (VSSA).
 
 If you found an error in the document, you can report it by registering a
 [GitHub issue](https://github.com/ivpk/uapi/issues/new).
