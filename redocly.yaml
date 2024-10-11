@@ -1,7 +1,12 @@
 # See https://redocly.com/docs/cli/configuration/ for more information.
 apis:
-  sample@v1: 
+  UAPI_latest@v1: 
     root: openapi/openapi.yaml
+  UAPI_v1.0@v1: 
+    root: v1.0/openapi/openapi.yaml
+  UAPI_v1.0.1@v1: 
+    root: v1.0/v1.0.1/openapi/openapi.yaml
+
 extends:
   - recommended
 rules:
