@@ -2,9 +2,10 @@
 
 VSSA: info@vssa.lt URL: https://vssa.lrv.lt/
 
-License: CC-BY 4.0
+License: (CC-BY 4.0)[https://creativecommons.org/licenses/by/4.0/]
 
-##Introduction
+## Introduction
+
 This document is an API specification template for all Lithuanian government institutions.
 
 Institutions implementing API should reuse most of the specification as is and only add customizable parts expressed as path parameters or schema fields specified as a pattern.
