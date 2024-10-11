@@ -2,10 +2,13 @@
 apis:
   UAPI_latest@v1: 
     root: openapi/openapi.yaml
+    output: docs/openapi.json
   UAPI_v1.0@v1: 
     root: v1.0/openapi/openapi.yaml
+    output: docs/v1.0/openapi.json
   UAPI_v1.0.1@v1: 
     root: v1.0/v1.0.1/openapi/openapi.yaml
+    output: docs/v1.0.1/openapi.json
 
 extends:
   - recommended
