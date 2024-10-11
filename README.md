@@ -2,7 +2,7 @@
 
 VSSA: info@vssa.lt URL: https://vssa.lrv.lt/
 
-License: (CC-BY 4.0)[https://creativecommons.org/licenses/by/4.0/]
+License: [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Introduction
 
