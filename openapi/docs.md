@@ -1224,6 +1224,6 @@ enforced by the Agent.
 
 # Changes
 
-## 1.0 (2024-10-02)
+## 1.0 (2024-10-22)
 
 First release of UAPI specification
