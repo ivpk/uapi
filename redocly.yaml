@@ -6,9 +6,6 @@ apis:
   UAPI_v1.0@v1: 
     root: v1.0/openapi/openapi.yaml
     output: docs/v1.0/uapi.json
-  UAPI_v1.0.1@v1: 
-    root: v1.0/v1.0.1/openapi/openapi.yaml
-    output: docs/v1.0.1/uapi.json
 
 extends:
   - recommended
