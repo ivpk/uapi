@@ -1,0 +1,10 @@
+name: cid
+in: path
+required: true
+schema:
+  type: integer
+description: |
+  Change id.
+
+  Used for incremental changes API, to get a specific change.
+  If `-1` is provided, the latest change is retrieved.
