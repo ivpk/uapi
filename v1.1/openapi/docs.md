@@ -551,7 +551,7 @@ Revision number is also used, references older object version if Resource
 stores older object versions:
 
 ```uri
-/datasets/gov/rc/ar/ws/Country/e96cc0cc-08be-460d-a887-98f80612a402/dd22f1b4-09c2-48ee-bf7a-7bf082da9940
+/datasets/gov/rc/ar/ws/Country/e96cc0cc-08be-460d-a887-98f80612a402/rev/dd22f1b4-09c2-48ee-bf7a-7bf082da9940
 ```
 
 Second UUID number is a revision ant following request retrieves an older

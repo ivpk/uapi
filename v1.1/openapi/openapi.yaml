@@ -83,7 +83,7 @@ paths:
     $ref: paths/objectChange.yaml
   /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/:changes:
     $ref: paths/objectChanges.yaml
-  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/{rev}:
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/rev/{rev}:
     $ref: paths/rev.yaml
   /services/{form}/{org}/{catalog}/{dataset}/{version}/{service}:
     $ref: paths/service.yaml
