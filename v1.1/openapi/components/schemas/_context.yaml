@@ -1,0 +1,42 @@
+description: |
+  [JSON-LD Context](https://www.w3.org/TR/json-ld/#the-context) information provided by a URL constructed according to this pattern:
+    
+      `https://data.gov.lt/{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}.jsonld`
+
+  Returned object will consist of context information based on the below schema:
+
+      `{`
+          "@base": "https://data.gov.lt/datasets/example/City/"
+          "_id": "@id"
+          "dcterms": "http://purl.org/dc/terms/"
+          "name": "dcterms:name"
+      `}`
+    
+  When a context for changes is returned it follows the [LDES](https://w3id.org/ldes/specification#) Event Stream specification.
+  
+  It will be provided by URL:
+    
+      `https://data.gov.lt/{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/changes.jsonld`
+    
+  It will follow the below schema:
+
+      `{`
+          "ldes": "https://w3id.org/ldes/specification#"
+          "_data": "ldes:EventStream"
+      `}`
+  `_data` in changes is an array (or stream) of `change` objects that are [tree](https://w3id.org/tree/specification):member elements and follow below schema:
+
+      `{`
+          "dcterms": "http://purl.org/dc/terms/"
+          "ldes": "https://w3id.org/ldes/specification#"
+          "_created": "dcterms:created"
+          "_id": "dcterms:isVersionOf"
+          "_cid": "ldes:versionOfPath"
+        
+      `}`
+  
+  When results are divided into several pages, each page is a [tree](https://w3id.org/tree/specification):Node and the page tree
+  can be traversed using the `page.next` query element that corresponds to tree:path context.
+type: string
+examples:
+  - "https://data.gov.lt/datasets/example/42/City.jsonld"
