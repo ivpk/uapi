@@ -1213,7 +1213,7 @@ the result data:
 Presence of `_limit` and `_next` in the result, indicates, that limit is
 enforced by the Agent.
 
-# changes
+# Changes
 
 When an object data is created or changed a log is being created and updated to keep track of all of these changes.
 This can be retrieved via `change` actions. It can also be used to determine the progression of object changes in time.
@@ -1246,10 +1246,13 @@ where ```n``` is the page (node) number starting with `1`
 
 # Changes
 
-## [1.1](https://ivpk.github.io/uapi/v1.1/) (2024-10-22)
+## 1.1 (2024-10-22)
+
+In [1.1](https://ivpk.github.io/uapi/v1.1/):
 
 Added LDES support and context
 
-## [1.0](https://ivpk.github.io/uapi/v1.0/) (2024-10-22)
+## 1.0 (2024-10-22)
 
+In [1.0](https://ivpk.github.io/uapi/v1.0/):
 First release of UAPI specification
