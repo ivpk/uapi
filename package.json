@@ -6,7 +6,7 @@
   },
   "scripts": {
     "start": "redocly preview-docs --use-community-edition",
-    "build": "redocly bundle UAPI_latest@v1 -o docs/uapi.json & redocly bundle UAPI_v1.0@v1 -o docs/v1.0/uapi.json",
+    "build": "redocly bundle UAPI_latest@v1 -o docs/uapi.json & redocly bundle UAPI_v1.0@v1 -o docs/v1.0/uapi.json & redocly bundle UAPI_v1.1@v1 -o docs/v1.1/uapi.json",
     "test": "redocly lint"
   }
 }
