@@ -1,4 +1,5 @@
 type: object
+description: A file or a document
 properties:
   _name:
     description: File name
