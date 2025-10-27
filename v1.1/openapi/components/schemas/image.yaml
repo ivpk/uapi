@@ -1,3 +1,11 @@
 description: Image file with a same structure as file.
-type: object
-$ref: ./file.yaml
+properties:
+  _name:
+    description: Image name
+    type: string
+  _content_type:
+    description: A [Media type](https://en.wikipedia.org/wiki/Media_type) of the image.
+    type: string
+  _size:
+    description: Image file size in bytes.
+    type: integer
