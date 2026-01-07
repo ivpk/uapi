@@ -1156,15 +1156,16 @@ This will enable pagination and query above is equivalent to:
 Country?_sort=_id&_limit=10
 ```
 
-Objects are ordered by `_id` by default, so we don't need to specify `_sort`,
-unless we want to change pagination key:
+Objects are ordered by `_id` by default, so you don't need to specify `_sort`,
+unless you want to change pagination key:
 
 ```uri
 Country?_sort=code&_limit=10
 ```
+In this case the results are ordered based on the value of `code`.
 
 When `_limit` is given, response document will include `_next` attribute
-pointing to the next page:
+pointing to the next page based on `_id` by default:
 
 ```json
 {
@@ -1176,7 +1177,7 @@ pointing to the next page:
 You can get next page with `_page` query parameter:
 
 ```uri
-Country?_sort=code&_limit=10&_page=ImE3N2IyNWU1LWUzMDMtNGE4ZS04Y2YzLTllZmMyNWVlMjI0NiIK
+Country?_limit=10&_page=ImE3N2IyNWU1LWUzMDMtNGE4ZS04Y2YzLTllZmMyNWVlMjI0NiIK
 ```
 
 `_page` value is a base64 encoded (with `+/=` characters replaced with `-_.` to
@@ -1186,18 +1187,34 @@ make it user safe) JSON string. In this case, decoded `_page` value is:
 "a77b25e5-e303-4a8e-8cf3-9efc25ee2246"
 ```
 
-If result is sorted by more than one property, then `_page` JSON value will be
+If result is sorted by a different property than `_id` or by more than one property, then `_page` JSON value will be
 an array, for example if we have:
 
 ```uri
-Country?_sort=_id,code&_limit=10
+Country?_sort=code&_limit=10
 ```
 
 Then decoded `_page` value will be:
 
 ```json
-["a77b25e5-e303-4a8e-8cf3-9efc25ee2246","lt"]
+["lt","a77b25e5-e303-4a8e-8cf3-9efc25ee2246"]
 ```
+Thus returning the `code` and `_id` at the end - which is always required.
+
+If more properties are provided:
+
+```uri
+Country?_sort=currency,code&_limit=10
+```
+
+Then decoded `_page` value will be:
+
+```json
+["EUR","lt","a77b25e5-e303-4a8e-8cf3-9efc25ee2246"]
+```
+Values that are used for sorting can be `null` in this case:
+When sorting by `null` in ascending order, `null` values should go last.
+When sorting by `null` in descending order, `null` values should go first.
 
 Pagination might be enabled by default, by the Agent, this will be indicated in
 the result data:
