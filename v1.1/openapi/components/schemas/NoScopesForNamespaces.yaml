@@ -1,0 +1,18 @@
+type: object
+properties:
+  code:
+    type: string
+    description: NoScopesForNamespaces
+  type:
+    type: string
+    description: system
+  template:
+    type: string
+    description: |
+      Request contains no scopes from available namespaces: {namespaces}.
+  message:
+    description: |
+      Message within the error object contains a more detailed description of the server errors.
+      These should include more detailed overview of the internal, business logic or request processing errors that have occurred.
+    type: string
+  additionalProperties: true
