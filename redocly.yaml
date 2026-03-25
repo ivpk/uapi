@@ -9,6 +9,9 @@ apis:
   UAPI_v1.1@v1: 
     root: v1.1/openapi/openapi.yaml
     output: docs/v1.1/uapi.json
+  UAPI_draft@v1: 
+    root: draft/openapi/openapi.yaml
+    output: docs/draft/uapi.json
 
 extends:
   - recommended
