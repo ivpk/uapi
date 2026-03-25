@@ -1,0 +1,6 @@
+type: object
+properties:
+  _data:
+    type: array
+    items:
+      $ref: ./object.yaml

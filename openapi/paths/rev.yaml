@@ -1,0 +1,69 @@
+parameters:
+  - $ref: ../components/parameters/group.yaml
+  - $ref: ../components/parameters/form.yaml
+  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/catalog.yaml
+  - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/version.yaml
+  - $ref: ../components/parameters/model.yaml
+  - $ref: ../components/parameters/id.yaml
+  - $ref: ../components/parameters/rev.yaml
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
+  - $ref: ../components/parameters/If-None-Match.yaml
+  - $ref: ../components/parameters/Accept-Language.yaml
+
+get:
+  tags:
+    - revision
+  security:
+    - UAPI_auth:
+      - uapi:/
+  summary: Get a single object by given {id} revision by given {rev}.
+  description: |
+    Retrieve a single specific object based on it's unique object identifier {id} and revision id {rev}
+    This returns the entire object as it was stored point in time when the revision was created
+  operationId: getOneRev
+  responses:
+    '200':
+      description: OK
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+        Cache-Control:
+          $ref: ../components/headers/Cache-Control.yaml
+        Last-Modified:
+          $ref: ../components/headers/Last-Modified.yaml
+        ETag:
+          $ref: ../components/headers/ETag.yaml
+        Vary:
+          $ref: ../components/headers/Vary.yaml
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/object.yaml
+        text/csv:
+          schema:
+            $ref: ../components/schemas/objects-csv.yaml
+    '304':
+      description: Not Modified
+      headers:
+        traceresponse:
+          $ref: ../components/headers/traceresponse.yaml
+        Cache-Control:
+          $ref: ../components/headers/Cache-Control.yaml
+        Last-Modified:
+          $ref: ../components/headers/Last-Modified.yaml
+        ETag:
+          $ref: ../components/headers/ETag.yaml
+        Vary:
+          $ref: ../components/headers/Vary.yaml
+
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml

@@ -18,7 +18,7 @@ and this (in future) can be done in Data Portal (data.gov.lt).
 
 ## Specifications
 
-- [UAPI](https://ivpk.github.io/uapi) - this document, describes data exchange
+- [UAPI](https://ivpk.github.io/uapi/v1.0/) - this document, describes data exchange
   protocol and format.
 
 - [DSA](https://ivpk.github.io/dsa) - Data Structure Mapping table format
@@ -1224,6 +1224,12 @@ enforced by the Agent.
 
 # Changes
 
-## 1.0 (2024-10-22)
+## Draft
+
+In [draft](https://ivpk.github.io/uapi/draft):
+
+Working draft of this specification
+
+## 1.0 (This document) (2024-10-22)
 
 First release of UAPI specification

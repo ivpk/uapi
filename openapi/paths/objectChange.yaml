@@ -1,0 +1,38 @@
+parameters:
+  - $ref: ../components/parameters/group.yaml
+  - $ref: ../components/parameters/form.yaml
+  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/catalog.yaml
+  - $ref: ../components/parameters/dataset.yaml
+  - $ref: ../components/parameters/version.yaml
+  - $ref: ../components/parameters/model.yaml
+  - $ref: ../components/parameters/id.yaml
+  - $ref: ../components/parameters/cid.yaml
+  - $ref: ../components/parameters/traceparent.yaml
+  - $ref: ../components/parameters/tracestate.yaml
+  - $ref: ../components/parameters/If-None-Match.yaml
+  - $ref: ../components/parameters/Accept-Language.yaml
+get:
+  tags:
+    - change
+  security:
+    - {}
+  summary: Get specific object change for provided {cid} (change id).
+  description: |
+    Get a specific change with {cid) for an object with {id}.
+  operationId: getObjectChange
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/change.yaml
+    '400':
+      $ref: ../components/responses/error400.yaml
+    '404':
+      $ref: ../components/responses/error404.yaml
+    '500':
+      $ref: ../components/responses/error500.yaml
+    '503':
+      $ref: ../components/responses/error503.yaml

@@ -79,7 +79,7 @@ components:
 - **Data agent** - is a software component similar to **Data Service** but
   publishes data in a standardized UAPI protocol.
 
-  IVPK provides an [Universal Data
+  VSSA provides an [Universal Data
   Agent](https://github.com/atviriduomenys/spinta/), which uses DSA table to
   convert between data provided by a Resource into UAPI protocol.
 
@@ -551,11 +551,13 @@ Revision number is also used, references older object version if Resource
 stores older object versions:
 
 ```uri
-/datasets/gov/rc/ar/ws/Country/e96cc0cc-08be-460d-a887-98f80612a402/dd22f1b4-09c2-48ee-bf7a-7bf082da9940
+/datasets/gov/rc/ar/ws/Country/e96cc0cc-08be-460d-a887-98f80612a402/rev/dd22f1b4-09c2-48ee-bf7a-7bf082da9940
 ```
 
 Second UUID number is a revision ant following request retrieves an older
 object version.
+
+Revision number is retrieved as part of the `changes` request for the object.
 
 Revision number is also used as [HTTP ETag
 header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) to
@@ -1211,6 +1213,26 @@ the result data:
 Presence of `_limit` and `_next` in the result, indicates, that limit is
 enforced by the Agent.
 
+# Tracking data changes
+
+When an object data is created or changed a log is being created and updated to keep track of all of these changes.
+This can be retrieved via `change` actions. It can also be used to determine the progression of object changes in time.
+This log only store the change that has been done with the object and a revision id `rev` that can be used to retrieve 
+entire object at that point in time. Change id `cid` is used to rdetermine the change order for the objects,
+it starts at `0` when the objec is created and is increased incrementaly with each change that is done.
+
+Important to note that the log should not be used to retain or retrieve historic object data since it only stores the changes.
+Object revision retrieval should be used instead.
+
+To retrieve the latest change of the object `-1` can be used as the `cid`:
+
+```/datasets/gov/dc/geo/Continent/:changes/-1```
+
+Changes actions are implemented at the model and object levels and conforms to [LDES](https://semiceu.github.io/LinkedDataEventStreams/)
+For this it uses the [JSON-LD Context](https://www.w3.org/TR/json-ld/#the-context)
+
+Depending on the size response might be paginated and accessed via querie ```?page=n```
+where ```n``` is the page (node) number starting with `1`
 
 # Data types
 
@@ -1222,8 +1244,22 @@ enforced by the Agent.
 
 <SchemaDefinition schemaRef="#/components/schemas/file" />
 
-# Changes
+# Specification changes
+
+## Draft
+
+In [draft](https://ivpk.github.io/uapi/draft):
+
+Working draft of this specification
+
+## 1.1 (This document) (2024-11-26)
+
+In [1.1](https://ivpk.github.io/uapi/v1.1/) 2024-11-26:
+
+Added LDES support and context
 
 ## 1.0 (2024-10-22)
+
+In [1.0](https://ivpk.github.io/uapi/v1.0/) 2024-10-20:
 
 First release of UAPI specification
