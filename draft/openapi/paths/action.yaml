@@ -7,7 +7,6 @@ parameters:
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/model.yaml
-  - $ref: ../components/parameters/id.yaml
   - $ref: ../components/parameters/action.yaml
   - $ref: ../components/parameters/traceparent.yaml
   - $ref: ../components/parameters/tracestate.yaml
