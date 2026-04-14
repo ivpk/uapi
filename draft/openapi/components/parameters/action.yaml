@@ -1,0 +1,27 @@
+name: action
+in: path
+required: true
+schema:
+  type: string
+  enum:
+    - getall
+    - getone
+    - create
+    - search
+    - update
+    - path
+    - delete
+    - changes
+    - wipe
+description: |
+  Action that can be performed on multiple objects or a single object:
+
+    - getall - get list of objects
+    - getone - get a single object
+    - create - create new object
+    - search - get list of objects with a filter
+    - update - rewrite whole existing object
+    - path - update some properties of existing object
+    - delete - delete an existing object
+    - changes - get list of changes to a single object
+    - wipe - completely remove object without storing

@@ -3,7 +3,6 @@ parameters:
   - $ref: ../components/parameters/org.yaml
   - $ref: ../components/parameters/catalog.yaml
   - $ref: ../components/parameters/dataset.yaml
-  - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/service.yaml
   - $ref: ../components/parameters/traceparent.yaml
   - $ref: ../components/parameters/tracestate.yaml

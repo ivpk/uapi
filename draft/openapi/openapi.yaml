@@ -34,27 +34,32 @@ tags:
   - name: resource
     description: Operations with Object subresource
   - name: change
-    description: Change tracking operations
+    description: Change information retrieval action
   - name: revision
     description: Operations that return Object revisions
+  - name: action
+    description: Specific action that would be performed on an object
   - name: services
     description: |
       Service functions are not as restricted as data API endpoints. Services
       are not required to return an object with a public id, there are no
       changes API, nor revisions.
 
-      This section is primarily for definition of legacy or non data access services that do not have to be fully based on DSA data structure.
+      This section is primarily for definition of legacy or non data access services that do not have to be fully based on DSA data structure or this specification.
   - name: utility
     description: Utility operations performed on the API itself
 
 x-tagGroups:
-  - name: Actions
+  - name: Operations
     tags:
       - objects
       - object
       - resource
-      - change
       - revision
+  - name: Actions
+    tags:
+      - action
+      - change
   - name: Services
     tags:
       - services
@@ -67,25 +72,27 @@ paths:
     $ref: paths/version.yaml
   /health:
     $ref: paths/health.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}:
     $ref: paths/model.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/{id}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}:
     $ref: paths/object.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/{id}/:wipe:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/actions/:wipe:
     $ref: paths/wipe.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/{id}/{property}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/properties/{property}:
     $ref: paths/property.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/:changes/{cid}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/actions/{action}:
+    $ref: paths/action.yaml
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/actions/:changes/{cid}:
     $ref: paths/change.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/:changes:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/actions/:changes:
     $ref: paths/changes.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/{id}/:changes/{cid}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/actions/:changes/{cid}:
     $ref: paths/objectChange.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/{id}/:changes:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/actions/:changes:
     $ref: paths/objectChanges.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{version}/{model}/{id}/rev/{rev}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/revision/{rev}:
     $ref: paths/rev.yaml
-  /services/{form}/{org}/{catalog}/{dataset}/{version}/{service}:
+  /services/{form}/{org}/{catalog}/{dataset}/{service}:
     $ref: paths/service.yaml
 
 components:

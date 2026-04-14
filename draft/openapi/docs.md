@@ -185,9 +185,9 @@ components:
 
 # Concepts
 
-## Download URL
+## API URL structure
 
-All API Download URL's are constructed using one of the following patters:
+All API  URL's are constructed using one of the following patters:
 
 - Get list of objects:
 
@@ -199,50 +199,48 @@ All API Download URL's are constructed using one of the following patters:
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
-  <span class="green">version</span> `/`
   <span class="green">model<span>
 
 - Get single object:
 
   <span class="green">domain</span> `/`
-  `/datasets/`
+  `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
   <span class="green">catalog</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
-  <span class="green">version</span> `/`
   <span class="green">model</span> `/`
   <span class="green">id</span>
 
 - Get an older version of a single object:
 
   <span class="green">domain</span> `/`
-  `/datasets/`
+  `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
   <span class="green">catalog</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
-  <span class="green">version</span> `/`
   <span class="green">model</span> `/`
   <span class="green">id</span> `/`
+  `revision/`
   <span class="green">revision</span>
 
-- Get single object value:
+- Get single object property value:
 
   <span class="green">domain</span> `/`
-  `/datasets/`
+  `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
   <span class="green">catalog</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
-  <span class="green">version</span> `/`
   <span class="green">model</span> `/`
+  `properties/`
   <span class="green">property</span>
 
   <span class="green">domain</span> `/`
@@ -253,12 +251,12 @@ All API Download URL's are constructed using one of the following patters:
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
-  <span class="green">version</span> `/`
   <span class="green">model</span> `/`
   <span class="green">id</span> `/`
+  `properties/`
   <span class="green">property</span>
 
-- Perform a custom action on a list of objects or an object:
+- Perform a custom action on a collection or on a single object:
 
   <span class="green">domain</span> `/`
   `/datasets/`
@@ -268,8 +266,8 @@ All API Download URL's are constructed using one of the following patters:
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
-  <span class="green">version</span> `/`
-  <span class="green">model</span> `/:`
+  <span class="green">model</span> `/`
+  `actions/`
   <span class="green">action</span>
 
   <span class="green">domain</span> `/`
@@ -280,67 +278,309 @@ All API Download URL's are constructed using one of the following patters:
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
-  <span class="green">version</span> `/`
   <span class="green">model</span> `/`
-  <span class="green">id</span> `/:`
+  <span class="green">id</span> `/`
+  `actions/`
   <span class="green">action</span>
 
-- Catalog component is optional:
+- Standar query parameters MUST be used.
 
   <span class="green">domain</span> `/`
-  `/datasets/`
+  `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
+  <span class="green">catalog</span> `/`
   <span class="green">service</span> `/`
-  <span class="green">dataset</span> `/`
   <span class="green">version</span> `/`
-  <span class="green">model</span> `/`
+  <span class="green">dataset</span> `/`
+  <span class="green">model<span> `?`
+  <span class="green">query<span>
+  
+   <span class="green">domain</span> `/`
+  `datasets/`
+  <span class="green">form</span> `/`
+  <span class="green">org</span> `/`
+  <span class="green">catalog</span> `/`
+  <span class="green">service</span> `/`
+  <span class="green">version</span> `/`
+  <span class="green">dataset</span> `/`
+  <span class="green">model<span> `/`
+  <span class="green">id</span> `?`
+  <span class="green">query<span>
+  
+- Retrieve object or property based on scope:
 
-- APIs (mostly legacy APIs) that do not support standard UAPI exchange
-  protocol:
+  <span class="green">domain</span> `/`
+  `datasets/`
+  <span class="green">form</span> `/`
+  <span class="green">org</span> `/`
+  <span class="green">catalog</span> `/`
+  <span class="green">service</span> `/`
+  <span class="green">version</span> `/`
+  <span class="green">dataset</span> `/`
+  <span class="green">model<span> `/`
+  `scopes/@`
+  <span class="green">scope<span>
+  
+   <span class="green">domain</span> `/`
+  `datasets/`
+  <span class="green">form</span> `/`
+  <span class="green">org</span> `/`
+  <span class="green">catalog</span> `/`
+  <span class="green">service</span> `/`
+  <span class="green">version</span> `/`
+  <span class="green">dataset</span> `/`
+  <span class="green">model<span> `/`
+  <span class="green">id</span> `/`
+  `scopes/@`
+  <span class="green">scope<span>  
+
+- The following pattern MAY be used for APIs, mostly legacy APIs, that do not support the standard UAPI exchange protocol:
 
   <span class="green">domain</span> `/`
   `/services/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
   <span class="green">catalog</span> `/`
-  <span class="green">dataset</span> `/`
+  <span class="green">service</span> `/`
   <span class="green">version</span> `/`
-  <span class="green">service</span>
+
+This pattern is a valid alternative in the current version of the specification, but it SHOULD be considered deprecated in future versions.
+
+- Ownership and naming
+
+SDSA has the exclusive right to register `org` and `catalog` values in the data.gov.lt catalog and to resolve disputes among Agents.
+
+An Agent has the right to choose `service`, `dataset`, `model`, and `property` values, provided that these values conform to the syntax rules of this and [DSA specification](https://ivpk.github.io/dsa/).
 
 
-Meaning of dynamic URI parts explained bellow:
 
-- <span class="green">domain</span> - domain of the data provision platform. Depending
-  on selected data access mode, either external or internal gateway domain address. 
-- <span class="green">form</span> - legal form of an organization can be `gov`
-  for government or `org` for private sector.
-- <span class="green">org</span> - a short code name of an organization.
-- <span class="green">catalog</span> - a short code name of an information
-  system or a project providing data.
-- <span class="green">service</span> - a short code name of a service providing data.
-- <span class="green">version</span> - data service version.
-- <span class="green">dataset</span> - a short code name of a specific dataset
-  from a catalog.
-- <span class="green">version</span> - data schema version of a dataset.
-- <span class="green">model</span> - a set of objects provided under the same
-  data model.
-- <span class="green">id</span> - unique object identifier in UUID format.
-- <span class="green">revision</span> - unique identifier for an older object
-  version in UUID format.
-- <span class="green">property</span> - a subresource used for some property
-  data types liek files or arrays, in order to retrieve large content blobs.
-- <span class="green">action</span> - an action performed with objects or a
-  single object.
+Meaning of dynamic URL parts:
+
+- <span class="green">domain</span> - domain of the data provision platform. Depending on selected data access mode, either external or internal gateway domain address. 
+- <span class="green">form</span> - The legal form of an organization. This is a controlled vocabulary with only two permitted values:
+	`gov` — government sector
+
+	`com` — private or other non-government sector
+
+The `gov` value is understood as being under the regulation of the Law on the Management of State Information Resources of the Republic of Lithuania.
+
+The `com` value covers all other cases.
+
+- <span class="green">org</span> - A short code name of an organization or agent. It represents the class [foaf:Agent](https://xmlns.com/foaf/spec/#term_Agent) ([dc:publisher](http://purl.org/dc/elements/1.1/publisher)) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations). 
+- <span class="green">catalog</span> - Catalog is a short code identifier representing a catalog, sub-catalog, information system,
+ or sub-information system that provides data, corresponding to the class [dcat:Catalog](https://www.w3.org/TR/vocab-dcat-3/#Class:Catalog) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations),
+ and in the context of DCAT-AP-LT v2 most often representing the [dcataplt:InformationSystem](https://ivpk.github.io/DCAT-AP-LT/en/##IS) class.
+
+<span class="green">catalog</span> values used by existing data catalogs:
+
+`adp` — Lithuanian Open Data Catalog
+
+`ror` — Lithuanian Protected Data Catalog
+
+`isris` — Lithuanian Protected Data Catalog
+
+Example:
+
+```text
+.../datasets/gov/rc/jadis/uapi/1/at280/DalyvioAsmensIsrasas
+```
+
+In this example:
+
+`datasets` - defines it as dataset for a data retrieval via UDTS
+
+`gov` - defines it as government sector data
+
+`rc` - is the code name of organisation 
+
+`jadis` - is understood as an information system,
+
+`uapi` - is the data service name.
+
+`1` - is the version of the service
+
+`at280` - is the name of the dataset
+
+`DalyvioAsmensIsrasas` - is the name of the model
+
+
+- <span class="green">service</span> - A short code name of a data service. It represents the class dcat:DataService and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations).
+- <span class="green">version</span> - The data schema version of a data service. It represents the MAJOR version number according to the 
+[Semantic versioning v2.0.0](https://semver.org/) version management rules.
+
+The following rules apply:
+
+a.  If a [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) receives a new MAJOR version, it does not affect the dcat:DataService URI; it only affects the dcat:downloadURL of the dcat:DataService.
+
+b. If a dcat:Dataset does not receive a new MAJOR version, but the [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service) 
+that [dcat:servesDataset](https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_serves_dataset) that [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) receives 
+a MAJOR update of the OAPI specification, then the MAJOR version number used in the URI version segment MUST be updated accordingly.
+
+- <span class="green">dataset</span> - A short code name of a specific dataset from a catalog. It MAY also represent a sub-dataset. 
+It represents the class [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations).
+
+- <span class="green">model</span> - A SHACL validation shape ([shacl:NodeShape](https://www.w3.org/TR/shacl/#node-shapes)) that defines constraints for a set 
+of objects conforming to the same data model, with [shacl:targetClass](https://www.w3.org/TR/shacl/#targetClass) pointing to the corresponding [rdfs:Class](https://www.w3.org/TR/rdf-schema/#ch_class).
+
+- <span class="green">id</span> - A unique global object identifier. UUID format is RECOMMENDED.
+We provide recommendation for identifiers:
+
+model       | property   | type    | ref      | description
+Int         |            |         | id       |
+            | _id        | integer |          | /id
+            | _revision  | integer |          | /id/version
+            | id         | integer |          |
+            | version    | integer |          |
+            |            |         |          |
+Uuid        |            |         | uuid     |
+            | _id        | uuid    |          | /uuid
+            | _revision  | uuid    |          | /uuid/version
+            | uuid       | string  |          |
+            | version    | string  |          |
+            |            |         |          |
+Comp        |            |         | id,code  |
+            | _id        | string  |          | /id,code
+            | _revision  | string  |          | /id,code/major,minor
+            | id         | integer |          |
+            | code       | string  |          |
+            | major      | integer |          |
+            | minor      | integer |          |
+            |            |         |          |
+Str         |            |         | name     |
+            | _id        | string  |          | /=name
+            | _revision  | string  |          | /=name/=version
+            | name       | string  |          |
+            | version    | string  |          |
+            |            |         |          |
+Base32      |            |         | code     |
+            | _id        | base32  |          | /=BASE32(code)
+            | _revision  | string  |          | /=name/=version
+            | code       | string  |          |
+            |            |         |          |
+CompBase32  |            |         | id,code  |
+            | _id        | base32  |          | /=BASE32(CBOR(id,code))
+            | id         | string  |          |
+            | code       | string  |          |
+            |            |         |          |
+
+
+- <span class="green">revision</span> - A unique identifier of a historical object version. 
+Revision semantics MUST follow the Linked Data Event Streams ([LDES](https://semiceu.github.io/LinkedDataEventStreams/)) model. UUID format is RECOMMENDED.
+
+- <span class="green">property</span> - A subresource used to retrieve the value of a property, 
+especially where the property value is a large object, linked file, or array. It represents an RDF property, 
+such as [owl:ObjectProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_ObjectProperty) or [owl:DatatypeProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_DatatypeProperty).
+
+Example:
+
+`<owl:ObjectProperty rdf:about="#hasBankAccount"/>`
+
+Example URI:
+
+```
+https://api.gov.lt/datasets/com/cemety/ldis/1/kapines/vilnius/Cemeteries/123/properties/hasLabel
+```
+
+- <span class="green">action</span> - An operation performed on a collection of objects or on a single object. It MUST start with `:`.
+
+- <span class="green">scope</span> - Access based filter using OAuth 2.0 scopes. It MUST start with `@`.
+
+Examples of API endpoints:
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>  - getall
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>`?_`
+<span class="green">reserved</span>`=`
+<span class="green">value</span>  - reserved keywords, like `_id`, `_type`, `_select`, ...
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>`?`
+<span class="green">property</span>`=`
+<span class="green">value</span>  - search (filter)
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>
+`/properties/`
+<span class="green">property</span>  - getall on property, for object and array types
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>
+`/:changes`  - changes of all objects in a concept
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>
+`/actions/`
+<span class="green">action</span>  - custom action
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>
+`/scopes/@`
+<span class="green">scope</span>  - custom filter
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>`/`
+<span class="green">reference</span>  - getone
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>`/`
+<span class="green">reference</span>
+`/properties/`
+<span class="green">property</span>  - getall on property, for file and array types
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>`/`
+<span class="green">reference</span>`/:changes`  - changes on single object
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>`/`
+<span class="green">reference</span>
+`/actions/`
+<span class="green">action</span>  - custom action on single object
+
+`/`<span class="green">dataset</span>`/`
+<span class="green">concept</span>`/`
+<span class="green">reference</span>
+`/revision/`
+<span class="green">revision</span>  - specific version of an object
   
 Static parts:
 
-- `datasets` or `services` - dataservice enpoints used for data retreival via UAPI service or
-  services endpoint, that does not follow UAPI requirements, used for existing legacy API services.
+- `datasets` - dataservice enpoints used for data retreival via UAPI service.
+- `services` - services endpoint, that does not follow UAPI requirements, used for existing legacy API services.
+- `properties` - endpoint used to retrieve properties of an object.
+- `actions` - endpoint that allows to perform custom actions on a collection or on a single object
+- `revision` - endpoint that allows to retrieve a different version of the element
+- `scopes` - endpoint that allows to define data filtering based on access
 
-Download URL example:
+The following URL components are mandatory for all datasets and services endpoints:
 
-```https://get.data.gov.lt/datasets/gov/rc/ar/uapi/text_with_coordinates/Address/e96cc0cc-08be-460d-a887-98f80612a402
+  <span class="green">form</span>
+  
+  <span class="green">org</span>
+  
+  <span class="green">catalog</span>
+  
+  <span class="green">service</span>
+
+All other components are optional and depend on the level of access being addressed, such as 
+
+  <span class="green">dataset</span>
+
+  <span class="green">model<span>
+  
+  <span class="green">revision</span>
+  
+  <span class="green">property<span>
+  
+  <span class="green">action</span>
+
+API URL example:
+
+```
+https://get.data.gov.lt/datasets/gov/rc/ar/uapi/text_with_coordinates/Address/e96cc0cc-08be-460d-a887-98f80612a402
 ```
 
 When interpreting URL, there are few distinctions in each component, that might
@@ -359,7 +599,148 @@ help separate components presented in URL:
 - <span class="green">property</span> must always start with lowercase ascii
   letter and cannot contain `-` character to separate property from id.
 
-- <span class="green">action</span> has an explicit `:` marker.
+- <span class="green">action</span> has an explicit `/actions/` endpoint.
+
+## Semantic interpretation of API URLs
+
+The API URL structure defines an access path and governance namespace. It does not, by itself, define an RDF graph structure.
+
+The semantic meaning of URL segments is expressed through [JSON-LD Context](https://www.w3.org/TR/json-ld/#the-context) and [RDF](https://www.w3.org/RDF/) mappings. In particular:
+
+`org` identifies a foaf:Agent
+
+`catalog` identifies a dcat:Catalog
+
+`service` identifies a dcat:DataService
+
+`dataset` identifies a dcat:Dataset
+
+`model` identifies an owl:Class
+
+`property` identifies an RDF property.
+
+
+## URI and Semantic Resource Identification Overview
+
+This specification distinguishes between:
+
+**vocabulary resources**, such as `classes`, `properties`, and `concepts`;
+
+and
+
+**entity resources**, such as identified instances of `datasets`, `catalog` entries, and `domain` objects.
+
+These resource types MUST be identified using consistent URI patterns.
+
+- Vocabulary resources
+
+**Vocabulary resources** define the semantic layer of the system, including ontologies and controlled vocabularies.
+
+Vocabulary resources SHOULD use the following pattern:
+
+  `https://data.gov.lt/id/`
+  <span class="green">vocab</span>`/`
+  <span class="green">termType</span>`/`
+  <span class="green">termName</span>
+
+Where:
+
+- <span class="green">vocab</span> — a code name of the data domain; it MAY align with EU or W3C vocabulary names and corresponds to prof:hasToken
+
+- <span class="green">termType</span> — type of vocabulary term; MUST be one of:
+
+  - `class`
+
+  - `property`
+
+  - `concept`
+
+- <span class="green">termName</span> — local name of the term
+
+Examples
+https://data.gov.lt/id/jar/class/JuridinisAsmuo
+https://data.gov.lt/id/jar/property/kodas
+https://data.gov.lt/id/evrk/concept/6201
+
+- Entity resources
+
+**Entity resources** represent identifiable instances of real-world or digital objects.
+
+Entity resources MUST use the following identifier pattern:
+
+  `https://data.gov.lt/id/`
+  <span class="green">vocab</span>`/`
+  <span class="green">entityType</span>`/`
+  <span class="green">id</span>
+
+Where:
+
+- <span class="green">vocab</span> — a code name of the data domain
+
+- <span class="green">entityType</span> — a semantic identifier of the entity type (typically aligned with an owl:Class)
+
+- <span class="green">id</span> — a globally unique and persistent identifier of the entity
+
+
+Versioned entity resources
+
+If versioning is required, entity resources MAY include a revision identifier:
+
+https://data.gov.lt/id/{vocab}/{entityType}/{id}/{revision}
+
+  `https://data.gov.lt/id/`
+  <span class="green">vocab</span>`/`
+  <span class="green">entityType</span>`/`
+  <span class="green">id</span>`/`
+  <span class="green">revision</span>
+
+Where:
+
+- <span class="green">revision</span> — an identifier of a historical version of the entity
+
+Revision semantics MUST follow the Linked Data Event Streams ([LDES](https://semiceu.github.io/LinkedDataEventStreams/)) model.
+
+
+Relationship with API URLs
+
+API URLs define an access path and governance namespace, while URIs define persistent semantic identifiers.
+
+An API URL MAY resolve to a representation of an entity resource identified by a URI.
+
+For example:
+
+```code
+GET /datasets/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id} HTTP/1.1
+Host: api.gov.lt
+Accept: application/ld+json
+```
+
+Response:
+
+```json
+{
+  "@context": "https://data.gov.lt/context/{dataset}/{version}.jsonld",
+  "@id": "https://data.gov.lt/id/{vocab}/{entityType}/{id}",
+  "_id": "{id}",
+  "_revision": "{revision}"
+}
+```
+
+If a specific historical version is requested, the `@id` MAY include the revision segment:
+
+```json
+{
+  "@id": "https://data.gov.lt/id/{vocab}/{entityType}/{id}/{revision}"
+}
+```
+
+Notes
+
+- URIs are global, persistent identifiers and MUST NOT change over time.
+
+- API URLs are access mechanisms and MAY change without affecting the identity of resources.
+
+- The URI structure MUST NOT encode transport-level or routing-specific information.
 
 
 ## Identifier
@@ -515,7 +896,7 @@ An action performed with multiple objects or a single object. Action name in a
 URI is denoted with a `:` symbol, for example:
 
 ```text
-GET /datasets/gov/rc/ar/uapi/text_with_coordinates/Country/:changes
+GET /datasets/gov/rc/ar/uapi/text_with_coordinates/Country/actions/:changes
 ```
 
 In the example above action name is `changes` and it lists all changes made to
@@ -524,25 +905,25 @@ In the example above action name is `changes` and it lists all changes made to
 But also, there can be an action on a single object:
 
 ```text
-GET /datasets/gov/rc/ar/uapi/text_with_coordinates/Country/e96cc0cc-08be-460d-a887-98f80612a402/:changes
+GET /datasets/gov/rc/ar/uapi/text_with_coordinates/Country/e96cc0cc-08be-460d-a887-98f80612a402/actions/:changes
 ```
 
 There is a list of build-in reserved implicit actions, where you don't need to
 specify action name:
 
-- `GET /…/{model}` (`:getall`) - get list of objects.
-- `GET /…/{model}/{id}` (`:getone`) - get a single object.
-- `GET /…/{model}?{query}` (`:search`) - get list of objects with a filter.
-- `POST /…/{model}` (`:create`) - create new object.
-- `PUT /…/{model}/{id}` (`:update`) - rewrite whole existing object.
-- `PATCH /…/{model}/{id}` (`:path`) - update some properties of existing object.
-- `DELETE /…/{model}/{id}` (`:delete`) - delete an existing object.
+- `GET /…/` <span class="green">model</span> (`:getall`) - get list of objects.
+- `GET /…/` <span class="green">model</span> `/` <span class="green">id</span> (`:getone`) - get a single object.
+- `GET /…/` <span class="green">model</span> `?` <span class="green">query</span> (`:search`) - get list of objects with a filter.
+- `POST /…/` <span class="green">model</span> (`:create`) - create new object.
+- `PUT /…/` <span class="green">model</span> `/` <span class="green">id</span> (`:update`) - rewrite whole existing object.
+- `PATCH /…/` <span class="green">model</span> `/` <span class="green">id</span> (`:path`) - update some properties of existing object.
+- `DELETE /…/` <span class="green">model</span> `/` <span class="green">id</span> (`:delete`) - delete an existing object.
 
 Also there are some built-in reserved explicit actions:
 
-- `GET /…/{model}/:changes` - get list of changes to all model objects.
-- `GET /…/{model}/{id}/:changes` - get list of changes to a single object.
-- `DELETE /…/{model}/{id}/:wipe` - completely remove object without storing
+- `GET /…/` <span class="green">model</span> `/:changes` - get list of changes to all model objects.
+- `GET /…/` <span class="green">model</span> `/` <span class="green">id</span> `/:changes` - get list of changes to a single object.
+- `DELETE /…/` <span class="green">model</span> `/` <span class="green">id</span> `/:wipe` - completely remove object without storing
   changes in changelog.
 
 Data agents might implement custom actions.
@@ -556,18 +937,10 @@ Service version is provided after the service name in the URL:
 /datasets/gov/rc/ar/uapi/2/text_with_coordinates/Country
 ```
 
-Schema version is applied to whole dataset and is specified after dataset
-component in the URL:
 
-```uri
-/datasets/gov/rc/ar/uapi/text_with_coordinates/3/Country
-```
+If version component is not given, then latest service version is used.
 
-In the example above, a third version of `text_with_coordinates` dataset is specified.
-
-If version component is not given, then latest service or schema version is used.
-
-Version number is a singe positive integer number specifying major version of the service or dataset.
+Version number is a singe positive integer number specifying major version of the service.
 
 
 ## Revision
@@ -589,7 +962,7 @@ Revision number is also used, references older object version if Resource
 stores older object versions:
 
 ```uri
-/datasets/gov/rc/ar/uapi/text_with_coordinates/Country/e96cc0cc-08be-460d-a887-98f80612a402/rev/dd22f1b4-09c2-48ee-bf7a-7bf082da9940
+/datasets/gov/rc/ar/uapi/text_with_coordinates/Country/e96cc0cc-08be-460d-a887-98f80612a402/revision/dd22f1b4-09c2-48ee-bf7a-7bf082da9940
 ```
 
 Second UUID number is a revision ant following request retrieves an older
@@ -603,6 +976,9 @@ indicate if resource is outdated.
 
 
 ## Maturity
+
+Metadata and data maturity is defined in DSA<>. To comply to UDTS specification maturity level MUST be at least 2. 
+Highest maturity level be should be strived for.
 
 Data values might have different forms depending on data maturity level. There
 are five maturity levels:
@@ -636,6 +1012,66 @@ requirements.
 
 Maturity level is set and can be found in the Catalog.
 
+According to object maturity API responses MUST return following elements:
+
+- **Maturity level 5**
+```Code
+HTTP/1.1 200 OK
+Content-Type: application/ld+json
+
+{
+  "@context": "https://data.gov.lt/context/{dataset.id}/{version}.jsonld",
+  "@id": "https://data.gov.lt/id/{vocab}/{term}/42",
+  "_id": "42",
+  "id": 42,
+  "title": "Duomuo"
+}
+```
+
+- **Maturity level 4**
+```Code
+HTTP/1.1 200 OK
+Content-Type: application/ld+json
+
+{
+  "@id": "https://data.gov.lt/id/{vocab}/{term}/42",
+  "_id": "42",
+  "id": 42,
+  "title": "Duomuo"
+}
+```
+
+- **Maturity level 3**
+```Code
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "id": 42,
+  "title": "Duomuo"
+}
+```
+
+- **Maturity level 2**
+```Code
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "code": 1000,
+  "title": "Duomuo"
+}
+```
+
+- **Maturity level 1**
+```Code
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "title": "Duomuo"
+}
+```
 
 # Authorization
 
@@ -915,8 +1351,8 @@ Scopes are generated in a similar way as API paths using following form:
 <span class="green">service</span> `/`
 <span class="green">dataset</span> `/`
 <span class="green">model</span> `/`
-<span class="green">property</span> `/@`
-<span class="green">scope</span> `/:`
+<span class="green">property</span> `@`
+<span class="green">scope</span> `:`
 <span class="green">action</span>
 
 Meaning of all the components in the scope is the same as described in [URL
@@ -957,9 +1393,6 @@ uapi:/datasets/gov/rc/ar/uapi/text_with_coordinates/Country/@resident/:getall
 
 Row-level filters might require User authorization flow in order to get
 representative `sub` identifier, which might be used when filtering data.
-
-
-
 
 
 # Query
@@ -1265,12 +1698,12 @@ Object revision retrieval should be used instead.
 
 To retrieve the latest change of the object `-1` can be used as the `cid`:
 
-```/datasets/gov/rc/ar/uapi/text_with_coordinates/Country/:changes/-1```
+```/datasets/gov/rc/ar/uapi/text_with_coordinates/Country/actions/:changes/-1```
 
 Changes actions are implemented at the model and object levels and conforms to [LDES](https://semiceu.github.io/LinkedDataEventStreams/)
 For this it uses the [JSON-LD Context](https://www.w3.org/TR/json-ld/#the-context)
 
-Depending on the size response might be paginated and accessed via querie ```?page=n```
+Depending on the size response might be paginated and accessed via query ```?page=n```
 where ```n``` is the page (node) number starting with `1`
 
 # Data types
@@ -1285,9 +1718,9 @@ where ```n``` is the page (node) number starting with `1`
 
 # Specification changes
 
-## Draft of 2.0 (2026-03-25)
+## Draft of 2.0 (2026-04-14)
 
-In [draft](https://ivpk.github.io/uapi/draft/) 2026-03-25:
+In [draft](https://ivpk.github.io/uapi/draft/) 2026-04-14:
 
 Changed URL schema with addition of service and service version
 
