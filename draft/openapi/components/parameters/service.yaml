@@ -1,0 +1,10 @@
+name: service
+in: path
+required: true
+schema:
+  $ref: ../schemas/service.yaml
+description: |
+  A short service code name.
+
+  Each word starts with lower case letter, first letter can't be a
+  number.

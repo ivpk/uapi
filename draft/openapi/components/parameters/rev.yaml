@@ -1,0 +1,11 @@
+name: rev
+in: path
+required: true
+schema:
+  $ref: ../schemas/rev.yaml
+description: |
+  Object revision identifier.
+
+  Identifiers should be UUID v4.
+
+  Once object revision is assigned identifier, it should never change.

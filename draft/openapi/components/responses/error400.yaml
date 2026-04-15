@@ -1,0 +1,13 @@
+description: Bad Request
+headers:
+  traceresponse:
+    $ref: ../headers/traceresponse.yaml
+content:
+  application/json:
+    schema:
+      oneOf:
+        - $ref: ../schemas/UniqueConstraint.yaml
+        - $ref: ../schemas/NoItemRevision.yaml
+        - $ref: ../schemas/InvalidOperandValue.yaml
+        - $ref: ../schemas/NoScopesForNamespaces.yaml
+        - $ref: ../schemas/InvalidExtraScopes.yaml

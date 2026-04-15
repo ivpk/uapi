@@ -1,7 +1,7 @@
 openapi: 3.1.0
 
 info:
-  version: 1.0.0
+  version: 1.1.0
   title: Universal application programming interface
   contact:
     name: VSSA
@@ -35,6 +35,8 @@ tags:
     description: Operations with Object subresource
   - name: change
     description: Change tracking operations
+  - name: revision
+    description: Operations that return Object revisions
   - name: services
     description: |
       Service functions are not as restricted as data API endpoints. Services
@@ -52,6 +54,7 @@ x-tagGroups:
       - object
       - resource
       - change
+      - revision
   - name: Services
     tags:
       - services
@@ -73,7 +76,15 @@ paths:
   /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/{property}:
     $ref: paths/property.yaml
   /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/:changes/{cid}:
+    $ref: paths/change.yaml
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/:changes:
     $ref: paths/changes.yaml
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/:changes/{cid}:
+    $ref: paths/objectChange.yaml
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/:changes:
+    $ref: paths/objectChanges.yaml
+  /{group}/{form}/{org}/{catalog}/{dataset}/{version}/{model}/{id}/rev/{rev}:
+    $ref: paths/rev.yaml
   /services/{form}/{org}/{catalog}/{dataset}/{version}/{service}:
     $ref: paths/service.yaml
 

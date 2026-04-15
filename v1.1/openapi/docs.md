@@ -18,7 +18,7 @@ and this (in future) can be done in Data Portal (data.gov.lt).
 
 ## Specifications
 
-- [UAPI](https://ivpk.github.io/uapi) - this document, describes data exchange
+- [UAPI](https://ivpk.github.io/uapi/v1.1) - this document, describes data exchange
   protocol and format.
 
 - [DSA](https://ivpk.github.io/dsa) - Data Structure Mapping table format
@@ -1246,7 +1246,13 @@ where ```n``` is the page (node) number starting with `1`
 
 # Specification changes
 
-## 1.1 (2024-11-26)
+## Draft
+
+In [draft](https://ivpk.github.io/uapi/draft):
+
+Working draft of this specification
+
+## 1.1 (This document) (2024-11-26)
 
 In [1.1](https://ivpk.github.io/uapi/v1.1/) 2024-11-26:
 

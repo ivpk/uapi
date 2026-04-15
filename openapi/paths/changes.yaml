@@ -6,7 +6,6 @@ parameters:
   - $ref: ../components/parameters/dataset.yaml
   - $ref: ../components/parameters/version.yaml
   - $ref: ../components/parameters/model.yaml
-  - $ref: ../components/parameters/cid.yaml
   - $ref: ../components/parameters/traceparent.yaml
   - $ref: ../components/parameters/tracestate.yaml
   - $ref: ../components/parameters/If-None-Match.yaml
@@ -16,26 +15,18 @@ get:
     - change
   security:
     - {}
-  summary: Get all object changes since given {cid} (change id).
+  summary: Get all model changes
   description: |
-    Get latest changes to a table.
-
-    If {cid} is not given, return changes, since very first available
-    change.
-
-    If {cid} is gven, return only changes, since given change id, including
-    change id itself.
-
-    This API can return changes, that were returned previously, client
-    should be responsible for checking if a change was received previously
-    or not.
+    Get latest changes for a model.
 
     Last change id is included in the request, in order for clients to check
     if last change id matches change received by client. If last change
-    does not match, then client should do a full synce, because if last
+    does not match, then client should do a full sync, because if last
     change id does not match, that means, that a data migration or some
     other alterations to data were made, which requires to do a full sync.
   operationId: getChanges
+  parameters:
+    - $ref: ../components/parameters/query.yaml
   responses:
     '200':
       description: OK
@@ -51,5 +42,3 @@ get:
       $ref: ../components/responses/error500.yaml
     '503':
       $ref: ../components/responses/error503.yaml
-  externalDocs:
-    url: https://atviriduomenys.readthedocs.io/api/index.html#changes
