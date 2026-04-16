@@ -400,7 +400,7 @@ Meaning of dynamic URL parts:
   `DalyvioAsmensIsrasas` - is the name of the model
 
 
-- <span class="green">service</span> - A short code name of a data service. It represents the class dcat:DataService and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations).
+- <span class="green">service</span> - A short code name of a data service. It represents the class [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations).
 - <span class="green">version</span> - The data schema version of a data service. It represents the MAJOR version number according to the 
 [Semantic versioning v2.0.0](https://semver.org/) version management rules.
 
@@ -408,7 +408,7 @@ Meaning of dynamic URL parts:
 
   a.  If a [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) receives a new MAJOR version, it does not affect the [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service) URI; it only affects the [dcat:downloadURL](https://www.w3.org/TR/vocab-dcat-3/#Property:distribution_download_url) of the [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service).
 
-  b. If a dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) does not receive a new MAJOR version, but the [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service) 
+  b. If a [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) does not receive a new MAJOR version, but the [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service) 
   that [dcat:servesDataset](https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_serves_dataset) that [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) receives 
   a MAJOR update of the OAPI specification, then the MAJOR version number used in the URI version segment *MUST* be updated accordingly.
 
@@ -544,25 +544,25 @@ Static parts:
 
 The following URL components are mandatory for all datasets and services endpoints:
 
-  <span class="green">form</span>
+  - <span class="green">form</span>
   
-  <span class="green">org</span>
+  - <span class="green">org</span>
   
-  <span class="green">catalog</span>
+  - <span class="green">catalog</span>
   
-  <span class="green">service</span>
+  - <span class="green">service</span>
 
 All other components are optional and depend on the level of access being addressed, such as:
 
-  <span class="green">dataset</span>
+  - <span class="green">dataset</span>
 
-  <span class="green">model<span>
+  - <span class="green">model<span>
   
-  <span class="green">revision</span>
+  - <span class="green">revision</span>
   
-  <span class="green">property<span>
+  - <span class="green">property<span>
   
-  <span class="green">action</span>
+  - <span class="green">action</span>
 
 API URL example:
 
