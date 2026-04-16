@@ -76,21 +76,21 @@ paths:
     $ref: paths/model.yaml
   /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}:
     $ref: paths/object.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/actions/:wipe:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/:wipe:
     $ref: paths/wipe.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/properties/{property}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/{property}:
     $ref: paths/property.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/actions/{action}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{action}:
     $ref: paths/action.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/actions/:changes/{cid}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/:changes/{cid}:
     $ref: paths/change.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/actions/:changes:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/:changes:
     $ref: paths/changes.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/actions/:changes/{cid}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/:changes/{cid}:
     $ref: paths/objectChange.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/actions/:changes:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/:changes:
     $ref: paths/objectChanges.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/revision/{rev}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/{rev}:
     $ref: paths/rev.yaml
   /services/{form}/{org}/{catalog}/{dataset}/{service}:
     $ref: paths/service.yaml
