@@ -80,7 +80,7 @@ paths:
     $ref: paths/wipe.yaml
   /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/{property}:
     $ref: paths/property.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{action}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/:{action}:
     $ref: paths/action.yaml
   /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/:changes/{cid}:
     $ref: paths/change.yaml
@@ -90,7 +90,7 @@ paths:
     $ref: paths/objectChange.yaml
   /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/:changes:
     $ref: paths/objectChanges.yaml
-  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/{rev}:
+  /{group}/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id}/rev/{rev}:
     $ref: paths/rev.yaml
   /services/{form}/{org}/{catalog}/{dataset}/{service}:
     $ref: paths/service.yaml

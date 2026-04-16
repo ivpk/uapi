@@ -226,6 +226,7 @@ All API  URL's are constructed using one of the following patters:
   <span class="green">dataset</span> `/`
   <span class="green">model</span> `/`
   <span class="green">id</span> `/`
+  `rev/`
   <span class="green">revision</span>
 
 - Get single object property value:
@@ -531,13 +532,14 @@ such as [owl:ObjectProperty](https://www.w3.org/TR/2004/REC-owl-semantics-200402
 
   `/`<span class="green">dataset</span>`/`
   <span class="green">concept</span>`/`
-  <span class="green">reference</span>`/`
+  <span class="green">reference</span>`/rev/`
   <span class="green">revision</span>  - specific version of an object
 
 Static parts:
 
 - `datasets` - dataservice enpoints used for data retreival via UAPI service.
 - `services` - services endpoint, that does not follow UAPI requirements, used for existing legacy API services.
+- `rev` - revision endpoint to return older versions of the object.
 
 
 The following URL components are mandatory for all datasets and services endpoints:
