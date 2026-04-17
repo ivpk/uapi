@@ -362,9 +362,10 @@ Meaning of dynamic URL parts:
 
   The `com` value covers all other cases.
 
-- <span class="green">org</span> - A short code name of an organization or agent. It represents the class [foaf:Agent](https://xmlns.com/foaf/spec/#term_Agent) ([dc:publisher](http://purl.org/dc/elements/1.1/publisher)) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations). 
-- <span class="green">catalog</span> - Catalog is a short code identifier representing a catalog, sub-catalog, information system,
- or sub-information system that provides data, corresponding to the class [dcat:Catalog](https://www.w3.org/TR/vocab-dcat-3/#Class:Catalog) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations),
+- <span class="green">org</span> - A short code name of an organization or agent. It represents the class [foaf:Agent](https://xmlns.com/foaf/spec/#term_Agent) 
+([dc:publisher](http://purl.org/dc/elements/1.1/publisher)) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations). 
+- <span class="green">catalog</span> - Catalog is a short code identifier representing an information system, that provides data, corresponding to the 
+class [dcat:Catalog](https://www.w3.org/TR/vocab-dcat-3/#Class:Catalog) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations),
  and in the context of DCAT-AP-LT v2 most often representing the [dcataplt:InformationSystem](https://ivpk.github.io/DCAT-AP-LT/en/##IS) class.
 
 - <span class="green">catalog</span> values used by existing data catalogs:
