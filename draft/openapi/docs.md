@@ -341,6 +341,17 @@ All API  URL's are constructed using one of the following patters:
 
 This pattern is a valid alternative in the current version of the specification, but it *SHOULD* be considered deprecated in future versions.
 
+- Additional API specific endpoints
+
+  - Get the version of the API and backend infrastructure:
+
+     <span class="green">domain</span> `/`
+    `version`
+  - Get health status of the service and underlying infrastructure"
+  
+     <span class="green">domain</span> `/`
+    `health`
+
 - Ownership and naming
 
 SDSA has the exclusive right to register `org` and `catalog` values in the data.gov.lt catalog and to resolve disputes among Agents.

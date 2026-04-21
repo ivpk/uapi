@@ -1,12 +1,5 @@
 type: object
 properties:
-  api:
-    type: object
-    properties:
-      version:
-        type: string
-        examples:
-          - 0.0.1
   implementation:
     type: object
     properties:
@@ -17,11 +10,20 @@ properties:
       version:
         type: string
         examples:
-          - 0.1
-  build:
+          - 0.2.dev21
+  uapi:
     type: object
     properties:
       version:
         type: string
         examples:
-          - 0.0.1
+          - 2.0.0
+:
+          - 0.1
+  dsa:
+    type: object
+    properties:
+      version:
+        type: string
+        examples:
+          - 1.1.0
