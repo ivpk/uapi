@@ -18,8 +18,6 @@ properties:
         type: string
         examples:
           - 2.0.0
-:
-          - 0.1
   dsa:
     type: object
     properties:
