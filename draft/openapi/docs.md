@@ -191,11 +191,12 @@ All API  URL's are constructed using one of the following patters:
 
 - Get list of objects:
 
+  `https://`
   <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
@@ -203,11 +204,12 @@ All API  URL's are constructed using one of the following patters:
 
 - Get single object:
 
+  `https://`
   <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
@@ -216,11 +218,12 @@ All API  URL's are constructed using one of the following patters:
 
 - Get an older version of a single object:
 
+  `https://`
   <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
@@ -231,22 +234,24 @@ All API  URL's are constructed using one of the following patters:
 
 - Get single object property value:
 
+  `https://`
   <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
   <span class="green">model</span> `/`
   <span class="green">property</span>
 
+  `https://`
   <span class="green">domain</span> `/`
-  `/datasets/`
+  `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
@@ -256,22 +261,24 @@ All API  URL's are constructed using one of the following patters:
 
 - Perform a custom action on a collection or on a single object:
 
+  `https://`
   <span class="green">domain</span> `/`
-  `/datasets/`
+  `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
   <span class="green">model</span> `/`
   <span class="green">action</span>
 
+  `https://`
   <span class="green">domain</span> `/`
-  `/datasets/`
+  `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
@@ -281,22 +288,24 @@ All API  URL's are constructed using one of the following patters:
 
 - Standar query parameters *MUST* be used.
   
+  `https://`
   <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
   <span class="green">model<span> `?`
   <span class="green">query<span>
   
-   <span class="green">domain</span> `/`
+  `https://`
+  <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
@@ -306,22 +315,24 @@ All API  URL's are constructed using one of the following patters:
   
 - Retrieve object or property based on scope:
 
+  `https://`
   <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
   <span class="green">model<span> `/`
   <span class="green">scope<span>
   
-   <span class="green">domain</span> `/`
+  `https://`
+  <span class="green">domain</span> `/`
   `datasets/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
   <span class="green">dataset</span> `/`
@@ -331,11 +342,12 @@ All API  URL's are constructed using one of the following patters:
 
 - The following pattern *MAY* be used for APIs, mostly legacy APIs, that do not support the standard UAPI exchange protocol:
 
+  `https://`
   <span class="green">domain</span> `/`
   `services/`
   <span class="green">form</span> `/`
   <span class="green">org</span> `/`
-  <span class="green">catalog</span> `/`
+  <span class="green">is</span> `/`
   <span class="green">service</span> `/`
   <span class="green">version</span> `/`
 
@@ -345,16 +357,18 @@ This pattern is a valid alternative in the current version of the specification,
 
   - Get the version of the API and backend infrastructure:
 
-     <span class="green">domain</span> `/`
+    `https://`
+    <span class="green">domain</span> `/`
     `version`
   - Get health status of the service and underlying infrastructure"
   
-     <span class="green">domain</span> `/`
+    `https://`
+    <span class="green">domain</span> `/`
     `health`
 
 - Ownership and naming
 
-SDSA has the exclusive right to register `org` and `catalog` values in the data.gov.lt catalog and to resolve disputes among Agents.
+SDSA has the exclusive right to register `org` and `is` values in the data.gov.lt catalog and to resolve disputes among Agents.
 
 An Agent has the right to choose `service`, `dataset`, `model`, and `property` values, provided that these values conform to the syntax rules of this and [DSA specification](https://ivpk.github.io/dsa/).
 
@@ -375,11 +389,11 @@ Meaning of dynamic URL parts:
 
 - <span class="green">org</span> - A short code name of an organization or agent. It represents the class [foaf:Agent](https://xmlns.com/foaf/spec/#term_Agent) 
 ([dc:publisher](http://purl.org/dc/elements/1.1/publisher)) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations). 
-- <span class="green">catalog</span> - Catalog is a short code identifier representing an information system, that provides data, corresponding to the 
-class [dcat:Catalog](https://www.w3.org/TR/vocab-dcat-3/#Class:Catalog) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations),
- and in the context of DCAT-AP-LT v2 most often representing the [dcataplt:InformationSystem](https://ivpk.github.io/DCAT-AP-LT/en/##IS) class.
+- <span class="green">is</span> - IS is a short code identifier representing an information system, that provides data.
+  In the context of DCAT-AP-LT v2 most often representing the [dcataplt:InformationSystem](https://ivpk.github.io/DCAT-AP-LT/en/##IS) class 
+  and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations), can also represent sub information system of an information system.
 
-- <span class="green">catalog</span> values used by existing data catalogs:
+- <span class="green">is</span> values used by existing data information systems:
 
   `adp` — Lithuanian Open Data Catalog
 
@@ -395,21 +409,21 @@ class [dcat:Catalog](https://www.w3.org/TR/vocab-dcat-3/#Class:Catalog) and its 
 
   In this example:
 
-  `datasets` - defines it as dataset for a data retrieval via UDTS
+  `datasets` - defines it as dataset for a data retrieval via UDTS,
 
-  `gov` - defines it as government sector data
+  `gov` - defines it as government sector data,
 
-  `rc` - is the code name of organisation 
+  `rc` - is the code name of organisation,
 
   `jadis` - is understood as an information system,
 
-  `uapi` - is the data service name.
+  `uapi` - is the data service name,
 
-  `1` - is the version of the service
+  `1` - is the version of the service,
 
-  `at280` - is the name of the dataset
+  `at280` - is the name of the dataset,
 
-  `DalyvioAsmensIsrasas` - is the name of the model
+  `DalyvioAsmensIsrasas` - is the name of the model.
 
 
 - <span class="green">service</span> - A short code name of a data service. It represents the class [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations).
@@ -424,8 +438,9 @@ class [dcat:Catalog](https://www.w3.org/TR/vocab-dcat-3/#Class:Catalog) and its 
   that [dcat:servesDataset](https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_serves_dataset) that [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) receives 
   a MAJOR update of the OAPI specification, then the MAJOR version number used in the URI version segment *MUST* be updated accordingly.
 
-- <span class="green">dataset</span> - A short code name of a specific dataset from a catalog. It *MAY* also represent a sub-dataset. 
-It represents the class [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations).
+- <span class="green">dataset</span> - A short code name of a specific dataset from a catalog. It *MAY* also represent a sub-dataset.
+  It represents the class [dcat:Dataset](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) and its property [skos:notation](https://www.w3.org/TR/skos-reference/#notations).
+  When defining a sub-dataset a `broader_dataset/norrower_dataset` structure *SHOULD* be used.
 
 - <span class="green">model</span> - A SHACL validation shape ([shacl:NodeShape](https://www.w3.org/TR/shacl/#node-shapes)) that defines constraints for a set 
 of objects conforming to the same data model, with [shacl:targetClass](https://www.w3.org/TR/shacl/#targetClass) pointing to the corresponding [rdfs:Class](https://www.w3.org/TR/rdf-schema/#ch_class).
@@ -560,7 +575,7 @@ The following URL components are mandatory for all datasets and services endpoin
   
   - <span class="green">org</span>
   
-  - <span class="green">catalog</span>
+  - <span class="green">is</span>
   
   - <span class="green">service</span>
 
@@ -586,11 +601,11 @@ When interpreting URL, there are few distinctions in each component, that might
 help separate components presented in URL:
 
 - Namespace components <span class="green">form</span>,
-  <span class="green">org</span>, <span class="green">catalog</span>,
+  <span class="green">org</span>, <span class="green">is</span>,
   <span class="green">service</span>  and <span class="green">dataset</span> must 
   start with lowercase ascii letter and must always follow one after
-  the other, with catalog exception, where
-  dataset might be used without catalog.
+  the other, with IS exception, where
+  dataset might be used without IS.
 
 - <span class="green">model</span> name must always start with uppercase ascii
   letter and can be used to separate namespace components from model.
@@ -612,7 +627,7 @@ The semantic meaning of URL segments is expressed through [JSON-LD Context](http
 
 `org` identifies a [foaf:Agent](https://xmlns.com/foaf/spec/#term_Agent)
 
-`catalog` identifies a [dcat:Catalog](https://www.w3.org/TR/vocab-dcat-3/#Class:Catalog) or [dcataplt:InformationSystem](https://ivpk.github.io/DCAT-AP-LT/en/##IS)
+`is` identifies a [dcataplt:InformationSystem](https://ivpk.github.io/DCAT-AP-LT/en/##IS)
 
 `service` identifies a [dcat:DataService](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service)
 
@@ -631,7 +646,7 @@ This specification distinguishes between:
 
 and
 
-**entity resources**, such as identified instances of `datasets`, `catalog` entries, and `domain` objects.
+**entity resources**, such as identified instances of `datasets`, `is` entries, and `domain` objects.
 
 These resource types *MUST* be identified using consistent URI patterns.
 
@@ -713,7 +728,7 @@ An API URL *MAY* resolve to a representation of an entity resource identified by
 For example:
 
   ```code
-  GET /datasets/{form}/{org}/{catalog}/{service}/{version}/{dataset}/{model}/{id} HTTP/1.1
+  GET /datasets/{form}/{org}/{is}/{service}/{version}/{dataset}/{model}/{id} HTTP/1.1
   Host: api.gov.lt
   Accept: application/ld+json
   ```
@@ -1348,7 +1363,7 @@ Scopes are generated in a similar way as API paths using following form:
 `uapi:/datasets/`
 <span class="green">form</span> `/`
 <span class="green">org</span> `/`
-<span class="green">catalog</span> `/`
+<span class="green">is</span> `/`
 <span class="green">service</span> `/`
 <span class="green">dataset</span> `/`
 <span class="green">model</span> `/`
@@ -1719,9 +1734,9 @@ where ```n``` is the page (node) number starting with `1`
 
 # Specification changes
 
-## Draft of 2.0 (2026-04-14)
+## Draft of 2.0 (2026-05-19)
 
-In [draft](https://ivpk.github.io/uapi/draft/) 2026-04-14:
+In [draft](https://ivpk.github.io/uapi/draft/) 2026-05-19:
 
 Changed URL schema with addition of service and service version
 

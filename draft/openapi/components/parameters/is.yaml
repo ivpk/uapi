@@ -1,0 +1,11 @@
+name: is
+in: path
+required: true
+schema:
+  type: string
+  examples:
+    - adresu_registras
+description: |
+  An information system or a standard abbreviation or short code name for it. Can also be a sub information system if an information system.
+
+  All lower case, words separated with `_` symbol.
