@@ -23,7 +23,7 @@ and this (in future) can be done in Data Portal (data.gov.lt).
 
 - [DSA](https://ivpk.github.io/dsa) - Data Structure Mapping table format
   specification, describes a table format, for mapping data models between
-  Physical, Logical and Conceptual data models.
+  Physical, Logical, and Conceptual data models.
 
   Logical data model from DSA tables are used as API schemas. UAPI only
   describes protocol, DSA tables provides data schemas for UAPI API.
@@ -70,7 +70,7 @@ components:
 
 - **Data** source and **Data Service** or **Resource** when referred to one or
   the other - these components represents all data sources, including variuos
-  databases, web services, CSV, XLSX or other data files maintained by all the
+  databases, web services, CSV, XLSX, or other data files maintained by all the
   government institutions.
 
   Data might be read directly from a primary data source or through a data
@@ -95,7 +95,7 @@ components:
 
   Data Catalog receives DSA tables from Data Agent, provides modified versions
   of DSA tables back to Data Agent, exports API specifications to API Gateway
-  in OpenAPI format and exports available data scopes and information about
+  in OpenAPI format, and exports available data scopes and information about
   smart contracts into Auth service.
 
   Data Catalog does not have access to data, it is used only to manage metadata
@@ -169,7 +169,7 @@ components:
 3. **API Gateway** works as a reverse proxy and load balancer, accepts requests
    from data users, validates these requests against OpenAPI schemas received
    from **Data Catalog**, validates authorization tokens with **Auth service**,
-   provides request logging, rate limiting and other services.
+   provides request logging, rate limiting, and other services.
 
    **API Gateway** after initial validation, passed requests to **Data Agent**,
    which reads data from primary sources and provides protocol and format
@@ -195,9 +195,11 @@ All API URI's are constructed using one of the following patters:
   <span class="green">catalog</span> `/`
   <span class="green">dataset</span> `/`
   <span class="green">version</span> `/`
-  <span class="green">model<span>
+  <span class="green">model</span>
 
 - Get single object:
+
+  If the id is an integer, UUID, or composite type:
 
   `/datasets/`
   <span class="green">form</span> `/`
@@ -207,6 +209,17 @@ All API URI's are constructed using one of the following patters:
   <span class="green">version</span> `/`
   <span class="green">model</span> `/`
   <span class="green">id</span>
+
+  If the id is any other type:
+
+  `/datasets/`
+  <span class="green">form</span> `/`
+  <span class="green">org</span> `/`
+  <span class="green">catalog</span> `/`
+  <span class="green">dataset</span> `/`
+  <span class="green">version</span> `/`
+  <span class="green">model</span> `/`
+  <span class="green">=id</span>
 
 - Get an older version of a single object:
 
@@ -296,9 +309,9 @@ Meaning of dynamic URI parts explained bellow:
 - <span class="green">version</span> - data schema version of a dataset.
 - <span class="green">model</span> - a set of objects provided under the same
   data model.
-- <span class="green">id</span> - unique object identifier in UUID format.
+- <span class="green">id</span> - unique object identifier in UUID, integer, string, or Base32 format.
 - <span class="green">revision</span> - unique identifier for an older object
-  version in UUID format.
+  version in UUID, integer, string, or Base32 format.
 - <span class="green">property</span> - a subresource used for some property
   data types liek files or arrays, in order to retrieve large content blobs.
 - <span class="green">action</span> - an action performed with objects or a
@@ -362,7 +375,7 @@ building, since building is the same, single global identifier must be used:
 ## Model
 
 Real world entities are identified using global identifiers. Each real world
-entity might have different data shape, form or schema.
+entity might have different data shape, form, or schema.
 
 Single real world entity might be represented using multiple different data
 models using different set of properties, but different models must share the
@@ -537,8 +550,7 @@ Version number is a singe positive integer number.
 All objects must have a revision number provided as reserved `_revision`
 property name.
 
-Revision is a string, that identifies object version. This might be a UUID
-string.
+Revision can be represented as a string, UUID, integer, or Base32 value, and serves to identify a specific version of an object.
 
 When update action is made on an object, revision number must always be
 provided, in order to compare object version received by the Client and object
@@ -618,9 +630,9 @@ the parties participating in data exchange process:
   is a Authorization Server.
 
 - **Catalog** - a data catalog, a place where all information about agents,
-  resource, clients and smart contracts are registered.
+  resource, clients, and smart contracts are registered.
 
-- **Resource** - a data service, a database or a data file, place where data
+- **Resource** - a data service, a database, or a data file, place where data
   are stored.
 
 - **Agent** - a software responsible for data exchange, accepts data queries,
@@ -655,7 +667,7 @@ steps must be completed:
    what data can be use for exchange outside if Resource and published this
    information for Client developers.
 
-4. Client developers discovers published datasets, registers client and
+4. Client developers discovers published datasets, registers client, and
    requests access to data they need, specifying list of scopes that are
    required for the Client. After registration, clients receive client id and
    client secret assigned by the Authorization server.
@@ -751,7 +763,7 @@ In order to make requests, following steps are needed:
    client acts on itself.
 
 4. Finally Agent transforms an UAPI request into a protocol, that is understood
-   by a Resource, retrieves data and transforms result back to UAPI.
+   by a Resource, retrieves data, and transforms result back to UAPI.
 
 
 
@@ -925,7 +937,7 @@ representative `sub` identifier, which might be used when filtering data.
 
 # Query
 
-Actions might use URI query to filter, limit, sort or otherwise influence
+Actions might use URI query to filter, limit, sort, or otherwise influence
 result returned by an action.
 
 URI consists of following components (there are more components, but for
@@ -959,7 +971,7 @@ Parameter names can have attributes:
 <span class="green">attribute</span> `=`
 <span class="green">value</span> `&`
 
-There can be none, one or more than one attribute.
+There can be none, one, or more than one attribute.
 
 For query examples following data model will be used.
 
@@ -1092,7 +1104,7 @@ City?_select=country.name,name
 This will select data from both `City` and `Country` models, because
 `City/country` property is a Reference to the `Country` model.
 
-Joins can be used with for selecting, filtering, sorting and other places,
+Joins can be used with for selecting, filtering, sorting, and other places,
 where a property can be specified.
 
 
