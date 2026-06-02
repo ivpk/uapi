@@ -202,7 +202,7 @@ All API  URL's are constructed using one of the following patters:
   <span class="green">dataset</span> `/`
   <span class="green">model<span>
 
-- Get single object, see [_id URI representation](#section/Concepts/Identifier/_id-URI-representation):
+- Get single object, see [_id URI representation](#id-uri-representation):
 
   `https://`
   <span class="green">domain</span> `/`
@@ -796,6 +796,8 @@ name. `_id` can be defined as one of these types:
 - Base32
 - UUID
 - Integer
+
+<a id="id-uri-representation"></a>
 
 ### _id URI representation
 
