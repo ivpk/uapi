@@ -790,6 +790,10 @@ building, since building is the same, single global identifier must be used:
   /datasets/gov/rc/ntr/uapi/report/Pastatas/e96cc0cc-08be-460d-a887-98f80612a402
   ```
 
+<a id="id-uri-representation"></a>
+
+### _id URI representation
+
 Global identifiers should be defined in the manifest, using `_id` as the property
 name. `_id` can be defined as one of these types:
 - String
@@ -797,16 +801,19 @@ name. `_id` can be defined as one of these types:
 - UUID
 - Integer
 
-<a id="id-uri-representation"></a>
 
-### _id URI representation
-
-The operations, which use `_id` in their URI, change depending on the fields type.
+The operations, which use `_id` in their URI, change depending on the field type.
 If the `_id` is of type String or Base32, then the `_id` is specified in the URI with an equal sign:
 
   ```code
-  \=id
+  /=id
   ```
+
+Otherwise, for UUID and Integer types, the `_id` is specified in the URI directly without an equal sign:
+``
+  ```code``
+  /id``
+  `````
 
 ## Model
 
