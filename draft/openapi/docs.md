@@ -202,7 +202,7 @@ All API  URL's are constructed using one of the following patters:
   <span class="green">dataset</span> `/`
   <span class="green">model<span>
 
-- Get single object:
+- Get single object, see [_id URI representation](#section/Concepts/Identifier/_id-URI-representation):
 
   `https://`
   <span class="green">domain</span> `/`
@@ -782,12 +782,28 @@ same building, but the global identifier must be the same for all datasets.
 Global identifiers must be assigned to all objects using a reserved property
 name `_id`.
 
-For example we can have multiple datasets containing data abould the same
+For example we can have multiple datasets containing data about the same
 building, since building is the same, single global identifier must be used:
 
   ```text
   /datasets/gov/rc/ar/uapi/text_with_coordinates/Address/e96cc0cc-08be-460d-a887-98f80612a402
   /datasets/gov/rc/ntr/uapi/report/Pastatas/e96cc0cc-08be-460d-a887-98f80612a402
+  ```
+
+Global identifiers should be defined in the manifest, using `_id` as the property
+name. `_id` can be defined as one of these types:
+- String
+- Base32
+- UUID
+- Integer
+
+### _id URI representation
+
+The operations, which use `_id` in their URI, change depending on the fields type.
+If the `_id` is of type String or Base32, then the `_id` is specified in the URI with an equal sign:
+
+  ```code
+  \=id
   ```
 
 ## Model
@@ -964,8 +980,12 @@ Version number is a singe positive integer number specifying major version of th
 All objects must have a revision number provided as reserved `_revision`
 property name.
 
-Revision is a string, that identifies object version. This might be a UUID
-string.
+Revision can be defined in the manifest, using `_revision` as the property
+name. `_revision` can be defined as one of these types:
+- String
+- Base32
+- UUID
+- Integer
 
 When update action is made on an object, revision number must always be
 provided, in order to compare object version received by the Client and object

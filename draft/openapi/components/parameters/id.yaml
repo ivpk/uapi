@@ -4,9 +4,7 @@ required: true
 schema:
   $ref: ../schemas/id.yaml
 description: |
-  Public global object identifier.
-
-  Identifiers should be UUID v4.
+  Public global object identifier,  see [_id URI representation](#section/Concepts/Identifier/_id-URI-representation).
 
   Once object is assigned a global identifier, it should never change.
   Internally local identifiers, should be associated with public
