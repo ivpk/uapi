@@ -1,20 +1,27 @@
 oneOf:
   - type: integer
-    description: Integer identifier (Int model type)
+    description: Integer identifier
+    minimum: 1
     examples:
       - 123
   - type: string
-    description: UUID identifier (Uuid model type)
+    format: uuid
+    description: UUID identifier
     pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
     examples:
       - abdd1245-bbf9-4085-9366-f11c0f737c1d
   - type: string
-    description: String or Base32 identifier, prefixed with = (Str, Base32, CompBase32 model types)
+    description: String identifier, prefixed with =
     pattern: ^=[^\s]+$
     examples:
       - =some-name
   - type: string
-    description: Composite string identifier (Comp model type)
+    description: Composite string identifier
     pattern: ^[^=\s][^\s]*$
     examples:
       - 42,LT
+  - type: string
+    description: Base32 identifier, prefixed with =
+    pattern: ^=[A-Z2-7]+=*$
+    examples:
+      - =NBSWY3DP
