@@ -1067,6 +1067,8 @@ name. `_revision` can be defined as one of these types:
 - Base32
 - UUID
 - Integer
+- Composite
+The formats follow the same rules, as `_id` formats, see [Identifier formats](#id-uri-representation).
 
 When update action is made on an object, revision number must always be
 provided, in order to compare object version received by the Client and object
