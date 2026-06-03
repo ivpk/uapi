@@ -1,27 +1,33 @@
 oneOf:
-  - type: integer
+  - title: Integer
+    type: integer
     description: Integer identifier
     minimum: 1
     examples:
       - 123
-  - type: string
+  - title: UUID
+    type: string
     format: uuid
     description: UUID identifier
     pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
     examples:
       - abdd1245-bbf9-4085-9366-f11c0f737c1d
-  - type: string
+  - title: String
+    type: string
     description: String identifier, prefixed with =
     pattern: ^=[^\s]+$
     examples:
       - =some-name
-  - type: string
+  - title: Composite
+    type: string
     description: Composite string identifier
     pattern: ^[^=\s][^\s]*$
     examples:
       - 42,LT
-  - type: string
-    description: Base32 identifier, prefixed with =
+  - title: Base32
+    type: string
+    format: base32
+    description: Base32 identifier, prefixed with =. See [Base32 identifier](#id-uri-representation).
     pattern: ^=[A-Z2-7]+=*$
     examples:
       - =NBSWY3DP

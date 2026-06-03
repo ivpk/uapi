@@ -790,13 +790,13 @@ building, since building is the same, single global identifier must be used:
   /datasets/gov/rc/ntr/uapi/report/Pastatas/e96cc0cc-08be-460d-a887-98f80612a402
   ```
 
-## Identifier formats
+### Identifier formats
 
 <a id="id-uri-representation"></a>
 
-### Integer identifier
+#### Integer identifier
 
-Integer identifiers are stored as a plain integer in JSON and used directly in the URI.
+Identifier can be stored as a plain integer in JSON and is used directly in the URI.
 
 JSON:
 ```json
@@ -805,12 +805,12 @@ JSON:
 
 URI:
 ```
-/Model/123
+Model/123
 ```
 
-### UUID identifier
+#### UUID identifier
 
-UUID identifiers are stored as a UUID string in JSON and used directly in the URI.
+Identifier can be stored as a UUID string in JSON and is used directly in the URI.
 
 JSON:
 ```json
@@ -819,12 +819,12 @@ JSON:
 
 URI:
 ```
-/Model/abdd1245-bbf9-4085-9366-f11c0f737c1d
+Model/abdd1245-bbf9-4085-9366-f11c0f737c1d
 ```
 
-### String identifier
+#### String identifier
 
-String identifiers are stored as a plain string in JSON. In the URI they are prefixed with `=` to distinguish them from models and properties.
+Identifier can be stored as a plain string in JSON. In the URI it is prefixed with `=` to distinguish it from model and property names.
 
 JSON:
 ```json
@@ -833,12 +833,12 @@ JSON:
 
 URI:
 ```
-/Model/=some-name
+Model/=some-name
 ```
 
-### Composite identifier
+#### Composite identifier
 
-Composite identifiers combine multiple fields into a comma-separated string in JSON and used directly in the URI.
+Identifier can be stored as a comma-separated string of multiple fields in JSON and is used directly in the URI.
 
 JSON:
 ```json
@@ -847,23 +847,43 @@ JSON:
 
 URI:
 ```
-/Model/42,LT
+Model/42,LT
 ```
 
-### Base32 identifier
+#### Base32 identifier
 
-Base32 identifiers are stored as a Base32-encoded string in JSON and prefixed with `=` in the URI. For simple values, the 
-raw value is Base32-encoded directly. For composite values, CBOR encoding is applied first, then the result is Base32-encoded.
-In both cases the JSON and URI representation follow the same format.
+Identifier can be stored as a Base32-encoded string in JSON and is prefixed with `=` in the URI.
+
+For a simple (non-composite) value, the raw value is Base32-encoded directly:
+
+```
+"hello" → NBSWY3DP
+```
 
 JSON:
 ```json
-{"_id": "BASE32ENCODED"}
+{"_id": "NBSWY3DP"}
 ```
 
 URI:
 ```
-/Model/=BASE32ENCODED
+Model/=NBSWY3DP
+```
+
+For a composite value, the fields are put into an array and encoded using CBOR encoding, then the result is Base32-encoded:
+
+```
+[42, "LT"] → CBOR → 82182a624c54 → Base32 → QIMCMJSGK3TF
+```
+
+JSON:
+```json
+{"_id": "QIMCMJSGK3TF"}
+```
+
+URI:
+```
+Model/=QIMCMJSGK3TF
 ```
 
 
