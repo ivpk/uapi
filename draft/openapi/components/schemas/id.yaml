@@ -1,9 +1,20 @@
 oneOf:
   - type: integer
+    description: Integer identifier (Int model type)
+    examples:
+      - 123
   - type: string
-    pattern: ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|=[^\s]+|[^=\s][^\s]*)$
-examples:
-  - abdd1245-bbf9-4085-9366-f11c0f737c1d
-  - =some-string-id
-  - 42,LT
-  - 123
+    description: UUID identifier (Uuid model type)
+    pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+    examples:
+      - abdd1245-bbf9-4085-9366-f11c0f737c1d
+  - type: string
+    description: String or Base32 identifier, prefixed with = (Str, Base32, CompBase32 model types)
+    pattern: ^=[^\s]+$
+    examples:
+      - =some-name
+  - type: string
+    description: Composite string identifier (Comp model type)
+    pattern: ^[^=\s][^\s]*$
+    examples:
+      - 42,LT

@@ -790,30 +790,82 @@ building, since building is the same, single global identifier must be used:
   /datasets/gov/rc/ntr/uapi/report/Pastatas/e96cc0cc-08be-460d-a887-98f80612a402
   ```
 
+## Identifier formats
+
 <a id="id-uri-representation"></a>
 
-### _id URI representation
+### Integer identifier
 
-Global identifiers should be defined in the manifest, using `_id` as the property
-name. `_id` can be defined as one of these types:
-- String
-- Base32
-- UUID
-- Integer
+Integer identifiers are stored as a plain integer in JSON and used directly in the URI.
 
+JSON:
+```json
+{"_id": 123}
+```
 
-The operations, which use `_id` in their URI, change depending on the field type.
-If the `_id` is of type String or Base32, then the `_id` is specified in the URI with an equal sign:
+URI:
+```
+/Model/123
+```
 
-  ```code
-  /=id
-  ```
+### UUID identifier
 
-Otherwise, for UUID and Integer types, the `_id` is specified in the URI directly without an equal sign:
-``
-  ```code``
-  /id``
-  `````
+UUID identifiers are stored as a UUID string in JSON and used directly in the URI.
+
+JSON:
+```json
+{"_id": "abdd1245-bbf9-4085-9366-f11c0f737c1d"}
+```
+
+URI:
+```
+/Model/abdd1245-bbf9-4085-9366-f11c0f737c1d
+```
+
+### String identifier
+
+String identifiers are stored as a plain string in JSON. In the URI they are prefixed with `=` to distinguish them from models and properties.
+
+JSON:
+```json
+{"_id": "some-name"}
+```
+
+URI:
+```
+/Model/=some-name
+```
+
+### Composite identifier
+
+Composite identifiers combine multiple fields into a comma-separated string in JSON and used directly in the URI.
+
+JSON:
+```json
+{"_id": "42,LT"}
+```
+
+URI:
+```
+/Model/42,LT
+```
+
+### Base32 identifier
+
+Base32 identifiers are stored as a Base32-encoded string in JSON and prefixed with `=` in the URI. For simple values, the 
+raw value is Base32-encoded directly. For composite values, CBOR encoding is applied first, then the result is Base32-encoded.
+In both cases the JSON and URI representation follow the same format.
+
+JSON:
+```json
+{"_id": "BASE32ENCODED"}
+```
+
+URI:
+```
+/Model/=BASE32ENCODED
+```
+
 
 ## Model
 
