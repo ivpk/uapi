@@ -1,7 +1,7 @@
 parameters:
   - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
-  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/publisher.yaml
   - $ref: ../components/parameters/is.yaml
   - $ref: ../components/parameters/service.yaml
   - $ref: ../components/parameters/dataset.yaml
@@ -56,9 +56,6 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/object.yaml
-        text/csv:
-          schema:
-            $ref: ../components/schemas/objects-csv.yaml
     '304':
       description: Not Modified
       headers:

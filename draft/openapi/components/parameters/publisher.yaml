@@ -1,12 +1,11 @@
-name: service
+name: publisher
 in: path
 required: true
 schema:
   $ref: ../schemas/ns.yaml
   examples:
-    - udts
-    - my_service
+    - rc
 description: |
-  A short service code name.
+  Abbreviation or a short code name of a publisher organization.
 
   All lower case, words separated with `_` symbol.

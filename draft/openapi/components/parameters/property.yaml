@@ -2,11 +2,8 @@ name: property
 in: path
 required: true
 schema:
-  type: string
-  pattern: ^[a-z]([a-z]?[a-z0-9_]+)*$
-  examples:
-    - "cities"
+  $ref: ../schemas/property.yaml
 description: |
   Subresource of an object.
 
-  All lower case, words separated with `_` symbol.
+  All lower case, words separated with `_` symbol. Reserved properties can start with `_` symbol.

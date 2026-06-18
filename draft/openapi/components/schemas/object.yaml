@@ -1,4 +1,15 @@
 type: object
+x-level:
+  description: |
+    Maturity level of the object
+  type: integer
+  enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
 properties:
   "@context":
     $ref: ./_context.yaml
@@ -29,7 +40,7 @@ properties:
       Maximum value: `999-12-31T23:59:59.999999`
     type: string
 patternProperties:
-  ^[a-z](_?[a-z0-9]+)*$:
+  ^_?[a-z](_?[a-z0-9]+)*$:
     oneOf:
       - $ref: '#/components/schemas/absent'
       - $ref: '#/components/schemas/boolean'

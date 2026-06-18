@@ -1,4 +1,15 @@
 type: string
-pattern: ^[a-z](_?[a-z0-9]+)*$
+x-level:
+  description: |
+    Maturity level of the element
+  type: integer
+  enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+pattern: ^_?[a-z](_?[a-z0-9]+)*$
 examples:
   - name

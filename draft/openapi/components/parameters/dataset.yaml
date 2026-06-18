@@ -2,7 +2,10 @@ name: dataset
 in: path
 required: true
 schema:
-  $ref: ../schemas/dataset.yaml
+  $ref: ../schemas/ns.yaml
+  examples:
+    - dataset
+    - data_set
 description: |
   A dataset or a standard abbreviation or short code name.
 

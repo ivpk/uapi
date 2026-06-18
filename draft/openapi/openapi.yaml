@@ -22,9 +22,21 @@ externalDocs:
 
 servers:
   - url: get.data.gov.lt
-    description: Data access server
+    description: Open Data Vault for Open data access
   - url: put.data.gov.lt
-    description: Data update server
+    description: Open Data Vault for Open data update
+  - url: get-test.data.gov.lt
+    description: Test environment for Open Data Vault data access
+  - url: put-test.data.gov.lt
+    description: Test environment for Open Data Vault data update
+  - url: api.gov.lt
+    description: External API Gateway data access
+  - url: apigw.gov.lt
+    description: Internal API Gateway data access
+  - url: test-api.gov.lt
+    description: Test environment for External API Gateway data access
+  - url: test-apigw.gov.lt
+    description: Test environment for Internal API Gateway data access
 
 tags:
   - name: objects

@@ -9,7 +9,7 @@ properties:
       component:
         type: string
       dataset:
-        $ref: ./dataset.yaml
+        $ref: ./ns.yaml
       entity:
         type: string
       manifest:

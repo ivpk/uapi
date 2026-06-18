@@ -18,13 +18,9 @@ properties:
     examples:
       - '2021-07-30T14:03:14.645198'
   _op:
-    type: string
-    enum:
-      - insert
-      - patch
-      - delete
+    $ref: ./_op.yaml
   _objectType:
-    type: string
+    $ref: ./Model.yaml
     examples:
       - Continent
   _value:

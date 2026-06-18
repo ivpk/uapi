@@ -1,7 +1,7 @@
-parameters:
+changeparameters:
   - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
-  - $ref: ../components/parameters/org.yaml
+  - $ref: ../components/parameters/publisher.yaml
   - $ref: ../components/parameters/is.yaml
   - $ref: ../components/parameters/service.yaml
   - $ref: ../components/parameters/dataset.yaml
