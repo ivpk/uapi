@@ -492,7 +492,7 @@ of objects conforming to the same data model, with [shacl:targetClass](https://w
   |            | code       | string  |          |
   |            |            |         |          |
 
-More detailed explanation provided in [Identifier](#identifier)
+More detailed explanation provided in [Identifier](#section/Concepts/Identifier)
 
 - <span class="green">revision</span> - A unique identifier of a historical object version. 
 Revision semantics *MUST* follow the Linked Data Event Streams ([LDES](https://semiceu.github.io/LinkedDataEventStreams/)) model. UUID format is *RECOMMENDED*. Attributes are defined in [DCAT Version](https://www.w3.org/TR/vocab-dcat-3/#version-info) and `_revision` is
@@ -500,7 +500,7 @@ defined in [VSSA Core Vocabulary](https://ivpk.github.io/core_vocabularies/vssa/
 
 - <span class="green">property</span> - A subresource used to retrieve the value of a property, 
 especially where the property value is a large object, linked file, or array. It represents an RDF property, 
-such as [owl:ObjectProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_ObjectProperty) or [owl:DatatypeProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_DatatypeProperty). More details in [Subresource](#subresource)
+such as [owl:ObjectProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_ObjectProperty) or [owl:DatatypeProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_DatatypeProperty). More details in [Subresource](#section/Concepts/subresource)
 
   Example:
 
@@ -513,10 +513,10 @@ such as [owl:ObjectProperty](https://www.w3.org/TR/2004/REC-owl-semantics-200402
   ```
 
 - <span class="green">action</span> - An operation performed on a collection of objects or on a single object. It *MUST* start with `:`.
-  More detailed explanation privided in [Action](#action)
+  More detailed explanation privided in [Action](#section/Concepts/Action)
 
 - <span class="green">scope</span> - Access based filter using OAuth 2.0 scopes. It *MUST* start with `@`. It is a custom `scope`
-  that filters data on a access token level. More details in [Scope](#scope).
+  that filters data on a access token level. More details in [Scope](#section/Concepts/Scope).
 
 Static parts:
 
@@ -735,7 +735,7 @@ Where:
 - <span class="green">revision</span> — an identifier of a historical version of the entity
 
 Revision semantics *MUST* follow ([DCAT Version Info](https://www.w3.org/TR/vocab-dcat-3/#version-info) model.
-More info in [Revision](#revision).
+More info in [Revision](#section/Concepts/Revision).
 
 
 Relationship with API URLs
