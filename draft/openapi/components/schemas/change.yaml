@@ -20,7 +20,7 @@ properties:
   _op:
     $ref: ./_op.yaml
   _objectType:
-    $ref: ./Model.yaml
+    $ref: ./model.yaml
     examples:
       - Continent
   _value:

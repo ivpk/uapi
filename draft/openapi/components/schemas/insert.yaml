@@ -1,7 +1,7 @@
 type: object
 properties:
   _type:
-    $ref: ./Model.yaml
+    $ref: ./model.yaml
     examples:
       - Continet
   _value:
