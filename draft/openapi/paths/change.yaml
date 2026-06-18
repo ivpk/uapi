@@ -1,4 +1,4 @@
-changeparameters:
+parameters:
   - $ref: ../components/parameters/group.yaml
   - $ref: ../components/parameters/form.yaml
   - $ref: ../components/parameters/publisher.yaml
