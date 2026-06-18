@@ -500,7 +500,7 @@ defined in [VSSA Core Vocabulary](https://ivpk.github.io/core_vocabularies/vssa/
 
 - <span class="green">property</span> - A subresource used to retrieve the value of a property, 
 especially where the property value is a large object, linked file, or array. It represents an RDF property, 
-such as [owl:ObjectProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_ObjectProperty) or [owl:DatatypeProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_DatatypeProperty). More details in [Subresource](#section/Concepts/subresource)
+such as [owl:ObjectProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_ObjectProperty) or [owl:DatatypeProperty](https://www.w3.org/TR/2004/REC-owl-semantics-20040210/#owl_DatatypeProperty). More details in [Subresource](#section/Concepts/Subresource)
 
   Example:
 
@@ -685,9 +685,11 @@ Where:
 - <span class="green">termName</span> — local name of the term
 
 Examples
-https://data.gov.lt/id/jar/class/JuridinisAsmuo
-https://data.gov.lt/id/jar/property/kodas
-https://data.gov.lt/id/evrk/concept/6201
+```http
+  https://data.gov.lt/id/jar/class/JuridinisAsmuo
+  https://data.gov.lt/id/jar/property/kodas
+  https://data.gov.lt/id/evrk/concept/6201
+```
 
 - Entity resources
 
