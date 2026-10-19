@@ -198,7 +198,7 @@ All API  URL path elements are as defined in [xsd:token](https://www.w3.org/TR/x
   <span class="green">dataset</span> `/`
   <span class="green">model<span>
 
-- Get single object:
+- Get single object, see [_id URI representation](#id-uri-representation):
 
   `https://`
   <span class="green">domain</span> `/`
@@ -820,13 +820,110 @@ same building, but the global identifier must be the same for all datasets.
 Global identifiers must be assigned to all objects using a reserved property
 name `_id`.
 
-For example we can have multiple datasets containing data abould the same
+For example we can have multiple datasets containing data about the same
 building, since building is the same, single global identifier must be used:
 
   ```text
   /datasets/gov/rc/ar/uapi/text_with_coordinates/Address/e96cc0cc-08be-460d-a887-98f80612a402
   /datasets/gov/rc/ntr/uapi/report/Pastatas/e96cc0cc-08be-460d-a887-98f80612a402
   ```
+
+### Identifier formats
+
+<a id="id-uri-representation"></a>
+
+#### Integer identifier
+
+Identifier can be stored as a plain integer in JSON and is used directly in the URI.
+
+JSON:
+```json
+{"_id": 123}
+```
+
+URI:
+```
+Model/123
+```
+
+#### UUID identifier
+
+Identifier can be stored as a UUID string in JSON and is used directly in the URI.
+
+JSON:
+```json
+{"_id": "abdd1245-bbf9-4085-9366-f11c0f737c1d"}
+```
+
+URI:
+```
+Model/abdd1245-bbf9-4085-9366-f11c0f737c1d
+```
+
+#### String identifier
+
+Identifier can be stored as a plain string in JSON. In the URI it is prefixed with `=` to distinguish it from model and property names.
+
+JSON:
+```json
+{"_id": "some-name"}
+```
+
+URI:
+```
+Model/=some-name
+```
+
+#### Composite identifier
+
+Identifier can be stored as a comma-separated string of multiple fields in JSON and is used directly in the URI.
+
+JSON:
+```json
+{"_id": "42,LT"}
+```
+
+URI:
+```
+Model/42,LT
+```
+
+#### Base32 identifier
+
+Identifier can be stored as a Base32-encoded string in JSON and is prefixed with `=` in the URI.
+
+For a simple (non-composite) value, the raw value is Base32-encoded directly:
+
+```
+"hello" → NBSWY3DP
+```
+
+JSON:
+```json
+{"_id": "NBSWY3DP"}
+```
+
+URI:
+```
+Model/=NBSWY3DP
+```
+
+For a composite value, the fields are put into an array and encoded using CBOR encoding, then the result is Base32-encoded:
+
+```
+[42, "LT"] → CBOR → 82182a624c54 → Base32 → QIMCMJSGK3TF
+```
+
+JSON:
+```json
+{"_id": "QIMCMJSGK3TF"}
+```
+
+URI:
+```
+Model/=QIMCMJSGK3TF
+```
+
 
 ## Model
 
@@ -1002,8 +1099,14 @@ Version number is a singe positive integer number specifying major version of th
 All objects must have a revision number provided as reserved `_revision`
 property name.
 
-Revision is a string, that identifies object version. This might be a UUID
-string.
+Revision can be defined in the manifest, using `_revision` as the property
+name. `_revision` can be defined as one of these types:
+- String
+- Base32
+- UUID
+- Integer
+- Composite
+The formats follow the same rules, as `_id` formats, see [Identifier formats](#id-uri-representation).
 
 When update action is made on an object, revision number must always be
 provided, in order to compare object version received by the Client and object
