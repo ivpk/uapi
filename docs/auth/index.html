@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UDTS paslaugų autentifikacija ir autorizacija</title>
+<meta name="description" content="Kaip duomenų gavėjo sistema gauna prieigą prie Spinta agento teikiamų UDTS duomenų paslaugų per VSSA API vartus: OAuth 2.0 Client Credentials, žetonai, leidimai.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1f2328;
+    --muted: #59636e;
+    --border: #d1d9e0;
+    --soft: #f6f8fa;
+    --accent: #0b5cad;
+    --note-bg: #eef5ff;
+    --warn: #9a6700;
+    --warn-bg: #fff8e5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117;
+      --fg: #e6edf3;
+      --muted: #9198a1;
+      --border: #3d444d;
+      --soft: #151b23;
+      --accent: #4493f8;
+      --note-bg: #0f2540;
+      --warn: #d29922;
+      --warn-bg: #2b2111;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 900px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .4rem; }
+  h2 { font-size: 1.35rem; margin: 2.6rem 0 .8rem; padding-bottom: .3rem; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.08rem; margin: 1.8rem 0 .5rem; }
+  p, ul, ol { margin: .6rem 0; }
+  li { margin: .25rem 0; }
+  a { color: var(--accent); }
+  .lead { color: var(--muted); margin: 0 0 1.5rem; font-size: 1.05rem; }
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+  th, td { border: 1px solid var(--border); padding: .45rem .65rem; text-align: left; vertical-align: top; }
+  th { background: var(--soft); font-weight: 600; }
+  table.meta td:first-child { white-space: nowrap; color: var(--muted); width: 1%; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: .88em;
+    background: var(--soft);
+    padding: .1em .35em;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
+  pre {
+    background: var(--soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .8rem 1rem;
+    overflow-x: auto;
+    line-height: 1.45;
+    margin: .8rem 0 1.2rem;
+  }
+  pre code { background: none; padding: 0; font-size: .85rem; overflow-wrap: normal; }
+  .note, .draft {
+    padding: .65rem 1rem;
+    margin: 1rem 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .note { border-left: 4px solid var(--accent); background: var(--note-bg); }
+  .draft { border-left: 4px solid var(--warn); background: var(--warn-bg); }
+  .draft strong { color: var(--warn); }
+  nav.toc { border: 1px solid var(--border); border-radius: 6px; padding: .6rem 1rem; margin: 1.5rem 0; }
+  nav.toc ol { margin: .3rem 0; padding-left: 1.4rem; }
+  figure { margin: 1.25rem 0; }
+  figure svg { width: 100%; height: auto; display: block; color: var(--fg); }
+  figcaption { color: var(--muted); font-size: .9rem; margin-top: .4rem; }
+  .sq-head { fill: var(--soft); stroke: var(--border); }
+  .sq-phase { fill: var(--soft); opacity: .55; }
+  .sq-life { stroke: var(--border); stroke-dasharray: 4 4; }
+  .sq-arrow { stroke: currentColor; stroke-width: 1.4; fill: none; }
+  .sq-arrow.ret { stroke-dasharray: 5 4; }
+  .sq-note-box { fill: var(--note-bg); stroke: var(--accent); }
+  .sq-t { fill: currentColor; font: 13px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .sq-t.head { font-weight: 600; font-size: 14px; }
+  .sq-t.sub { fill: var(--muted); font-size: 11.5px; }
+  .sq-t.phase { fill: var(--muted); font-weight: 600; font-size: 12px; }
+  .sq-t.mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+  footer { margin-top: 3rem; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<main>
+
+<div class="draft"><strong>JUODRAŠTIS.</strong> Dokumentas dar derinamas, nenaudokite jo kaip galutinio. Prieš skelbiant šį bloką pašalinti.</div>
+
+<h1>UDTS paslaugų autentifikacija ir autorizacija</h1>
+<p class="lead">Kaip duomenų gavėjo sistema gauna prieigą prie Spinta agento teikiamų duomenų paslaugų per VSSA API vartus</p>
+
+<div class="table-wrap">
+<table class="meta">
+  <tr><td>Versija</td><td>0.1 (juodraštis), 2026-11-18</td></tr>
+  <tr><td>Taikoma</td><td>UDTS duomenų paslaugoms, kurias teikia Spinta agentas (1.3.0 ar naujesnė versija) per VSSA API vartus</td></tr>
+  <tr><td>Pagrindas</td><td><a href="https://ivpk.github.io/uapi/v1.1/#section/Authorization">UDTS specifikacijos v1.1 skyrius „Authorization“</a></td></tr>
+  <tr><td>Nuolatinis adresas</td><td><a href="https://ivpk.github.io/uapi/auth/">https://ivpk.github.io/uapi/auth/</a></td></tr>
+  <tr><td>Rengėjas</td><td>Valstybės skaitmeninių sprendimų agentūra (VSSA)</td></tr>
+  <tr><td>Klausimai</td><td><a href="mailto:das@vssa.lt">das@vssa.lt</a></td></tr>
+</table>
+</div>
+
+<nav class="toc" aria-label="Turinys">
+  <strong>Turinys</strong>
+  <ol>
+    <li><a href="#paskirtis">Paskirtis</a></li>
+    <li><a href="#santrauka">Santrauka</a></li>
+    <li><a href="#dalyviai">Dalyviai</a></li>
+    <li><a href="#prieiga">Prieigos suteikimas</a></li>
+    <li><a href="#srautas">Užklausų srautas</a></li>
+    <li><a href="#zetonas">Žetono gavimas</a></li>
+    <li><a href="#duomenys">Duomenų užklausos</a></li>
+    <li><a href="#leidimai">Leidimai (scope)</a></li>
+    <li><a href="#tikrinimas">Ką tikrina vartai ir agentas</a></li>
+    <li><a href="#atsaukimas">Prieigos atšaukimas ir duomenų apsauga</a></li>
+    <li><a href="#klaidos">Klaidos</a></li>
+    <li><a href="#udts">Ryšys su UDTS specifikacija</a></li>
+    <li><a href="#istorija">Pakeitimų istorija</a></li>
+  </ol>
+</nav>
+
+<h2 id="paskirtis">1. Paskirtis</h2>
+<p>Dokumentas aprašo saugumo protokolą, kuriuo apsaugotos UDTS duomenų paslaugos: kaip duomenų gavėjo sistema
+autentifikuojasi, gauna prieigos žetoną ir su juo gauna duomenis, ir ką tikrina API vartai bei Spinta agentas.</p>
+<p>Dokumentas skirtas:</p>
+<ul>
+  <li>duomenų gavėjų sistemų kūrėjams;</li>
+  <li>duomenų teikėjams, kurie pildo Duomenų perdavimo paslaugos užsakymą VIISP platformoje. Skiltyje „Saugumas“
+    pasirenkamas protokolas <strong>OAuth2</strong>, o dokumentacija pateikiama <strong>nuoroda</strong> į šį puslapį.</li>
+</ul>
+<p>Visos Spinta agento teikiamos UDTS paslaugos autentifikuoja vienodai, todėl dokumentas bendras. Paslaugos skiriasi
+tik adresu ir leidimais (scope).</p>
+
+<h2 id="santrauka">2. Santrauka</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Savybė</th><th>Reikšmė</th></tr>
+  <tr><td>Protokolas</td><td>OAuth 2.0, Client Credentials srautas
+    (<a href="https://www.rfc-editor.org/rfc/rfc6749#section-4.4">RFC 6749, 4.4 skyrius</a>). Gavėjo sistema veikia savo
+    vardu, ne konkretaus asmens vardu.</td></tr>
+  <tr><td>Kliento autentifikacija</td><td>HTTP Basic: kliento vardas ir slaptažodis (<code>client_secret_basic</code>).</td></tr>
+  <tr><td>Prieigos žetonas</td><td>JWT (<a href="https://www.rfc-editor.org/rfc/rfc7519">RFC 7519</a>), pasirašytas
+    RS512, galioja 10 parų. Atnaujinimo žetonas (refresh token) neišduodamas.</td></tr>
+  <tr><td>Kas išduoda žetoną</td><td>Paslaugą teikiantis Spinta agentas. Gavėjas žetoną gauna per API vartus.</td></tr>
+  <tr><td>Techniniai keliai</td><td><code>/:token</code>, <code>/:version</code>, <code>/:health</code> apsaugoti API
+    raktu (antraštė <code>X-Gravitee-Api-Key</code>).</td></tr>
+  <tr><td>Duomenų keliai</td><td>Apsaugoti prieigos žetonu (antraštė <code>Authorization: Bearer</code>,
+    <a href="https://www.rfc-editor.org/rfc/rfc6750">RFC 6750</a>).</td></tr>
+  <tr><td>Žetono tikrinimas</td><td>Vartai žetoną tikrina agento introspekcijos taške
+    (<a href="https://www.rfc-editor.org/rfc/rfc7662">RFC 7662</a>) ir patikrina prenumeratą. Agentas tikrina parašą,
+    galiojimą ir leidimus.</td></tr>
+  <tr><td>Leidimai</td><td>UDTS formatas <code>uapi:/{kelias}/:{veiksmas}</code>.</td></tr>
+  <tr><td>Ryšys</td><td>Tik HTTPS.</td></tr>
+</table>
+</div>
+
+<h2 id="dalyviai">3. Dalyviai</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Dalyvis</th><th>Vaidmuo</th></tr>
+  <tr><td>Duomenų gavėjo sistema</td><td>Programinė įranga, kuri kreipiasi į paslaugą. OAuth 2.0 terminais tai klientas
+    (client).</td></tr>
+  <tr><td>VSSA API vartai</td><td>Gravitee API valdymo platforma. Priima visas užklausas, tikrina API raktą, žetoną ir
+    prenumeratą, riboja užklausų dažnį ir perduoda užklausą agentui.</td></tr>
+  <tr><td>Spinta agentas</td><td>Duomenų teikėjo pusėje įdiegtas UDTS agentas. Jis atlieka dvi funkcijas: autorizacijos
+    serverio (išduoda žetonus, atsako į introspekcijos užklausas) ir resursų serverio (tikrina žetoną ir leidimus,
+    grąžina duomenis).</td></tr>
+  <tr><td>Duomenų teikėjas</td><td>Institucija, kuri administruoja agentą ir paslaugą vartuose. Ji suteikia gavėjui
+    prieigą.</td></tr>
+</table>
+</div>
+
+<h2 id="prieiga">4. Prieigos suteikimas</h2>
+<p>Prieigą suteikia duomenų teikėjas, kai gavėjas turi pagrindą gauti duomenis (pvz., duomenų teikimo sutartį).
+Teikėjas:</p>
+<ol>
+  <li>agente sukuria gavėjo klientą su sutartyje numatytais leidimais: rankiniu būdu arba automatizuotomis
+    priemonėmis, automatiškai pagal išmaniąją sutartį;</li>
+  <li>vartuose užregistruoja gavėjo aplikaciją (jos Client ID yra agento išduotas kliento identifikatorius) ir
+    užprenumeruoja ją paslaugos API rakto ir OAuth2 planams;</li>
+  <li>saugiai perduoda gavėjui kliento vardą, slaptažodį ir API raktą: saugiu kanalu arba užšifruotus gavėjo
+    viešuoju raktu (tada juos iššifruoti gali tik gavėjas savo privačiuoju raktu).</li>
+</ol>
+<p>Gavėjui reikalingi duomenys ir iš kur jie gaunami:</p>
+<div class="table-wrap">
+<table>
+  <tr><th>Duomuo</th><th>Iš kur</th><th>Pavyzdys</th></tr>
+  <tr><td>Kliento vardas</td><td>Iš teikėjo, perduodamas saugiai. Naudojamas žetonui gauti. Tai kliento vardas, ne jo
+    UUID.</td><td><code>imone-sistema</code></td></tr>
+  <tr><td>Kliento slaptažodis</td><td>Iš teikėjo, perduodamas saugiai. Parodomas tik vieną kartą, kai klientas
+    sukuriamas, o agente saugoma tik jo maiša.</td><td>–</td></tr>
+  <tr><td>API raktas</td><td>Iš teikėjo, perduodamas saugiai. Jį sugeneruoja vartai, kai teikėjas užprenumeruoja
+    gavėjo aplikaciją paslaugos API rakto planui. Siunčiamas antraštėje <code>X-Gravitee-Api-Key</code> techniniuose
+    keliuose (<code>/:token</code>, <code>/:version</code>, <code>/:health</code>). Su gavėjo viešuoju ir privačiuoju
+    raktais nesusijęs.</td><td>–</td></tr>
+  <tr><td>Paslaugos bazinis adresas</td><td>Paslaugos OpenAPI aprašo <code>servers.url</code> reikšmė. Aprašą pateikia
+    teikėjas arba jis paskelbtas Metaduomenų kataloge (data.gov.lt).</td>
+    <td><code>https://apigw.gov.lt/datasets/gov/vssa/demo/demo_udts/1</code></td></tr>
+  <tr><td>Leidimai (scope)</td><td>Numatyti sutartyje, tikslius pavadinimus nurodo teikėjas. Žr.
+    <a href="#leidimai">8 skyrių</a>.</td><td><code>uapi:/datasets/gov/vssa/demo/demo_udts/1/:getall</code></td></tr>
+</table>
+</div>
+<p>Kiekvienai aplinkai (TEST, STAGE, PROD) prieigos duomenys atskiri.</p>
+
+<h3 id="adresas">Paslaugos adresas</h3>
+<p>Bazinis adresas sudaromas taip:</p>
+<pre><code>https://{vartai}/datasets/{forma}/{organizacija}/{IS}/{paslauga}/{versija}</code></pre>
+<div class="table-wrap">
+<table>
+  <tr><th>Vartai</th><th>Tinklas</th><th>Aplinka</th></tr>
+  <tr><td><code>apigw.gov.lt</code></td><td>Vidiniai, pasiekiami tik iš SVDPT tinklo</td><td>PROD</td></tr>
+  <tr><td><code>test-apigw.gov.lt</code></td><td>Vidiniai, pasiekiami tik iš SVDPT tinklo</td><td>TEST</td></tr>
+  <tr><td><code>api.gov.lt</code></td><td>Išoriniai, pasiekiami internetu</td><td>PROD</td></tr>
+  <tr><td><code>test-api.gov.lt</code></td><td>Išoriniai, pasiekiami internetu</td><td>TEST</td></tr>
+</table>
+</div>
+<p>STAGE aplinkos (testinis agentas su produkciniais duomenimis) adresas turi priešdėlį <code>/stage</code> prieš
+<code>/datasets</code>, pvz. <code>https://apigw.gov.lt/stage/datasets/gov/vssa/demo/demo_udts/1</code>.</p>
+
+<h2 id="srautas">5. Užklausų srautas</h2>
+<figure>
+<svg viewBox="0 0 760 612" role="img" aria-labelledby="sq-title sq-desc">
+  <title id="sq-title">Žetono gavimo ir duomenų užklausos seka</title>
+  <desc id="sq-desc">Gavėjo sistema per API vartus gauna žetoną iš Spinta agento, tada su žetonu kreipiasi į duomenis.
+    Vartai žetoną tikrina agento introspekcijos taške ir patikrina prenumeratą, agentas tikrina parašą, galiojimą ir leidimus.</desc>
+  <defs>
+    <marker id="sq-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <rect class="sq-phase" x="8" y="62" width="744" height="186" rx="8"/>
+  <rect class="sq-phase" x="8" y="262" width="744" height="342" rx="8"/>
+
+  <line class="sq-life" x1="110" y1="54" x2="110" y2="604"/>
+  <line class="sq-life" x1="380" y1="54" x2="380" y2="604"/>
+  <line class="sq-life" x1="650" y1="54" x2="650" y2="604"/>
+
+  <rect class="sq-head" x="20" y="8" width="180" height="46" rx="6"/>
+  <text class="sq-t head" x="110" y="29" text-anchor="middle">Gavėjo sistema</text>
+  <text class="sq-t sub" x="110" y="45" text-anchor="middle">klientas</text>
+  <rect class="sq-head" x="290" y="8" width="180" height="46" rx="6"/>
+  <text class="sq-t head" x="380" y="29" text-anchor="middle">VSSA API vartai</text>
+  <text class="sq-t sub" x="380" y="45" text-anchor="middle">Gravitee</text>
+  <rect class="sq-head" x="560" y="8" width="180" height="46" rx="6"/>
+  <text class="sq-t head" x="650" y="29" text-anchor="middle">Spinta agentas</text>
+  <text class="sq-t sub" x="650" y="45" text-anchor="middle">teikėjo pusėje</text>
+
+  <text class="sq-t phase" x="122" y="82">A. Žetono gavimas (kartą per galiojimo laiką)</text>
+  <line class="sq-arrow" x1="110" y1="112" x2="377" y2="112" marker-end="url(#sq-arr)"/>
+  <text class="sq-t mono" x="245" y="105" text-anchor="middle">POST /:token (API raktas + Basic)</text>
+  <line class="sq-arrow" x1="380" y1="150" x2="647" y2="150" marker-end="url(#sq-arr)"/>
+  <text class="sq-t mono" x="515" y="143" text-anchor="middle">POST /auth/token</text>
+  <line class="sq-arrow ret" x1="650" y1="188" x2="383" y2="188" marker-end="url(#sq-arr)"/>
+  <text class="sq-t" x="515" y="181" text-anchor="middle">JWT žetonas (galioja 10 parų)</text>
+  <line class="sq-arrow ret" x1="380" y1="226" x2="113" y2="226" marker-end="url(#sq-arr)"/>
+  <text class="sq-t mono" x="245" y="219" text-anchor="middle">access_token</text>
+
+  <text class="sq-t phase" x="122" y="282">B. Duomenų užklausa</text>
+  <line class="sq-arrow" x1="110" y1="312" x2="377" y2="312" marker-end="url(#sq-arr)"/>
+  <text class="sq-t mono" x="245" y="305" text-anchor="middle">GET /{rinkinys}/{Modelis} (Bearer)</text>
+  <line class="sq-arrow" x1="380" y1="350" x2="647" y2="350" marker-end="url(#sq-arr)"/>
+  <text class="sq-t mono" x="515" y="343" text-anchor="middle">POST /auth/introspect</text>
+  <line class="sq-arrow ret" x1="650" y1="388" x2="383" y2="388" marker-end="url(#sq-arr)"/>
+  <text class="sq-t mono" x="515" y="381" text-anchor="middle">active, client_id</text>
+  <rect class="sq-note-box" x="300" y="404" width="160" height="28" rx="5"/>
+  <text class="sq-t" x="380" y="423" text-anchor="middle">Prenumeratos patikra</text>
+  <line class="sq-arrow" x1="380" y1="462" x2="647" y2="462" marker-end="url(#sq-arr)"/>
+  <text class="sq-t mono" x="515" y="455" text-anchor="middle">GET /datasets/… (Bearer)</text>
+  <rect class="sq-note-box" x="556" y="478" width="188" height="28" rx="5"/>
+  <text class="sq-t" x="650" y="497" text-anchor="middle">Parašas, galiojimas, scope</text>
+  <line class="sq-arrow ret" x1="650" y1="534" x2="383" y2="534" marker-end="url(#sq-arr)"/>
+  <text class="sq-t" x="515" y="527" text-anchor="middle">Duomenys</text>
+  <line class="sq-arrow ret" x1="380" y1="572" x2="113" y2="572" marker-end="url(#sq-arr)"/>
+  <text class="sq-t" x="245" y="565" text-anchor="middle">Duomenys</text>
+</svg>
+<figcaption>Žetono gavimas ir duomenų užklausa. Ištisinė rodyklė – užklausa, punktyrinė – atsakymas.</figcaption>
+</figure>
+
+<p><strong>A. Žetono gavimas</strong></p>
+<ol>
+  <li>Gavėjo sistema siunčia <code>POST /:token</code> vartams su dviem prieigos duomenimis, kuriuos gavo iš teikėjo
+    (žr. <a href="#prieiga">4 skyrių</a>): API raktu vartams ir kliento vardu bei slaptažodžiu agentui (HTTP Basic).</li>
+  <li>Vartai patikrina API raktą ir perduoda užklausą agentui (<code>/auth/token</code>).</li>
+  <li>Agentas patikrina kliento vardą, slaptažodį ir prašomus leidimus, tada išduoda pasirašytą JWT žetoną.</li>
+</ol>
+<p><strong>B. Duomenų užklausa</strong></p>
+<ol start="4">
+  <li>Gavėjo sistema siunčia duomenų užklausą su žetonu (<code>Authorization: Bearer</code>).</li>
+  <li>Vartai patikrina žetoną agento introspekcijos taške (<code>/auth/introspect</code>) ir tai, ar žetono klientas turi
+    galiojančią prenumeratą.</li>
+  <li>Vartai perduoda užklausą agentui. Agentas dar kartą patikrina žetono parašą ir galiojimą, taip pat ar leidimai
+    apima užklausiamus duomenis.</li>
+  <li>Agentas gauna duomenis iš šaltinio ir grąžina atsakymą.</li>
+</ol>
+
+<h2 id="zetonas">6. Žetono gavimas</h2>
+<pre><code>POST {bazinis adresas}/:token
+X-Gravitee-Api-Key: {API raktas}
+Authorization: Basic {base64("kliento vardas:slaptažodis")}
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&amp;scope={leidimai, atskirti tarpu}</code></pre>
+
+<div class="table-wrap">
+<table>
+  <tr><th>Parametras</th><th>Privalomas</th><th>Reikšmė</th></tr>
+  <tr><td><code>grant_type</code></td><td>Taip</td><td><code>client_credentials</code></td></tr>
+  <tr><td><code>scope</code></td><td>Taip</td><td>Prašomi leidimai, atskirti tarpu. Galima prašyti tik tų leidimų, kurie
+    suteikti klientui. Paprašius kito leidimo, žetonas neišduodamas.</td></tr>
+</table>
+</div>
+
+<p>Pavyzdys su <code>curl</code>:</p>
+<pre><code>SERVER=https://apigw.gov.lt/datasets/gov/vssa/demo/demo_udts/1
+CLIENT=imone-sistema      # kliento vardas
+SECRET=...                # kliento slaptažodis
+API_KEY=...               # API raktas
+SCOPES="uapi:/datasets/gov/vssa/demo/demo_udts/1/:getall uapi:/datasets/gov/vssa/demo/demo_udts/1/:getone"
+
+TOKEN=$(curl -sS -f \
+  -H "X-Gravitee-Api-Key: $API_KEY" \
+  -u "$CLIENT:$SECRET" \
+  -d "grant_type=client_credentials" \
+  --data-urlencode "scope=$SCOPES" \
+  "$SERVER/:token" | jq -r .access_token)</code></pre>
+
+<p>Atsakymas:</p>
+<pre><code>{
+  "token_type": "Bearer",
+  "access_token": "eyJ…",
+  "expires_in": 864000,
+  "scope": "uapi:/datasets/gov/vssa/demo/demo_udts/1/:getall uapi:/datasets/gov/vssa/demo/demo_udts/1/:getone"
+}</code></pre>
+
+<p>Žetono turinys:</p>
+<div class="table-wrap">
+<table>
+  <tr><th>Laukas</th><th>Reikšmė</th></tr>
+  <tr><td><code>iss</code></td><td>Agento, kaip autorizacijos serverio, identifikatorius</td></tr>
+  <tr><td><code>sub</code>, <code>client_id</code></td><td>Kliento identifikatorius (UUID). Abu laukai sutampa, nes klientas veikia savo vardu.</td></tr>
+  <tr><td><code>aud</code></td><td>Resursų serverio (agento) identifikatorius</td></tr>
+  <tr><td><code>iat</code>, <code>exp</code></td><td>Išdavimo ir galiojimo pabaigos laikas (Unix laikas sekundėmis)</td></tr>
+  <tr><td><code>scope</code></td><td>Suteikti leidimai, atskirti tarpu</td></tr>
+  <tr><td><code>jti</code></td><td>Unikalus žetono identifikatorius</td></tr>
+</table>
+</div>
+
+<div class="note">Žetoną saugokite ir naudokite pakartotinai, kol jis galioja. Naujo prašykite tik baigiantis
+<code>expires_in</code> laikui arba gavę atsakymą <code>401</code>. Neprašykite naujo žetono kiekvienai užklausai:
+vartuose taikomas užklausų dažnio ribojimas.</div>
+
+<h2 id="duomenys">7. Duomenų užklausos</h2>
+<p>Duomenų užklausose siunčiamas tik žetonas:</p>
+<pre><code>curl -sS "$SERVER/rctest/Country" -H "Authorization: Bearer $TOKEN"</code></pre>
+<p>Techniniams keliams naudojamas tik API raktas:</p>
+<pre><code>curl -sS "$SERVER/:version" -H "X-Gravitee-Api-Key: $API_KEY"
+curl -sS "$SERVER/:health"  -H "X-Gravitee-Api-Key: $API_KEY"</code></pre>
+<p>Užklausų sintaksė ir atsakymų formatas aprašyti <a href="https://ivpk.github.io/uapi/v1.1/">UDTS specifikacijoje</a>,
+konkrečios paslaugos keliai – jos OpenAPI apraše.</p>
+
+<h2 id="leidimai">8. Leidimai (scope)</h2>
+<p>Leidimo formatas apibrėžtas <a href="https://ivpk.github.io/uapi/v1.1/#section/Authorization/Scope">UDTS
+specifikacijoje</a>:</p>
+<pre><code>uapi:/{kelias}/:{veiksmas}</code></pre>
+<div class="table-wrap">
+<table>
+  <tr><th>Veiksmas</th><th>Leidžia</th></tr>
+  <tr><td><code>getone</code></td><td>Gauti vieną įrašą pagal identifikatorių</td></tr>
+  <tr><td><code>getall</code></td><td>Gauti įrašų sąrašą</td></tr>
+  <tr><td><code>search</code></td><td>Filtruoti ir ieškoti įrašų</td></tr>
+  <tr><td><code>changes</code></td><td>Gauti pakeitimų istoriją</td></tr>
+</table>
+</div>
+<p>Leidimas galioja nurodytam keliui ir viskam, kas po juo:</p>
+<div class="table-wrap">
+<table>
+  <tr><th>Leidimas</th><th>Kam galioja</th></tr>
+  <tr><td><code>uapi:/datasets/gov/vssa/demo/demo_udts/1/:getall</code></td><td>Visiems paslaugos modeliams</td></tr>
+  <tr><td><code>uapi:/datasets/gov/vssa/demo/demo_udts/1/rctest/:getall</code></td><td>Visiems duomenų rinkinio <code>rctest</code> modeliams</td></tr>
+  <tr><td><code>uapi:/:getall</code></td><td>Visiems šio agento teikiamiems duomenims</td></tr>
+</table>
+</div>
+<p>Konkrečius leidimus nurodo duomenų teikėjas, kai suteikia prieigą. Agentas kiekvieną užklausą tikrina: žetone turi
+būti bent vienas leidimas, apimantis užklausiamą modelį. Kitaip grąžinama klaida <code>403</code>.</p>
+
+<h2 id="tikrinimas">9. Ką tikrina vartai ir agentas</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Kur</th><th>Priemonė</th></tr>
+  <tr><td>Ryšys</td><td>Visos užklausos tik per HTTPS. Vidiniai vartai pasiekiami tik iš SVDPT tinklo.</td></tr>
+  <tr><td>API vartai</td><td>
+    <ul>
+      <li>API raktas techniniams keliams (<code>/:token</code>, <code>/:version</code>, <code>/:health</code>).</li>
+      <li>Duomenų keliams – žetonas, tikrinamas agento introspekcijos taške <code>/auth/introspect</code>. Introspekcijai
+        vartai naudoja atskirą agento klientą, turintį tik leidimą <code>uapi:/:auth_introspect</code>.</li>
+      <li>Užklausa praleidžiama tik tada, kai žetono klientas turi galiojančią šios paslaugos prenumeratą.</li>
+      <li>Užklausų dažnio ribojimas pagal Duomenų perdavimo paslaugos užsakyme nurodytą apkrovą.</li>
+      <li>Užklausų atitikties paslaugos OpenAPI aprašui tikrinimas.</li>
+    </ul>
+  </td></tr>
+  <tr><td>Spinta agentas</td><td>
+    <ul>
+      <li>Žetono parašas (RS512, agento raktas), išdavėjas (<code>iss</code>), adresatas (<code>aud</code>) ir galiojimas
+        (<code>exp</code>).</li>
+      <li>Leidimai kiekvienam užklausiamam modeliui ir savybei.</li>
+      <li>Kliento slaptažodis saugomas tik kaip maiša (PBKDF2-SHA256).</li>
+      <li>Prieigos žurnale registruojamas kliento identifikatorius ir žetono leidimai.</li>
+    </ul>
+  </td></tr>
+</table>
+</div>
+
+<h2 id="atsaukimas">10. Prieigos atšaukimas ir duomenų apsauga</h2>
+<h3>Atšaukimas</h3>
+<ul>
+  <li>Teikėjas uždaro gavėjo prenumeratą vartuose. Nuo tada vartai to kliento užklausų nebepraleidžia.</li>
+  <li>Teikėjas pašalina klientą agente. Nuo tada nauji žetonai nebeišduodami.</li>
+  <li>Jau išduotas žetonas formaliai galioja iki <code>exp</code>, nes atšauktų žetonų sąrašo nėra. Todėl prieigą iš
+    karto nutraukia prenumeratos uždarymas vartuose.</li>
+  <li>API raktą teikėjas gali pakeisti vartuose.</li>
+</ul>
+<h3>Gavėjo pareigos</h3>
+<ul>
+  <li>Kliento slaptažodį ir API raktą saugokite kaip slaptažodžius: slaptažodžių saugykloje, ne programos kode ir ne
+    kodo repozitorijoje.</li>
+  <li>Prieigos duomenis naudokite tik serverio pusėje, ne naršyklėje ar mobiliojoje programėlėje.</li>
+  <li>Nerašykite žetonų, slaptažodžių ir API raktų į žurnalus.</li>
+  <li>Kiekvienai sistemai ir aplinkai naudokite atskirus prieigos duomenis.</li>
+  <li>Įtarę, kad prieigos duomenys atskleisti, nedelsdami praneškite duomenų teikėjui.</li>
+</ul>
+
+<h2 id="klaidos">11. Klaidos</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Kodas</th><th>Kur</th><th>Dažniausia priežastis</th><th>Ką daryti</th></tr>
+  <tr><td><code>401</code></td><td>Vartai</td><td>Techniniame kelyje nėra API rakto arba jis neteisingas. Duomenų
+    kelyje nėra žetono arba jis nebegalioja.</td><td>Patikrinkite antraštes. Gaukite naują žetoną.</td></tr>
+  <tr><td><code>401</code></td><td>Agentas, <code>/:token</code></td><td>Neteisingas kliento vardas arba slaptažodis
+    (<code>invalid_client</code>). Dažna klaida: vietoj kliento vardo nurodytas UUID.</td><td>Naudokite kliento vardą.
+    Jei nepadeda, kreipkitės į teikėją.</td></tr>
+  <tr><td><code>400</code></td><td>Agentas, <code>/:token</code></td><td>Prašomas leidimas, kurio klientas neturi, arba
+    netinkamas <code>grant_type</code>.</td><td>Prašykite tik suteiktų leidimų.</td></tr>
+  <tr><td><code>403</code></td><td>Agentas</td><td>Žetonas galioja, bet jo leidimai neapima užklausiamų duomenų
+    (<code>insufficient_scope</code>).</td><td>Kreipkitės į teikėją dėl leidimų.</td></tr>
+  <tr><td><code>429</code></td><td>Vartai</td><td>Viršytas užklausų dažnio limitas.</td><td>Retinkite užklausas.</td></tr>
+</table>
+</div>
+
+<h2 id="udts">12. Ryšys su UDTS specifikacija</h2>
+<p>Šis dokumentas aprašo, kaip šiuo metu įgyvendintas
+<a href="https://ivpk.github.io/uapi/v1.1/#section/Authorization">UDTS specifikacijos v1.1 skyrius „Authorization“</a>.
+Įgyvendinta: Client Credentials srautas, JWT žetonai, UDTS leidimų formatas, žetono tikrinimas vartuose ir agente.</p>
+<p>Kol kas kitaip, nei numatyta specifikacijoje:</p>
+<ul>
+  <li>žetoną išduoda pats paslaugos agentas, ne bendras autorizacijos serveris;</li>
+  <li>žetonas gaunamas per vartų kelią <code>/:token</code>;</li>
+  <li>vartai žetoną tikrina introspekcija agente, ne autorizacijos serverio viešuoju raktu;</li>
+  <li>klientai agente kol kas kuriami rankiniu būdu, automatinis jų kūrimas pagal išmaniąją sutartį dar
+    neįgyvendintas;</li>
+  <li>srautas, kai sistema veikia konkretaus naudotojo vardu (Authorization Code), neįgyvendintas.</li>
+</ul>
+<p>Kai įgyvendinimas keisis, šis dokumentas bus atnaujintas tuo pačiu adresu, o pakeitimai įrašyti į pakeitimų istoriją.</p>
+
+<h2 id="istorija">13. Pakeitimų istorija</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Versija</th><th>Data</th><th>Pakeitimai</th></tr>
+  <tr><td>0.1</td><td>2026-11-18</td><td>Juodraštis.</td></tr>
+</table>
+</div>
+
+<footer>
+  Valstybės skaitmeninių sprendimų agentūra · Licencija <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+</footer>
+
+</main>
+</body>
+</html>
